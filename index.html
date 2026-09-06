@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>世界史 文化史・年号テスト</title>
+<style>
+:root{--bg:#f6f6f8;--card:#fff;--txt:#222;--sub:#666;--acc:#e8650a;--ok:#2a9d5c;--ng:#d63b3b;--line:#ddd}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--txt);font-size:16px}
+header{background:#222;color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+header button{background:transparent;color:#fff;border:1px solid #888;border-radius:6px;padding:4px 10px;font-size:13px}
+main{padding:14px;max-width:560px;margin:0 auto}
+h2{font-size:15px;color:var(--sub);margin:16px 0 8px}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;font-size:15px;cursor:pointer}
+.row small{color:var(--sub)}
+.seg{display:flex;background:#e2e2e6;border-radius:10px;padding:3px;margin:8px 0}
+.seg button{flex:1;border:0;background:transparent;padding:9px 4px;border-radius:8px;font-size:14px;color:#444}
+.seg button.on{background:#fff;font-weight:700;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.prog{font-size:13px;color:var(--sub);display:flex;justify-content:space-between;margin:6px 0}
+.bar{height:6px;background:#e2e2e6;border-radius:3px;overflow:hidden;margin-bottom:12px}
+.bar div{height:100%;background:var(--acc);width:0;transition:width .2s}
+.q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 18px;min-height:150px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.q .sec{font-size:12px;color:var(--sub);margin-bottom:8px}
+.q .txt{font-size:22px;font-weight:700;line-height:1.4}
+.q .ans{margin-top:16px;font-size:22px;font-weight:700;color:var(--acc);border-top:1px dashed var(--line);padding-top:14px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.opts button{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px;font-size:17px;text-align:left;color:var(--txt)}
+.opts button.ok{border-color:var(--ok);background:#e9f7ee}
+.opts button.ng{border-color:var(--ng);background:#fbeaea}
+.ctl{display:flex;gap:8px;margin-top:12px}
+.ctl button{flex:1;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;background:var(--acc);color:#fff}
+.ctl button.g{background:#e2e2e6;color:#333}
+.ctl button.r{background:var(--ng)}
+.res{text-align:center;padding:20px 0}
+.res .big{font-size:44px;font-weight:800;color:var(--acc)}
+.wrong{margin-top:14px;text-align:left}
+.wrong div{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:14px}
+.wrong b{color:var(--acc)}
+.tbl{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tbl .s{background:#eee;padding:6px 12px;font-size:13px;font-weight:700}
+.tbl .i{display:flex;justify-content:space-between;padding:8px 12px;border-top:1px solid var(--line);font-size:14px;gap:8px}
+.tbl .i span:last-child{color:var(--acc);font-weight:700;text-align:right}
+.tbl .i.h span:last-child{color:transparent;background:#f3d9c6;border-radius:4px;min-width:60px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header><span id="ttl">世界史 文化史・年号</span><button id="home" class="hide">TOP</button></header>
+<main>
+<div id="menu">
+  <h2>モード</h2>
+  <div class="seg" id="mode">
+    <button data-m="quiz" class="on">4択</button>
+    <button data-m="card">暗記カード</button>
+    <button data-m="list">一覧</button>
+  </div>
+  <h2>文化史</h2>
+  <div class="list" id="chaps"></div>
+  <h2>年号</h2>
+  <div class="list" id="years"></div>
+</div>
+<div id="play" class="hide">
+  <div class="prog"><span id="pnum"></span><span id="pscore"></span></div>
+  <div class="bar"><div id="pbar"></div></div>
+  <div id="stage"></div>
+</div>
+</main>
+<script>
+const DATA = {"chapters": [{"title": "第1章／ギリシア文化", "sub": "ヨーロッパ文化の「ルーツ」となった明るく合理的な「人間中心」文化", "items": [{"sec": "文学", "q": "ホメロス", "a": "『イリアス』"}, {"sec": "文学", "q": "ヘシオドス", "a": "『神統記』"}, {"sec": "文学", "q": "女性詩人", "a": "サッフォー"}, {"sec": "文学", "q": "アイスキュロス", "a": "『アガメムノン』"}, {"sec": "文学", "q": "ソフォクレス", "a": "『オイディプス王』"}, {"sec": "文学", "q": "アリストファネス", "a": "『女の平和』"}, {"sec": "歴史", "q": "ペルシア戦争史", "a": "ヘロドトス"}, {"sec": "歴史", "q": "ペロポネソス戦争史", "a": "トゥキディデス"}, {"sec": "彫刻", "q": "アテナ女神像", "a": "フェイディアス"}, {"sec": "哲学・自然哲学", "q": "万物の根源は「水」", "a": "タレス"}, {"sec": "哲学・自然哲学", "q": "万物の根源は「数」", "a": "ピタゴラス"}, {"sec": "哲学・自然哲学", "q": "万物の根源は「火」", "a": "ヘラクレイトス"}, {"sec": "哲学・自然哲学", "q": "万物の根源は「原子」", "a": "デモクリトス"}, {"sec": "哲学・自然哲学", "q": "ソフィストの代表", "a": "プロタゴラス"}, {"sec": "哲学・自然哲学", "q": "真理の絶対性を説く", "a": "ソクラテス"}, {"sec": "哲学・自然哲学", "q": "イデア論を説く", "a": "プラトン"}, {"sec": "哲学・自然哲学", "q": "万学の祖", "a": "アリストテレス"}, {"sec": "建築", "q": "アテネのアクロポリスの神殿", "a": "パルテノン神殿"}]}, {"title": "第1章／ヘレニズム文化", "sub": "巨大なアレクサンドロスの帝国が東西文化の融合を生んだ", "items": [{"sec": "哲学・自然科学", "q": "エピクロス派の祖", "a": "エピクロス"}, {"sec": "哲学・自然科学", "q": "ストア派の祖", "a": "ゼノン"}, {"sec": "哲学・自然科学", "q": "地球の円周計測", "a": "エラトステネス"}, {"sec": "哲学・自然科学", "q": "太陽中心説", "a": "アリスタルコス"}, {"sec": "哲学・自然科学", "q": "浮力やてこの原理", "a": "アルキメデス"}, {"sec": "彫刻", "q": "両腕のない女神像", "a": "ミロのヴィーナス"}, {"sec": "彫刻", "q": "蛇に襲われる親子の像", "a": "ラオコーン"}]}, {"title": "第1章／ローマ文化", "sub": "実用的分野において優れた文化を残す", "items": [{"sec": "文学", "q": "キケロ", "a": "『国家論』"}, {"sec": "文学", "q": "ホラティウス", "a": "『叙情詩集』"}, {"sec": "文学", "q": "ヴェルギリウス", "a": "『アエネイス』"}, {"sec": "哲学", "q": "セネカ（ストア派）", "a": "『幸福論』"}, {"sec": "哲学", "q": "エピクテトス（ストア派）", "a": "『語録』"}, {"sec": "哲学", "q": "マルクス＝アウレリウス＝アントニヌス", "a": "『自省録』"}, {"sec": "神学", "q": "アウグスティヌス", "a": "『神の国』"}, {"sec": "歴史・地理", "q": "カエサル", "a": "『ガリア戦記』"}, {"sec": "歴史・地理", "q": "リウィウス", "a": "『ローマ史』"}, {"sec": "歴史・地理", "q": "プルタルコス", "a": "『対比列伝』"}, {"sec": "歴史・地理", "q": "タキトゥス", "a": "『ゲルマニア』"}, {"sec": "自然科学", "q": "プリニウス", "a": "『博物誌』"}, {"sec": "自然科学", "q": "プトレマイオス", "a": "天動説"}, {"sec": "建築", "q": "円形闘技場", "a": "コロッセウム"}, {"sec": "建築", "q": "万神殿", "a": "パンテオン"}]}, {"title": "第1章／中世ヨーロッパ文化", "sub": "様々な国や民族に統一性をもたらすキリスト教基調の文化", "items": [{"sec": "神学", "q": "カロリング＝ルネサンスの中心人物", "a": "アルクィン"}, {"sec": "神学", "q": "アンセルムス", "a": "実在論"}, {"sec": "神学", "q": "アベラール", "a": "唯名論"}, {"sec": "神学", "q": "ロジャー＝ベーコン", "a": "自然科学"}, {"sec": "神学", "q": "トマス＝アクィナス", "a": "『神学大全』"}, {"sec": "神学", "q": "ウィリアム＝オブ＝オッカム", "a": "唯名論"}, {"sec": "騎士道物語", "q": "騎士道物語の代表", "a": "アーサー王伝説"}, {"sec": "民族叙事詩", "q": "ドイツの民族叙事詩", "a": "ニーベルンゲンの歌"}, {"sec": "建築", "q": "ビザンツ様式", "a": "ハギア＝ソフィア聖堂"}, {"sec": "建築", "q": "ロマネスク様式", "a": "ピサ大聖堂"}, {"sec": "建築", "q": "ゴシック様式", "a": "ケルン大聖堂"}]}, {"title": "第2章／イスラーム文化", "sub": "様々な地域の文化をイスラーム教が融合", "items": [{"sec": "神学", "q": "神学と神秘主義の融合", "a": "ガザーリー"}, {"sec": "歴史", "q": "ラシード＝アッディーン", "a": "『集史』"}, {"sec": "歴史", "q": "イブン＝ハルドゥーン", "a": "『世界史序説』"}, {"sec": "医学", "q": "イブン＝シーナー", "a": "『医学典範』"}, {"sec": "医学", "q": "イブン＝ルシュド", "a": "『医学大全』"}, {"sec": "地理学", "q": "イブン＝バットゥータ", "a": "『三大陸周遊記』"}, {"sec": "数学", "q": "代数学", "a": "フワーリズミー"}, {"sec": "文学", "q": "説話の集大成", "a": "千夜一夜物語"}, {"sec": "文学", "q": "ウマル＝ハイヤーム", "a": "『ルバイヤート』"}, {"sec": "建築", "q": "グラナダのナスル朝の宮殿", "a": "アルハンブラ宮殿"}]}, {"title": "第3章／グプタ朝文化", "sub": "インド古典文化の盛期", "items": [{"sec": "文学", "q": "二大叙事詩", "a": "マハーバーラタ・ラーマーヤナ"}, {"sec": "文学", "q": "カーリダーサ", "a": "『シャクンタラー』"}, {"sec": "石窟寺院", "q": "代表的な2つの石窟寺院", "a": "アジャンター・エローラ"}]}, {"title": "第3章／インド＝イスラーム文化", "sub": "ヒンドゥー教文化にイスラーム教文化が融合", "items": [{"sec": "建築", "q": "シャー＝ジャハーンの廟", "a": "タージ＝マハル"}, {"sec": "絵画", "q": "イスラーム細密画の影響を受けた絵画", "a": "ムガル絵画"}]}, {"title": "第4章／前漢・後漢の文化", "sub": "儒教を中心とする中国の古典文化", "items": [{"sec": "儒学", "q": "儒学の官学化", "a": "董仲舒"}, {"sec": "儒学", "q": "鄭玄", "a": "訓詁学"}, {"sec": "発明", "q": "製紙法の改良", "a": "蔡倫"}, {"sec": "歴史", "q": "司馬遷", "a": "『史記』"}, {"sec": "歴史", "q": "班固", "a": "『漢書』"}, {"sec": "宗教", "q": "黄巾の乱を起こす", "a": "太平道"}, {"sec": "宗教", "q": "道教の源流となる", "a": "五斗米道"}]}, {"title": "第4章／六朝文化", "sub": "南北朝時代の「南朝」の文化。江南の高い生産力に支えられた貴族文化", "items": [{"sec": "詩", "q": "陶淵明", "a": "「帰去来辞」"}, {"sec": "文", "q": "昭明太子", "a": "『文選』"}, {"sec": "書", "q": "王羲之", "a": "「蘭亭序」"}, {"sec": "絵画", "q": "顧愷之", "a": "「女史箴図」"}]}, {"title": "第4章／唐の文化", "sub": "国際色豊かな貴族文化", "items": [{"sec": "詩", "q": "詩仙", "a": "李白"}, {"sec": "詩", "q": "自然詩人", "a": "王維"}, {"sec": "詩", "q": "詩聖", "a": "杜甫"}, {"sec": "詩", "q": "『長恨歌』", "a": "白居易"}, {"sec": "儒学", "q": "孔穎達", "a": "『五経正義』"}, {"sec": "書", "q": "唐代を代表する書家", "a": "顔真卿"}]}, {"title": "第4章／宋の文化", "sub": "科挙官僚たちによるマニアックな文化", "items": [{"sec": "儒学", "q": "朱子学の基礎", "a": "周敦頤"}, {"sec": "儒学", "q": "朱子学の大成", "a": "朱熹"}, {"sec": "儒学", "q": "陽明学の源流", "a": "陸九淵"}, {"sec": "文学", "q": "唐宋八大家の1人", "a": "欧陽脩"}, {"sec": "文学", "q": "蘇軾", "a": "『赤壁賦』"}, {"sec": "工芸", "q": "青磁・白磁の産地", "a": "景徳鎮"}, {"sec": "歴史", "q": "司馬光", "a": "『資治通鑑』"}, {"sec": "絵画", "q": "院体画の代表", "a": "徽宗皇帝"}, {"sec": "絵画", "q": "文人画の代表", "a": "米芾"}, {"sec": "宋代の三大発明", "q": "3つすべて答えよ", "a": "活字印刷・羅針盤・火薬"}]}, {"title": "第4章／元の文化", "sub": "科挙官僚たちの地位は低下、庶民文化の発達", "items": [{"sec": "暦", "q": "郭守敬", "a": "授時暦"}, {"sec": "文学", "q": "元曲の代表作（2つ）", "a": "『西廂記』『琵琶記』"}, {"sec": "書・画", "q": "元代を代表する書家・画家", "a": "趙孟頫"}]}, {"title": "第4章／明の文化", "sub": "官僚は秘密警察にビクビクだけど、庶民は意外と伸び伸び", "items": [{"sec": "編纂事業", "q": "永楽帝（2つ）", "a": "『四書大全』『五経大全』"}, {"sec": "実学", "q": "李時珍", "a": "『本草綱目』"}, {"sec": "実学", "q": "宋応星", "a": "『天工開物』"}, {"sec": "実学", "q": "徐光啓", "a": "『農政全書』"}, {"sec": "イエズス会宣教師の活動", "q": "マテオ＝リッチ", "a": "『幾何原本』"}, {"sec": "儒学", "q": "陽明学を開く", "a": "王陽明"}, {"sec": "庶民文学", "q": "羅貫中", "a": "『三国志演義』"}, {"sec": "庶民文学", "q": "施耐庵・羅貫中", "a": "『水滸伝』"}, {"sec": "庶民文学", "q": "三蔵法師の天竺行を題材とした小説", "a": "『西遊記』"}, {"sec": "庶民文学", "q": "市井の風俗を描いた長編小説", "a": "『金瓶梅』"}]}, {"title": "第4章／清の文化", "sub": "優れた皇帝のもと、大編纂事業が起こされる", "items": [{"sec": "編纂事業", "q": "康熙帝", "a": "『康熙字典』"}, {"sec": "編纂事業", "q": "康熙帝・雍正帝", "a": "『古今図書集成』"}, {"sec": "編纂事業", "q": "乾隆帝", "a": "『四庫全書』"}, {"sec": "小説", "q": "貴族の家の栄華と没落を描く", "a": "『紅楼夢』"}, {"sec": "小説", "q": "科挙・官僚社会を風刺", "a": "『儒林外史』"}, {"sec": "儒学", "q": "顧炎武・銭大昕", "a": "考証学"}, {"sec": "儒学", "q": "康有為", "a": "公羊学"}, {"sec": "イエズス会宣教師の活動", "q": "ブーヴェ", "a": "『皇輿全覧図』"}, {"sec": "イエズス会宣教師の活動", "q": "大砲の鋳造", "a": "フェルビースト"}, {"sec": "イエズス会宣教師の活動", "q": "円明園の設計", "a": "カスティリオーネ"}]}, {"title": "第5章／ルネサンス", "sub": "「神」中心から「人」中心に、文化が大きく転換した", "items": [{"sec": "イタリア／文学", "q": "ダンテ", "a": "『神曲』"}, {"sec": "イタリア／文学", "q": "ペトラルカ", "a": "『叙情詩集』"}, {"sec": "イタリア／文学", "q": "ボッカチオ", "a": "『デカメロン』"}, {"sec": "イタリア／美術", "q": "ルネサンス絵画の祖", "a": "ジョット"}, {"sec": "イタリア／美術", "q": "ボッティチェリ", "a": "『春』"}, {"sec": "イタリア／美術", "q": "レオナルド＝ダ＝ヴィンチ", "a": "『最後の晩餐』"}, {"sec": "イタリア／美術", "q": "ミケランジェロ", "a": "『最後の審判』"}, {"sec": "イタリア／美術", "q": "聖母子像", "a": "ラファエロ"}, {"sec": "イタリア／美術", "q": "大ドーム建築", "a": "ブルネレスキ"}, {"sec": "イタリア／美術", "q": "聖ピエトロ大聖堂", "a": "ブラマンテ"}, {"sec": "イタリア／思想", "q": "マキャヴェリ", "a": "『君主論』"}, {"sec": "イタリア／自然科学", "q": "地動説の主張", "a": "ガリレイ"}, {"sec": "イギリス／文学", "q": "チョーサー", "a": "『カンタベリ物語』"}, {"sec": "イギリス／文学", "q": "シェークスピア", "a": "『ハムレット』"}, {"sec": "イギリス／文学", "q": "トマス＝モア", "a": "『ユートピア』"}, {"sec": "フランス／文学", "q": "ラブレー", "a": "『ガルガンチュア物語』"}, {"sec": "フランス／文学", "q": "モンテーニュ", "a": "『随想録』"}, {"sec": "ネーデルラント／思想", "q": "エラスムス", "a": "『愚神礼賛』"}, {"sec": "ネーデルラント／美術", "q": "油絵の技法", "a": "ファン・アイク兄弟"}, {"sec": "ネーデルラント／美術", "q": "農民画", "a": "ブリューゲル"}, {"sec": "ドイツ／発明", "q": "活版印刷術", "a": "グーテンベルク"}, {"sec": "ドイツ／美術", "q": "デューラー", "a": "「四人の使徒」"}]}, {"title": "第5章・第6章／17・18世紀のヨーロッパ文化", "sub": "絶対王政から市民の時代へ、神の時代から科学の時代への移行期", "items": [{"sec": "哲学", "q": "経験論", "a": "フランシス＝ベーコン"}, {"sec": "哲学", "q": "『方法序説』合理論", "a": "デカルト"}, {"sec": "哲学", "q": "パスカル", "a": "『瞑想録』"}, {"sec": "哲学", "q": "『純粋理性批判』観念論", "a": "カント"}, {"sec": "啓蒙思想", "q": "ヴォルテール", "a": "『哲学書簡』"}, {"sec": "啓蒙思想", "q": "ディドロ", "a": "『百科全書』"}, {"sec": "自然科学", "q": "万有引力", "a": "ニュートン"}, {"sec": "自然科学", "q": "植物の分類", "a": "リンネ"}, {"sec": "自然科学", "q": "血液の循環", "a": "ハーヴェー"}, {"sec": "自然科学", "q": "質量保存の法則", "a": "ラヴォワジェ"}, {"sec": "文学", "q": "古典喜劇", "a": "モリエール"}, {"sec": "文学", "q": "デフォー", "a": "『ロビンソン・クルーソー』"}, {"sec": "文学", "q": "ミルトン", "a": "『失楽園』"}, {"sec": "文学", "q": "スウィフト", "a": "『ガリバー旅行記』"}, {"sec": "建築", "q": "ルイ14世の宮殿", "a": "ヴェルサイユ宮殿"}, {"sec": "建築", "q": "フリードリヒ2世の宮殿", "a": "サン＝スーシ宮殿"}, {"sec": "政治思想", "q": "王権神授説", "a": "ボシュエ"}, {"sec": "政治思想", "q": "グロティウス", "a": "『戦争と平和の法』"}, {"sec": "政治思想", "q": "ホッブズ", "a": "『リヴァイアサン』"}, {"sec": "政治思想", "q": "モンテスキュー", "a": "『法の精神』"}, {"sec": "政治思想", "q": "ロック", "a": "『市民政府二論』"}, {"sec": "政治思想", "q": "ルソー", "a": "『社会契約論』"}, {"sec": "経済思想", "q": "重商主義", "a": "コルベール"}, {"sec": "経済思想", "q": "古典派経済学", "a": "アダム＝スミス"}, {"sec": "音楽", "q": "音楽の父", "a": "バッハ"}, {"sec": "音楽", "q": "ヘンデル", "a": "「水上の音楽」"}, {"sec": "音楽", "q": "交響曲の父", "a": "ハイドン"}, {"sec": "音楽", "q": "モーツァルト", "a": "『フィガロの結婚』"}, {"sec": "美術", "q": "トレドで活躍", "a": "エル＝グレコ"}, {"sec": "美術", "q": "ベラスケス", "a": "「ラス・メニーナス」"}, {"sec": "美術", "q": "フランドル派", "a": "ルーベンス"}, {"sec": "美術", "q": "レンブラント", "a": "「夜警」"}, {"sec": "美術", "q": "ロココ美術の代表", "a": "ワトー"}]}, {"title": "第6章／19世紀のヨーロッパ文化", "sub": "文化の多様性と科学技術のさらなる発展", "items": [{"sec": "哲学", "q": "弁証法哲学", "a": "ヘーゲル"}, {"sec": "哲学", "q": "功利主義", "a": "ベンサム"}, {"sec": "哲学", "q": "実証主義哲学", "a": "コント"}, {"sec": "哲学", "q": "「超人」思想", "a": "ニーチェ"}, {"sec": "自然科学", "q": "エネルギー保存の法則", "a": "マイヤー"}, {"sec": "自然科学", "q": "ラジウム発見", "a": "キュリー夫妻"}, {"sec": "自然科学", "q": "遺伝の法則", "a": "メンデル"}, {"sec": "自然科学", "q": "X線発見", "a": "レントゲン"}, {"sec": "自然科学", "q": "ダーウィン（進化論）", "a": "『種の起源』"}, {"sec": "自然科学", "q": "ダイナマイト", "a": "ノーベル"}, {"sec": "古典主義", "q": "文学：ゲーテ", "a": "『ファウスト』"}, {"sec": "古典主義", "q": "絵画：アングル", "a": "「泉」"}, {"sec": "ロマン主義", "q": "文学：ユゴー", "a": "『レ＝ミゼラブル』"}, {"sec": "ロマン主義", "q": "文学：ハイネ", "a": "『歌の本』"}, {"sec": "ロマン主義", "q": "文学：ロマン派詩人の代表", "a": "バイロン"}, {"sec": "ロマン主義", "q": "絵画：ドラクロワ", "a": "『民衆を導く自由の女神』"}, {"sec": "経済思想", "q": "マルサス", "a": "『人口論』"}, {"sec": "経済思想", "q": "歴史学派経済学", "a": "リスト"}, {"sec": "社会主義思想", "q": "労働条件の改善", "a": "オーウェン"}, {"sec": "社会主義思想", "q": "無政府主義", "a": "プルードン"}, {"sec": "社会主義思想", "q": "マルクス", "a": "『資本論』"}, {"sec": "社会主義思想", "q": "エンゲルス", "a": "『空想から科学へ』"}, {"sec": "発明", "q": "飛行機", "a": "ライト兄弟"}, {"sec": "発明", "q": "電灯・蓄音機", "a": "エディソン"}, {"sec": "写実主義", "q": "文学：スタンダール", "a": "『赤と黒』"}, {"sec": "写実主義", "q": "文学：バルザック", "a": "『人間喜劇』"}, {"sec": "自然主義", "q": "文学：ドストエフスキー", "a": "『罪と罰』"}, {"sec": "自然主義", "q": "絵画：ミレー", "a": "『落穂拾い』"}, {"sec": "印象派", "q": "モネ", "a": "「印象・日の出」"}, {"sec": "後期印象派", "q": "ゴッホ", "a": "「ひまわり」"}]}, {"title": "第9章／文学革命", "sub": "儒教批判と口語による文学運動", "items": [{"sec": "雑誌", "q": "陳独秀", "a": "『新青年』"}, {"sec": "小説", "q": "魯迅（2つ）", "a": "『狂人日記』『阿Q正伝』"}]}, {"title": "第7章・第10章／20世紀の文化", "sub": "メディアの発達による大衆文化、科学の飛躍的な発展", "items": [{"sec": "哲学", "q": "実存哲学（フランス）", "a": "サルトル"}, {"sec": "哲学", "q": "実存哲学（ドイツ）", "a": "ヤスパース"}, {"sec": "哲学", "q": "プラグマティズム", "a": "デューイ"}, {"sec": "文学", "q": "ロマン＝ロラン", "a": "『ジャン・クリストフ』"}, {"sec": "文学", "q": "イギリスの劇作家", "a": "バーナード＝ショー"}, {"sec": "文学", "q": "カフカ", "a": "『変身』"}, {"sec": "文学", "q": "トーマス＝マン", "a": "『魔の山』"}, {"sec": "文学", "q": "ヘミングウェー", "a": "『武器よさらば』"}, {"sec": "文学", "q": "スタインベック", "a": "『怒りの葡萄』"}, {"sec": "建築", "q": "サグラダ＝ファミリア", "a": "ガウディ"}, {"sec": "経済学", "q": "近代経済学の確立", "a": "ケインズ"}, {"sec": "経済学", "q": "マックス＝ヴェーバー", "a": "『プロテスタンティズムの倫理と資本主義の精神』"}, {"sec": "心理学", "q": "精神分析学", "a": "フロイト"}, {"sec": "自然科学", "q": "相対性理論", "a": "アインシュタイン"}, {"sec": "美術", "q": "野獣派", "a": "マティス"}, {"sec": "美術", "q": "ピカソ", "a": "「ゲルニカ」"}, {"sec": "美術", "q": "ダリ", "a": "「内乱の予感」"}]}], "years": [{"y": "1万年前", "e": "地球が温暖化"}, {"y": "前5000頃", "e": "仰韶文化の成立"}, {"y": "前3000頃", "e": "エーゲ文明の誕生"}, {"y": "前2700頃", "e": "シュメールの都市国家誕生・エジプト古王国開始"}, {"y": "前2600頃", "e": "インダス文明で都市文明が栄える"}, {"y": "前770", "e": "春秋時代の開始"}, {"y": "前586", "e": "バビロン捕囚"}, {"y": "前500頃", "e": "仏教の成立"}, {"y": "前500", "e": "ペルシア戦争の開始"}, {"y": "前403", "e": "戦国時代の開始"}, {"y": "前334", "e": "アレクサンドロスの東方遠征開始"}, {"y": "前221", "e": "始皇帝の中国統一"}, {"y": "前218", "e": "第2回ポエニ戦争"}, {"y": "前202", "e": "前漢の成立"}, {"y": "前27", "e": "ローマの帝政の開始"}, {"y": "96〜180", "e": "五賢帝による統治"}, {"y": "220", "e": "三国時代始まる"}, {"y": "313", "e": "ミラノ勅令"}, {"y": "375", "e": "ゲルマン人の大移動"}, {"y": "395", "e": "ローマ帝国の東西分裂"}, {"y": "476", "e": "西ローマ帝国の滅亡"}, {"y": "581", "e": "隋王朝成立"}, {"y": "618", "e": "唐王朝成立"}, {"y": "622", "e": "ヒジュラ"}, {"y": "732", "e": "トゥール・ポワティエ間の戦い"}, {"y": "751", "e": "タラス河畔の戦い"}, {"y": "800", "e": "カール大帝の戴冠"}, {"y": "843、870", "e": "ヴェルダン条約・メルセン条約"}, {"y": "907", "e": "唐の滅亡"}, {"y": "962", "e": "オットー1世の戴冠"}, {"y": "1004", "e": "澶淵の盟"}, {"y": "1066", "e": "ノルマン朝の成立"}, {"y": "1077", "e": "カノッサの屈辱"}, {"y": "1096", "e": "第1回十字軍"}, {"y": "1126", "e": "靖康の変"}, {"y": "1189", "e": "第3回十字軍"}, {"y": "1215", "e": "マグナ＝カルタ"}, {"y": "1241", "e": "ワールシュタットの戦い"}, {"y": "1271", "e": "元の建国"}, {"y": "1303", "e": "アナーニ事件"}, {"y": "1339", "e": "百年戦争の開始"}, {"y": "1368", "e": "明の建国"}, {"y": "1402", "e": "アンカラの戦い"}, {"y": "1405", "e": "鄭和の大航海"}, {"y": "1453", "e": "コンスタンティノープル陥落・百年戦争終結"}, {"y": "1492", "e": "レコンキスタの完成・コロンブスの新大陸到達"}, {"y": "1517", "e": "九十五か条の論題"}, {"y": "1534", "e": "首長法の発布"}, {"y": "1555", "e": "アウクスブルクの和議"}, {"y": "1564", "e": "ジズヤを廃止"}, {"y": "1588", "e": "アルマダ海戦"}, {"y": "1598", "e": "ナントの王令"}, {"y": "1616", "e": "後金建国"}, {"y": "1648", "e": "ウエストファリア条約"}, {"y": "1689", "e": "ネルチンスク条約"}, {"y": "1701", "e": "スペイン継承戦争"}, {"y": "1740", "e": "オーストリア継承戦争"}, {"y": "1773", "e": "ボストン茶会事件"}, {"y": "1783", "e": "パリ条約"}, {"y": "1789", "e": "フランス革命勃発"}, {"y": "1804", "e": "ナポレオン皇帝就任"}, {"y": "1814", "e": "ウィーン会議"}, {"y": "1831", "e": "エジプト＝トルコ戦争"}, {"y": "1840", "e": "アヘン戦争"}, {"y": "1848", "e": "二月革命"}, {"y": "1853", "e": "クリミア戦争"}, {"y": "1861", "e": "南北戦争"}, {"y": "1870", "e": "プロイセン＝フランス戦争"}, {"y": "1877", "e": "インド帝国成立"}, {"y": "1899", "e": "南アフリカ戦争"}, {"y": "1908", "e": "青年トルコ革命"}, {"y": "1911", "e": "辛亥革命"}, {"y": "1914", "e": "第一次世界大戦"}, {"y": "1917", "e": "ロシア革命"}, {"y": "1919", "e": "パリ講和会議・ヴェルサイユ条約"}, {"y": "1922", "e": "トルコ革命"}, {"y": "1929", "e": "世界恐慌"}, {"y": "1930", "e": "塩の行進"}, {"y": "1939", "e": "第二次世界大戦"}, {"y": "1945", "e": "第二次世界大戦終結"}, {"y": "1947", "e": "パレスチナ分割案"}, {"y": "1950", "e": "朝鮮戦争"}, {"y": "1965", "e": "ベトナム戦争"}, {"y": "1991", "e": "ソ連解体"}]};
+let mode = "quiz";
+let POOL = [], set = [], idx = 0, score = 0, wrong = [], curTitle = "", revealed = false, answered = false;
+
+const $ = s => document.querySelector(s);
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+function buildMenu() {
+  const ch = $("#chaps");
+  const all = [];
+  DATA.chapters.forEach((c, i) => {
+    const d = document.createElement("div"); d.className = "row";
+    d.innerHTML = `<span>${c.title}</span><small>${c.items.length}問</small>`;
+    d.onclick = () => start(c.title, c.items.map(x => ({ sec: x.sec, q: x.q, a: x.a })), all.map(x => x.a));
+    ch.appendChild(d);
+    all.push(...c.items);
+  });
+  const d = document.createElement("div"); d.className = "row";
+  d.innerHTML = `<span><b>文化史 全範囲</b></span><small>${all.length}問</small>`;
+  d.onclick = () => start("文化史 全範囲", all.map(x => ({ sec: x.sec, q: x.q, a: x.a })), all.map(x => x.a));
+  ch.appendChild(d);
+
+  const yr = $("#years");
+  const fwd = DATA.years.map(x => ({ sec: "出来事→年号", q: x.e, a: x.y }));
+  const rev = DATA.years.map(x => ({ sec: "年号→出来事", q: x.y, a: x.e }));
+  [["出来事 → 年号", fwd], ["年号 → 出来事", rev]].forEach(([t, s]) => {
+    const r = document.createElement("div"); r.className = "row";
+    r.innerHTML = `<span>${t}</span><small>${s.length}問</small>`;
+    r.onclick = () => start(t, s, s.map(x => x.a));
+    yr.appendChild(r);
+  });
+}
+
+document.querySelectorAll("#mode button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#mode button").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); mode = b.dataset.m;
+});
+$("#home").onclick = goHome;
+function goHome() { $("#play").classList.add("hide"); $("#menu").classList.remove("hide"); $("#home").classList.add("hide"); $("#ttl").textContent = "世界史 文化史・年号"; }
+
+function start(title, items, pool) {
+  POOL = pool;
+  curTitle = title; $("#ttl").textContent = title;
+  $("#menu").classList.add("hide"); $("#play").classList.remove("hide"); $("#home").classList.remove("hide");
+  if (mode === "list") return showList(items);
+  set = shuffle(items.slice()); idx = 0; score = 0; wrong = [];
+  render();
+}
+
+function showList(items) {
+  $("#pnum").textContent = items.length + "問"; $("#pscore").textContent = ""; $("#pbar").style.width = "100%";
+  let hidden = false;
+  const st = $("#stage");
+  const draw = () => {
+    let h = `<div class="ctl"><button class="g" id="tog">${hidden ? "答えを表示" : "答えを隠す"}</button></div><div class="tbl">`;
+    let sec = null;
+    items.forEach(x => {
+      if (x.sec !== sec) { sec = x.sec; h += `<div class="s">${sec}</div>`; }
+      h += `<div class="i ${hidden ? "h" : ""}"><span>${x.q}</span><span>${x.a}</span></div>`;
+    });
+    st.innerHTML = h + "</div>";
+    document.querySelectorAll(".tbl .i").forEach(el => el.onclick = () => el.classList.toggle("h"));
+    $("#tog").onclick = () => { hidden = !hidden; draw(); };
+  };
+  draw();
+}
+
+function render() {
+  if (idx >= set.length) return finish();
+  const it = set[idx];
+  $("#pnum").textContent = `${idx + 1} / ${set.length}`;
+  $("#pscore").textContent = mode === "quiz" ? `正解 ${score}` : `覚えた ${score}`;
+  $("#pbar").style.width = (idx / set.length * 100) + "%";
+  revealed = false; answered = false;
+  let h = `<div class="q"><div class="sec">${it.sec}</div><div class="txt">${it.q}</div><div class="ans hide" id="ans">${it.a}</div></div>`;
+  if (mode === "quiz") {
+    const pool = shuffle(POOL.filter(a => a !== it.a).filter((v, i, a) => a.indexOf(v) === i)).slice(0, 3);
+    const opts = shuffle([it.a, ...pool]);
+    h += `<div class="opts">` + opts.map(o => `<button data-a="${o.replace(/"/g, "&quot;")}">${o}</button>`).join("") + `</div>`;
+    h += `<div class="ctl"><button id="next" class="g hide">次へ</button></div>`;
+  } else {
+    h += `<div class="ctl" id="c1"><button id="show">答えを見る</button></div>
+          <div class="ctl hide" id="c2"><button class="r" id="ng">まだ</button><button id="ok">覚えた</button></div>`;
+  }
+  $("#stage").innerHTML = h;
+  if (mode === "quiz") {
+    document.querySelectorAll(".opts button").forEach(b => b.onclick = () => {
+      if (answered) return; answered = true;
+      const ok = b.dataset.a === it.a;
+      document.querySelectorAll(".opts button").forEach(x => { if (x.dataset.a === it.a) x.classList.add("ok"); });
+      if (ok) score++; else { b.classList.add("ng"); wrong.push(it); }
+      $("#next").classList.remove("hide");
+      if (ok) setTimeout(() => { idx++; render(); }, 500);
+    });
+    $("#next").onclick = () => { idx++; render(); };
+  } else {
+    $("#show").onclick = () => { $("#ans").classList.remove("hide"); $("#c1").classList.add("hide"); $("#c2").classList.remove("hide"); };
+    $("#ok").onclick = () => { score++; idx++; render(); };
+    $("#ng").onclick = () => { wrong.push(it); idx++; render(); };
+  }
+}
+
+function finish() {
+  $("#pbar").style.width = "100%";
+  const n = set.length, pct = Math.round(score / n * 100);
+  let h = `<div class="res"><div class="big">${pct}%</div><div>${score} / ${n}</div></div>`;
+  h += `<div class="ctl">${wrong.length ? `<button class="r" id="retry">間違い${wrong.length}問を復習</button>` : ""}<button class="g" id="again">もう一度</button></div>`;
+  if (wrong.length) {
+    h += `<div class="wrong"><h2>間違えた問題</h2>` + wrong.map(x => `<div>${x.q}<br><b>${x.a}</b></div>`).join("") + `</div>`;
+  }
+  $("#stage").innerHTML = h;
+  const full = set.slice();
+  if (wrong.length) $("#retry").onclick = () => { set = shuffle(wrong.slice()); idx = 0; score = 0; wrong = []; render(); };
+  $("#again").onclick = () => { set = shuffle(full); idx = 0; score = 0; wrong = []; render(); };
+}
+
+buildMenu();
+</script>
+</body>
+</html>
