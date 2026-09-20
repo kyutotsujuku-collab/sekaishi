@@ -58,7 +58,27 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mapwrap{margin:8px 0 12px}
 .mapwrap svg{width:100%;height:auto;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px}
 .mapbtn{margin-top:8px}
-.mapwrap svg text,.mapwrap svg circle,.mapwrap svg polyline{pointer-events:none}
+.mapwrap svg text{pointer-events:none}
+.mapwrap svg .tap{cursor:pointer}
+.mapwrap svg .tapt{pointer-events:auto;cursor:pointer}
+.mapwrap svg .sel{filter:drop-shadow(0 0 2px #000)}
+.mapwrap svg .sel.area,.mapwrap svg .sel.mark{fill-opacity:.65;stroke-width:2.6}
+.mapwrap svg .sel.city{r:4.5}
+.mapinfo{margin-top:6px;border:1px solid var(--line);border-radius:10px;background:var(--card);padding:8px 10px;font-size:13.5px;line-height:1.55}
+.mapinfo .hint{color:var(--sub);font-size:12px}
+.mapinfo h4{margin:0 0 2px;font-size:15px}
+.mapinfo .yr{color:var(--sub);font-size:12px;margin-left:6px;font-weight:400}
+.mapinfo .body{margin:4px 0 6px}
+.mapinfo .yoko{background:var(--bg);border-left:3px solid var(--accent);border-radius:6px;padding:6px 8px;margin:6px 0;font-size:13px}
+.mapinfo .yoko b{color:var(--accent)}
+.mapinfo .yoko div{padding:1px 0 1px 1em;text-indent:-1em}
+.mapinfo .src{color:var(--sub);font-size:11.5px;margin-top:4px}
+.mapinfo .rel{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.mapinfo .rel button{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:3px 9px;font-size:12px}
+.mapinfo .rel button.q{border-color:var(--accent);color:var(--accent)}
+.mapinfo .qlist{margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+.mapinfo .qitem{font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line);white-space:pre-wrap}
+.mapinfo .qitem b{color:var(--ok)}
 .rtag{font-size:11px;color:#fff;border-radius:4px;padding:0 5px;margin-right:4px;white-space:nowrap}
 /* quiz */
 .q{font-size:16px;font-weight:600;margin:10px 0 12px;white-space:pre-wrap}
@@ -95,7 +115,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v12</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v13</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -773,41 +793,142 @@ const ROUTES = {
  '絹の道':{c:'C',pts:[[108.9,34.3],[103,36],[98,39],[94.7,40.1],[90,41],[84,42],[76,39.5],[70,40],[67,39.7],[62,37.7],[58,36.5],[52,36],[47,34],[44,33],[40,36],[36.2,36.2]]},
  '海の道':{c:'S',pts:[[33,29],[40,17],[45,12],[52,14],[60,22],[66,24],[72,19],[76,9],[80,7],[85,15],[90,21],[97,16],[98,8],[103,1],[104,8],[108,12],[110,20],[114,22],[120,27]]},
 };
-// 勢力の短い説明（本の記述ベース）
+// 地図タップ時の説明（本の記述ベース）。n:名称 y:年代 b:本文 yoko:同時代のヨコ src:出典 rel:関連項目
 const INFO = {
- assyria:'前7世紀、鉄製の武器を用いてオリエントを統一。歴史上初めて多数の民族を支配した「帝国」（『同時に学べ』p.13）',
- zhou:'前770年、犬戎の侵入で都を鎬京から洛邑へ。以後、諸侯が群雄割拠する春秋・戦国時代（『ヨコから見る』p.14）',
- achaemenid:'前6〜前5世紀の「初の世界帝国」。サトラップ制で20の州を統治。ペルシア戦争でギリシアに侵攻するも撃退される（『同時に学べ』p.14）',
- greece:'ポリスの世界。ペルシア戦争に勝利し、アテネはデロス同盟の盟主として繁栄。ソクラテスらの哲学（『ヨコから見る』LESSON2）',
- alexander:'前334〜前324年の東方遠征でアケメネス朝を滅ぼし、ギリシアからインド北西まで支配。東西融合政策→ヘレニズム文化（『同時に学べ』p.15）',
- maurya:'アレクサンドロスの遠征に刺激されチャンドラグプタが建てたインド最初の統一王朝。アショーカ王が仏教を保護（『ヨコから見る』p.28）',
- qin:'春秋・戦国の混乱を収拾し、始皇帝が前221年に初めて中国を統一。郡県制。わずか15年で滅ぶ（『ヨコから見る』p.36）',
- xiongnu:'モンゴル高原の遊牧国家。冒頓単于のもとで強大化し、前漢を圧迫。武帝が巻き返す（『ヨコから見る』p.37）',
- rome_bc1:'ポエニ戦争でカルタゴを破り地中海の覇者に。まだ皇帝の存在しない共和政（『同時に学べ』p.16）',
- ptolemy:'アレクサンドロスの死後に分立したヘレニズム国家。アレクサンドリアを中心に繁栄、のちクレオパトラ（『ヨコから見る』p.35）',
- parthia:'セレウコス朝から自立したイラン系国家。ローマと敵対し、前漢と交易（『ヨコから見る』p.32）',
- hanwu:'武帝（前141〜）が匈奴を討ち、河西四郡・南越・楽浪郡を設置。張騫を大月氏へ派遣（『ヨコから見る』p.37）',
- carthage:'フェニキア人ティルスの植民市。「地中海の女王」。ポエニ戦争でローマに滅ぼされる（前146）（『ヨコから見る』p.32）',
+ // ---- 勢力（塗り） ----
+ assyria:{n:'アッシリア',y:'前7世紀',b:'鉄製の武器を用い、強大な軍事力をほこったアッシリアが前7世紀にオリエントを統一。歴史上初めて多数の民族を支配することになったことから「帝国」の名をつけて呼ばれる。',
+  yoko:['中国：周王朝が殷にとってかわり（前11世紀）、前8世紀には内部対立で弱体化→春秋時代の戦乱期へ','日本：縄文時代の最末期。前8世紀ごろから九州北部で水田による米づくりが始まる','ギリシア：前8〜前6世紀、人口増加による土地不足などから海外へ植民活動'],
+  src:'『同時に学べ』p.13／『ヨコから見る』p.16',rel:['zhou','phoenicia','greeks','iron']},
+ zhou:{kw:['春秋','戦国','周王朝','周の'],n:'周（春秋・戦国時代）',y:'前770〜前221年',b:'前770年、西方の遊牧民の犬戎の侵入によって周王朝は都を鎬京から洛邑へ移す。この事件から諸侯が群雄割拠する春秋・戦国時代となり、政治的激動期ながら社会・経済にも大きな変化が生まれた。戦国時代初期までに鉄製農具・牛耕農法が普及し、農業生産が飛躍的に向上。青銅貨幣（刀・布・円・蟻鼻銭）の使用、製鉄・製塩業、大都市の発展、諸子百家の出現。',
+  yoko:['前6〜前5世紀、インド・中国ともに鉄器が普及し商工業・貨幣経済が著しく発展した（ヨコの鉄則）','中国・インドは鉄器普及による農業生産の向上、ギリシアは広範囲な貿易活動により社会が動いた','孔子（前551頃〜前479）とギリシアのソクラテス（前470頃〜前399）はほぼ同時代'],
+  src:'『ヨコから見る』p.14〜17／『同時に学べ』p.13〜14',rel:['luoyi','haojing','confucius','greece']},
+ achaemenid:{n:'アケメネス朝ペルシア',y:'前550〜前330年',b:'紀元前6世紀から前5世紀の地図では、多くの民族を服属させた「初の世界帝国」ともいわれるアケメネス朝ペルシア帝国の存在感が際立つ。全国を20の州に分け、中央から非世襲のサトラップ（知事）を派遣。各州に「王の目」「王の耳」（監察官）を派遣して監視し、「王の道」を整備。各民族の宗教・言語・法律・習慣には干渉せず寛大だった。ダレイオス1世が代表的な王。前5世紀前半、数度にわたってギリシアに侵攻するも撃退される（ペルシア戦争）。前330年、アレクサンドロスにより滅亡。',
+  yoko:['秦の郡県制はアケメネス朝のサトラップ制と「またまた似ている」（『ヨコから見る』p.36 比較表）','ギリシアはポリス社会・民主政の完成期。強力な中央集権体制のペルシアと、タイプの違う二つの世界が地中海の支配をめぐって衝突（ペルシア戦争）','前7〜前6世紀にかけてイランではゾロアスター教、イスラエルではユダヤ教、インドでは仏教が成立'],
+  src:'『同時に学べ』p.14／『ヨコから見る』p.25・36〜37',rel:['susa','persepolis','sardes','王の道','ペルシア戦争','greece','qin']},
+ greece:{n:'ギリシア（ポリス）',y:'前8〜前4世紀',b:'前8〜前6世紀頃、人口増加による土地不足や貴族間の政治抗争から海外への植民活動が活発化（ビザンティオン、ネアポリス、マッサリアなど）。前7世紀には小アジアのリディアから鋳造貨幣が入り、商業・貿易が非常に発展した。前6〜前5世紀にはポリス社会が完成し、アテネなどで民主政が完成。経済的な豊かさの中でソクラテス・プラトン・アリストテレスの三大哲学者が生まれた。',
+  yoko:['中国・インドは農業生産の向上により、ギリシアは広範囲な貿易活動により社会が動いた（ヨコの鉄則）','ペルシア戦争（前490マラトン・前480サラミスなど）に勝利→地中海の支配権がフェニキア人からギリシア人へ移り、アテネはデロス同盟の盟主として繁栄','ソクラテス（前470頃〜前399）と中国の孔子（前551頃〜前479）が同時代に活動'],
+  src:'『ヨコから見る』p.16〜17・25〜27／『同時に学べ』p.14',rel:['athens','socrates','ペルシア戦争','achaemenid','greeks']},
+ alexander:{n:'アレクサンドロスの帝国',y:'前334〜前323年',b:'マケドニアのフィリッポス2世がコリントス（ヘラス）同盟でギリシア世界をまとめ、ペルシアへの復讐戦を決意するが暗殺され、子のアレクサンドロスが20歳で即位。前334年に東方遠征を開始し、前333年イッソスの戦い、前331年アルベラの戦いでダレイオス3世を破り、前330年アケメネス朝を滅ぼす。帝国はギリシアからインドの北西にまで及んだ。コイネー（共通ギリシア語）の普及、ギリシア人の東方移住とペルシア人との通婚奨励、ペルシアの伝統尊重という東西融合政策を行い、ヘレニズム文化が生まれる。33歳で急死し、帝国は分裂。',
+  yoko:['インド：遠征に刺激され、チャンドラグプタがインド初の統一王朝マウリヤ朝を建てる（前317頃）','中国：春秋時代から戦国時代（前403〜前221）へ。それから始皇帝の秦に移行','ヘレニズム文化はインドのガンダーラ美術に影響、ストア派の哲学はローマ時代に流行'],
+  src:'『同時に学べ』p.15／『ヨコから見る』p.24〜27',rel:['pella','alexandria','東方遠征','maurya','ptolemy','achaemenid']},
+ maurya:{n:'マウリヤ朝',y:'前317頃〜前180年頃',b:'アケメネス朝を滅ぼしたアレクサンドロス大王はその矛先をインドに替え、パンジャーブ地方を平定。これに対してインド側でも統一の機運が芽生え、チャンドラグプタがギリシア軍を追い、インド最初の統一王朝マウリヤ朝を建設した。のちにセレウコス朝と和を結び、使者メガステネスが『インド誌』を著す。第3代アショーカ王（位前268頃〜前232頃）の時代に最盛期。仏教に深く帰依し、各地に石柱碑・磨崖碑を建て、第3回仏典結集を行い、セイロン島（スリランカ）に上座部仏教を布教した。王の死後まもなく崩壊。',
+  yoko:['アレクサンドロスの遠征がマウリヤ朝成立のきっかけ（ヨコの鉄則）','ヘレニズム文化はインドのガンダーラ美術に影響','同じ前3世紀、中国では秦が統一（前221）、地中海ではポエニ戦争（前264〜）'],
+  src:'『ヨコから見る』p.25・28／『同時に学べ』p.15',rel:['pataliputra','alexander','buddhism','qin']},
+ qin:{kw:['秦'],n:'秦',y:'前221〜前206年',b:'春秋・戦国時代（前770〜前221）の混乱を収拾して初めて統一王朝を樹立したのが秦の始皇帝。法家の李斯を丞相として用い、さまざまな改革を行った。その代表が郡県制（全国を36郡に分け、その下に県を置き、中央から非世襲の官僚を派遣する中央集権制）。首都は咸陽、「馳道」を整備。法家に基づく厳しい支配、焚書・坑儒。改革を急ぎすぎたため、わずか15年で滅亡。',
+  yoko:['秦の郡県制とアケメネス朝ペルシアのサトラップ制の比較は大学入試の定番（『ヨコから見る』p.36〜37 比較表）','地中海でポエニ戦争が始まった頃（前264）、中国は戦国時代→前221に秦が統一','マウリヤ朝もほぼ同時期（前3世紀）のインド初の統一王朝'],
+  src:'『ヨコから見る』p.36〜37／『同時に学べ』p.15',rel:['xianyang','achaemenid','maurya','hanwu']},
+ xiongnu:{n:'匈奴',y:'前3〜前1世紀',b:'北方モンゴル高原の遊牧民。前漢の建国者・劉邦の時代、冒頓単于（位前209〜前174）のもとで全盛期を迎え、白登山（平城）の戦いで劉邦を破る。以後前漢は和親政策をとり、当初は事実上の属国のような存在だった。7代目の武帝が強烈な巻き返しを行い、前129年に衛青・霍去病が匈奴を討伐、匈奴をゴビ砂漠の北に追う。将軍李陵が匈奴に投降し、これを弁護した司馬遷が宮刑となった話も有名。',
+  yoko:['匈奴と前漢の抗争は「東西交易路（絹の道）の支配をめぐる抗争」（『ヨコから見る』まとめ）','西では同じ頃ローマがカルタゴと地中海の覇権を争う。東西で「二つの世界帝国」が並び立つ'],
+  src:'『ヨコから見る』p.33・37〜38／『同時に学べ』p.16',rel:['hanwu','匈奴の圧迫','絹の道','大月氏']},
+ rome_bc1:{kw:['ローマ'],n:'共和政ローマ',y:'前2〜前1世紀',b:'この時代のローマは、まだ皇帝が存在しない「共和政」の段階。イタリアはギリシアと違って耕作地が広く、農業が栄える条件は十分にあり、中小土地所有農民の重装歩兵が政治の軸となる地味な農業国家だった。分割統治によりイタリア半島全土を支配したのち、フェニキア人の都市カルタゴと3度にわたるポエニ戦争（前264〜前146）を戦い、北アフリカを中心に地中海に大きな勢力をほこるカルタゴを破って西地中海の制海権を得た。前146年にはコリントス、前133年ペルガモン王国、前64年シリア、前30年エジプトも滅ぼし、地中海を「われらの海」と呼ぶようになる。',
+  yoko:['前202年 ザマの戦い（ハンニバル敗北）は、劉邦が前漢を建てたのと同年','前146年 カルタゴ滅亡の直後、前141年に前漢の武帝が即位','ローマとパルティアは敵対、パルティアは前漢と交易（ローマ⇄パルティア⇄前漢）'],
+  src:'『同時に学べ』p.16／『ヨコから見る』p.32〜35',rel:['rome','carthage','ポエニ戦争','parthia','hanwu']},
+ ptolemy:{n:'プトレマイオス朝エジプト',y:'〜前30年',b:'アレクサンドロス大王の死後、帝国は前301年のイプソスの戦いののち3つのヘレニズム国家に分裂した。そのひとつプトレマイオス朝エジプトは、アレクサンドリアを中心に東地中海の覇権を握り、最大の繁栄を誇った。学芸・文化の中心としてムセイオン（王立研究所）に専門の学者が集まり、自然科学が発展。のちクレオパトラが出て、前30年にローマにより滅亡。',
+  yoko:['他のヘレニズム国家：アンティゴノス朝マケドニア（経済の発展からとり残され最も後進国）、セレウコス朝シリア（ギリシア文化をアジアに伝える「ヨコの関係」で最重要）','ローマの地中海制圧の最終段階でエジプトが滅び、地中海世界が成立'],
+  src:'『ヨコから見る』p.28・35',rel:['alexandria','alexander','rome_bc1']},
+ parthia:{n:'パルティア',y:'前3〜前1世紀',b:'セレウコス朝シリアから自立したイラン系の国家（ギリシア系のバクトリアとともに自立）。セレウコス朝は弱体化し、前64年にローマに滅ぼされる。パルティアはローマと敵対する一方、前漢と交易を行い、東西の二つの世界帝国を結ぶ位置にあった。',
+  yoko:['「ローマ（共和政時代）⇄敵対⇄パルティア⇄交易⇄前漢」（『ヨコから見る』LESSON3 時代概観図）','張騫の派遣以後、西域経営が本格化して東西交渉が活発になる（前121年頃〜）'],
+  src:'『ヨコから見る』p.32〜33・35',rel:['rome_bc1','hanwu','絹の道','antioch']},
+ hanwu:{kw:['前漢','武帝'],n:'前漢（武帝）',y:'前202〜／武帝 位前141〜前87',b:'前漢の建国者は農民出身の劉邦（高祖）。前202年に成立（ザマの戦いと同年）。当初は匈奴に圧迫されて事実上の属国のような存在だったが、前154年の呉楚七国の乱を鎮圧して最盛期を迎え、7代目の武帝が対外遠征を行う。①前139年 張騫を大月氏国に派遣（挟み討ちは失敗するが西域の情報が入る）②前129年 衛青・霍去病の匈奴討伐③前121年頃 西域に河西四郡（敦煌・武威・張掖・酒泉）を設置→西域経営が本格化④前111年 南越に遠征→9郡⑤前108年 朝鮮に遠征→楽浪など4郡を設置。前102年には李広利が大宛から汗血馬を持ち帰った。この時代の日本は「倭」と呼ばれ、前漢に使者を送る者がいたことが『漢書』に記される。',
+  yoko:['武帝の即位（前141）は、ローマがカルタゴを滅ぼした前146年の直後','中国では秦が中国を初めて統一→前漢で最盛期。西ではポエニ戦争の結果ローマが農業国家から商業国家へ','日本の「倭」が前漢に使者を送る（『漢書』）'],
+  src:'『ヨコから見る』p.33・37〜39／『同時に学べ』p.16',rel:['changan','dunhuang','xiongnu','大月氏','大宛','絹の道','海の道','yayoi']},
+ carthage:{n:'カルタゴ',y:'〜前146年',b:'フェニキア人（ティルス）の植民都市で、"地中海の女王"と呼ばれ、空前の繁栄を誇っていた。農業国家から商業国家への変貌を図るローマは地中海の制海権をめぐってカルタゴと衝突し、3度にわたるポエニ戦争（前264〜前146）となる。第2次ではハンニバルがアルプスを越えてイタリアに侵入し前216年カンナエの戦いでローマ軍を包囲殲滅するが、前202年ザマの戦いでローマ軍に敗北。第3次で小スキピオがカルタゴを徹底的に滅ぼした（前146）。',
+  yoko:['前202年 ザマの戦いは劉邦が前漢を建てたのと同年','前146年 カルタゴ滅亡→前141年 武帝即位（『ヨコから見る』p.33）','フェニキア人はギリシア人のライバルとして地中海各地に植民市を建設し、アケメネス朝ペルシアがその商業活動を保護していた'],
+  src:'『ヨコから見る』p.27・32〜35',rel:['ポエニ戦争','rome_bc1','phoenicia','tyre']},
+ // ---- 楕円マーク ----
+ greeks:{kw:['植民'],n:'ギリシア人',y:'前8〜前6世紀',b:'前8〜前6世紀頃、ギリシア世界では人口増加による土地不足や貴族間の政治抗争から海外への植民活動が活発化。東は黒海沿岸から西はフランス南部に至る広範囲にビザンティオン（現イスタンブル）・ネアポリス（現ナポリ）・マッサリア（現マルセイユ）などを建設。ギリシアは土地がやせていて経済基盤が弱かったため、商業活動によって貿易しやすい海港植民市が多くなった。',
+  yoko:['同じ頃、中国では周が春秋時代に入り（前770〜）、インドではアーリヤ人がガンジス川流域に進出（前1000年頃）・鉄器使用（前800年頃）'],
+  src:'『ヨコから見る』p.16〜17／『同時に学べ』p.13',rel:['greece','phoenicia','athens']},
+ phoenicia:{kw:['フェニキア'],n:'フェニキア人',y:'前10〜前5世紀',b:'セム系で、シドン・ティルスなどの都市国家を中心に海に進出した（当時なんと中南米まで行った可能性もある）。彼らはフェニキア文字（アルファベット）をギリシアに伝えた。ギリシア人と同じく地中海沿岸に植民市を数多く建設し（カルタゴなど）、ギリシア人のライバルとして対立。その商業活動を保護していたのがアケメネス朝ペルシア。',
+  yoko:['ペルシア戦争のペルシア海軍の主体はフェニキア人。サラミスの海戦（前480）で敗れ、地中海の支配権はフェニキア人からギリシア人に移った（ヨコの鉄則）'],
+  src:'『ヨコから見る』p.21・26〜27',rel:['tyre','carthage','ペルシア戦争','greeks']},
+ jomon:{kw:['縄文'],n:'日本：縄文時代',y:'〜前8世紀',b:'この時代の日本は縄文時代の最末期にあたり、紀元前8世紀ごろから九州北部で水田による米づくりが始まる。',
+  yoko:['西ではアッシリアがオリエントを統一（前7世紀）、中国では周が春秋時代に入る（前770〜）'],src:'『同時に学べ』p.13',rel:['assyria','zhou']},
+ jomon_yayoi:{kw:['弥生','縄文'],n:'日本：縄文→弥生',y:'前5〜前4世紀',b:'日本では紀元前5世紀から4世紀ごろに水田での米づくりが東日本にまで広がり、農耕を特徴とする弥生文化が始まる。',
+  yoko:['同じ頃、ギリシアではソクラテス、中国では孔子など多くの哲学者・思想家が活動し、インドではガウタマ＝シッダールタが仏教を開いた'],src:'『同時に学べ』p.14',rel:['socrates','confucius','buddhism']},
+ yayoi:{kw:['弥生','倭'],n:'日本：弥生時代',y:'前3〜前1世紀',b:'弥生時代の日本は「倭」と呼ばれており、前漢に使者を送る者がいたということが前漢の歴史書『漢書』に記されている。',
+  yoko:['武帝が前108年に朝鮮に遠征し楽浪郡などを設置→倭は前漢とつながる','西では共和政ローマがカルタゴを破り地中海の覇者に'],src:'『同時に学べ』p.16／『ヨコから見る』p.37',rel:['hanwu','rome_bc1']},
+ rome_early:{kw:['ローマ'],n:'ローマ（共和政）',y:'前6〜前3世紀',b:'この頃のローマはまだ皇帝の存在しない共和政。イタリアはギリシアと違って耕作地が広く、中小土地所有農民の重装歩兵が政治の軸となる、地味な農業国家だった。ギリシア都市もローマの傘下に入り、分割統治によりイタリア半島全土を支配した（ローマの植民市は内陸が中心：ルテティア＝現パリ、ウィンドボナ＝現ウィーン、ロンディニウム＝現ロンドン）。',
+  yoko:['ギリシアの植民市は海岸が中心、ローマの植民市は内陸が中心（『ヨコから見る』p.17 比較）','ポエニ戦争が始まった頃（前264）、中国は戦国時代、インドはマウリヤ朝'],
+  src:'『ヨコから見る』p.17・32〜34／『同時に学べ』p.14〜15',rel:['rome','rome_bc1','carthage']},
+ buddhism:{kw:['仏教','ガウタマ','シッダールタ'],n:'仏教の創始',y:'前6〜前5世紀',b:'アーリヤ人がガンジス川流域に進出し（前1000年頃）、鉄器の使用（前800年頃）により農業生産は飛躍的に向上、商工業も発展した。マガダ国やコーサラ国が統一をうかがう中、商業の発展の波に乗ってクシャトリヤ（武士）やヴァイシャ（農民・牧畜民・商人）が力をつけ、バラモン（司祭）を頂点とするバラモン教に不満を抱く。この背景で、古い身分制を否定する新宗教として仏教（ガウタマ＝シッダールタ、前563頃〜前483頃）とジャイナ教（ヴァルダマーナ）が生まれた。仏教は民族・人種を超えた普遍性ゆえに東南アジア・中国・朝鮮・日本へ拡大。ジャイナ教は商人の中に信者が多い。',
+  yoko:['前6〜前5世紀、インド・中国ともに鉄器が普及し、商工業・貨幣経済が著しく発展した','前7〜前6世紀にかけてイランではゾロアスター教、イスラエルではユダヤ教、インドでは仏教が成立（ヨコの鉄則）','三大哲学者・仏教・諸子百家が同時に現れた共通の背景は、商工業の発展と平民層の台頭'],
+  src:'『ヨコから見る』p.16〜19／『同時に学べ』p.14',rel:['ガンジス川','maurya','socrates','confucius']},
+ 大月氏:{n:'大月氏',y:'前2世紀',b:'民族不明。イラン系の大夏（トハラ）を追ってこの地に移住し、東西交易路を支配して繁栄した。前139年、武帝は匈奴を挟み討ちにするため張騫を大月氏国に派遣。同盟の画策は失敗するが、西域の情報が入ることになった。',
+  yoko:['張騫の派遣→西域経営の本格化→東西交渉が活発化（絹の道）'],src:'『ヨコから見る』p.37・39',rel:['hanwu','絹の道','大宛']},
+ 大宛:{n:'大宛（フェルガナ）',y:'前2世紀',b:'中央アジアのシル川上流にあった国。伝説の名馬「汗血馬（血の汗を流す馬）」を産した（この馬は単に寄生虫がついて血を流していただけともいわれる）。前104年の遠征には失敗したが、前102年に李広利が大宛から汗血馬を持ち帰った。',
+  yoko:['武帝の対外遠征のひとつ。匈奴・西域・南越・朝鮮への遠征と並ぶ'],src:'『ヨコから見る』p.37・39',rel:['hanwu','大月氏']},
+ // ---- 都市 ----
+ rome:{kw:['ローマ'],n:'ローマ',y:'共和政',b:'イタリア半島の都市国家。地味な農業国家から出発し、分割統治で半島全土を支配、ポエニ戦争で地中海の覇者に。まだ皇帝はいない共和政の時代。',src:'『ヨコから見る』p.32〜34／『同時に学べ』p.16',rel:['rome_bc1','rome_early','ポエニ戦争']},
+ athens:{n:'アテネ',y:'前5世紀に全盛',b:'ポリス社会の中心。前6〜前5世紀に民主政が完成。ペルシア戦争ではマラトンの戦い（前490）で重装歩兵が、サラミスの海戦（前480）で海軍がペルシアを破り、戦後はデロス同盟（前478年頃結成、参加都市200）の盟主として繁栄。ソクラテス（"無知の知"）、その弟子プラトン（イデア論・哲人政治、教育機関アカデメイア）、その弟子アリストテレス（あらゆる分野に功績、アレクサンドロスの家庭教師）を生む。',
+  yoko:['プラトンの哲人政治は、ほぼ同じ時代に生きた孟子の王道政治とも似ている（『ヨコから見る』p.17）'],src:'『ヨコから見る』p.17・26〜27',rel:['greece','socrates','ペルシア戦争']},
+ c_carthage:{n:'カルタゴ（都市）',y:'〜前146年',b:'フェニキア人ティルスの植民市。"地中海の女王"。ポエニ戦争で前146年にローマに滅ぼされる。',src:'『ヨコから見る』p.29・35',rel:['carthage','ポエニ戦争']},
+ alexandria:{n:'アレクサンドリア',y:'ヘレニズム時代',b:'プトレマイオス朝エジプトの中心。エジプトのムセイオン（王立研究所）にはあらゆる専門の学者が集まり、自然科学が急激な発展を遂げた（アリスタルコス…太陽中心説、アルキメデス…円周率の計算・てこの原理、エウクレイデス…平面幾何学、エラトステネス…地球の子午線を測定）。前133年に小アジアで商業・文化の中心として栄えたペルガモン王国には、アレクサンドリアに匹敵する図書館があった。',
+  yoko:['ヘレニズム文化の特徴は世界市民主義（コスモポリタニズム）と個人主義。ストア派はのちのローマ帝国で歓迎される'],src:'『ヨコから見る』p.28・35',rel:['ptolemy','alexander']},
+ babylon:{n:'バビロン',y:'',b:'メソポタミアの都市。（補助：スタサプ）アケメネス朝の領域内にあり、アレクサンドロスの東方遠征の進路上にあたる。',src:'補助：スタサプ',rel:['achaemenid','alexander']},
+ susa:{n:'スサ',y:'アケメネス朝',b:'アケメネス朝ペルシアの首都。ここから小アジアのサルデスまで「王の道」が整備された。',src:'『ヨコから見る』p.37',rel:['achaemenid','王の道','sardes']},
+ persepolis:{n:'ペルセポリス',y:'アケメネス朝',b:'（補助：スタサプ）アケメネス朝の都のひとつ（都スサ→ペルセポリス）。',src:'補助：スタサプ',rel:['achaemenid','susa']},
+ sardes:{n:'サルデス',y:'前7世紀〜',b:'小アジアのリディア王国の首都（補助：スタサプ）。ギリシアが鋳造貨幣を学んだのは小アジアのリディア（『ヨコから見る』p.17・21）。アケメネス朝の「王の道」はスサからここまで。',src:'『ヨコから見る』p.17・21・37／補助：スタサプ',rel:['王の道','susa','greece']},
+ antioch:{n:'アンティオキア',y:'ヘレニズム時代',b:'セレウコス朝シリアの都。セレウコス朝はギリシア文化をアジアに伝えるという「ヨコの関係」では最も重要だが、イラン系のパルティア、ギリシア系のバクトリアが自立して弱体化し、前64年ローマにより滅亡。',src:'『ヨコから見る』p.35',rel:['parthia','alexander']},
+ pataliputra:{n:'パータリプトラ',y:'マウリヤ朝',b:'（補助：スタサプ）ガンジス川中流域にあるマウリヤ朝の首都。チャンドラグプタが前317年頃、ここを都として建国。',src:'補助：スタサプ／『ヨコから見る』p.28',rel:['maurya','ガンジス川']},
+ xianyang:{n:'咸陽',y:'秦',b:'秦（前221〜前206）の首都。始皇帝は咸陽から全国に幅約64mの「馳道」を整備した（約800km）。',src:'『ヨコから見る』p.37',rel:['qin']},
+ changan:{n:'長安',y:'前漢',b:'（補助：スタサプ）前漢の都。武帝の時代、ここから西域へ張騫が派遣され、河西四郡を経て絹の道が西へ続く。',src:'補助：スタサプ／『ヨコから見る』p.37',rel:['hanwu','絹の道']},
+ luoyi:{n:'洛邑',y:'前770年〜',b:'前770年、西方の遊牧民の犬戎の侵入によって周王朝が鎬京から都を移した先。これ以後が春秋・戦国時代。',src:'『ヨコから見る』p.14',rel:['zhou','haojing']},
+ haojing:{n:'鎬京',y:'〜前770年',b:'周の最初の都。前770年に犬戎の侵入で放棄され、都は洛邑へ。',src:'『ヨコから見る』p.14',rel:['zhou','luoyi']},
+ dunhuang:{n:'敦煌',y:'前121年頃〜',b:'武帝が前121年頃、西域に設置した河西四郡（敦煌・武威・張掖・酒泉）のうち最も西に位置する郡。東から武威→張掖→酒泉→敦煌の順。ここから西域経営が本格化し、東西交渉が活発化した。',src:'『ヨコから見る』p.37・39',rel:['hanwu','絹の道']},
+ tyre:{n:'ティルス',y:'前10世紀〜',b:'シドンとともにフェニキア人の都市国家の中心。カルタゴはティルスの植民市。',src:'『ヨコから見る』p.21・29',rel:['phoenicia','carthage']},
+ pella:{n:'ペラ',y:'前4世紀',b:'（補助：スタサプ）マケドニアの都。フィリッポス2世・アレクサンドロス大王の出身地マケドニアは、ポリスではなく王制だった。ここから前334年、東方遠征が始まる。',src:'『ヨコから見る』p.27／補助：スタサプ',rel:['alexander','東方遠征']},
+ // ---- 交易路・道 ----
+ '王の道':{n:'王の道',y:'アケメネス朝',b:'アケメネス朝ペルシアが整備した軍用道路。首都スサから小アジアのサルデスまで。秦の始皇帝の「馳道」（首都咸陽から約800km、幅は約64m）と比較される（『ヨコから見る』p.37 比較表）。',
+  yoko:['アケメネス朝：王の道・サトラップ制・王の目・王の耳 ⇔ 秦：馳道・郡県制・御史大夫と監（監察官）'],src:'『ヨコから見る』p.37',rel:['achaemenid','susa','sardes','qin']},
+ '絹の道':{kw:['絹の道','シルク','東西交易','オアシス'],n:'絹の道（シルク＝ロード／オアシス＝ロード）',y:'前3000年頃〜',b:'砂漠や険しい山脈の中にあるオアシスの住人たちは、周辺の農耕社会・遊牧社会との交易を開始し、隊商交易も徐々に大きな利益を生むようになった。この交易の利をめぐって、遊牧社会と中国農耕社会は何度も対立、戦争をくり返す。前漢の武帝は匈奴の補給路を断つべく河西四郡を設置した。3つのルートのうち「絹の道（オアシス＝ロード）」は砂漠のオアシス都市国家を結ぶルートで、非常に厳しいコースだが、東西を結ぶ最短コース。ほかに北の草原の道（ステップ＝ロード）、南の海の道（マリン＝ロード）。',
+  yoko:['匈奴 vs 武帝の抗争＝東西交易路の支配をめぐる抗争（『ヨコから見る』まとめ）','ローマ⇄パルティア⇄前漢の交易ルート'],src:'『ヨコから見る』p.38〜39',rel:['hanwu','xiongnu','parthia','dunhuang','海の道']},
+ '海の道':{n:'海の道（マリン＝ロード）',y:'',b:'東西交易路の3つのルートのひとつ。ローマ帝国、サータヴァーハナ朝、後漢などを結んだ。義浄（『南海寄帰内法伝』）などが使用。',src:'『ヨコから見る』p.39',rel:['絹の道','rome_bc1','hanwu']},
+ // ---- 矢印・事件 ----
+ 'ペルシア戦争':{n:'ペルシア戦争',y:'前500〜前449年',b:'原因：アケメネス朝ペルシアによるイオニア諸都市（ギリシア都市）の圧迫→反乱が発生→アテネがこれを支援。経過：前490年マラトンの戦い（アテネの重装歩兵がダレイオス1世のペルシア軍を破る）、前480年テルモピレーの戦い（レオニダス率いるスパルタ軍は勇敢に戦うも全滅）、前480年サラミスの海戦（フェニキア人主体のペルシア海軍がアテネ海軍に敗北）、前479年プラタイアの戦い（アテネ・スパルタ連合軍がペルシアの陸軍を破る）。結果：ギリシア世界の勝利が決定、アテネはデロス同盟の盟主として以後繁栄。',
+  yoko:['第1ラウンド（ペルシア戦争）はギリシアが勝利。地中海の支配権はフェニキア人からギリシア人に移った（ヨコの鉄則）','第2ラウンドはアレクサンドロス大王の東方遠征'],src:'『ヨコから見る』p.26〜27／『同時に学べ』p.14',rel:['achaemenid','greece','athens','phoenicia','東方遠征']},
+ '東方遠征':{n:'東方遠征',y:'前334〜前324年',b:'マケドニアのアレクサンドロス大王が前334年に開始。前333年イッソスの戦い、前331年アルベラの戦いでダレイオス3世を破り、前330年アケメネス朝ペルシアを滅ぼした。矛先をインドに替えてパンジャーブ地方を平定するが、インド側で統一の機運が芽生えマウリヤ朝が成立。征服地にはコイネーを普及させ、ギリシア人の東方移住とペルシア人との通婚を奨励、ペルシアの伝統を尊重する東西融合政策を行った。',
+  yoko:['この時の中国は戦国時代（前403〜前221）','遠征がインド初の統一王朝マウリヤ朝を生んだ'],src:'『ヨコから見る』p.24〜29／『同時に学べ』p.15',rel:['alexander','achaemenid','maurya','pella']},
+ '匈奴の圧迫':{n:'匈奴の圧迫と武帝の反撃',y:'前3〜前2世紀',b:'前漢は当初、モンゴル高原の遊牧国家である匈奴にかなり圧迫されており、事実上の属国のような存在だった。冒頓単于が白登山の戦いで劉邦に勝ち、以後前漢は和親政策をとる。武帝（位前141〜前87）が匈奴を破るまで続いた。前129年 衛青・霍去病の匈奴討伐で匈奴をゴビ砂漠の北に追い、前121年頃 河西四郡を設置して匈奴の補給路を断った。',
+  yoko:['匈奴と前漢の争いは絹の道（東西交易路）の支配をめぐる争い'],src:'『同時に学べ』p.16／『ヨコから見る』p.37〜38',rel:['xiongnu','hanwu','絹の道']},
+ 'ポエニ戦争':{n:'ポエニ戦争',y:'前264〜前146年',b:'第1次（前264〜前241）：カルタゴはローマの海軍力を甘くみて油断。ローマの勝利に終わり、シチリア島を最初の属州として獲得。第2次（前218〜前201）：カルタゴのハンニバルがアルプスを越えてイタリアへ侵入し、前216年カンナエの戦いでローマ軍を包囲殲滅。前202年ザマの戦いでローマ軍が北アフリカでハンニバルを破る。第3次（前149〜前146）：ローマの将軍小スキピオがカルタゴを徹底的に滅ぼす。ポエニ戦争に勝利したローマは西地中海の制海権を得た。',
+  yoko:['ポエニ戦争の結果、ローマは農業国家から商業国家へと変貌','ザマの戦い（前202）は劉邦が前漢を建てたのと同年','ポエニ戦争が始まった頃（前264）、中国は戦国時代の末期'],src:'『ヨコから見る』p.33〜35',rel:['carthage','rome_bc1','hanwu']},
+ // ---- 点線・注記 ----
+ iron:{kw:['鉄器','鉄製'],n:'鉄器使用の広がり',y:'前10〜前7世紀',b:'この時代の特徴は、鉄器の広がり。前1000年を過ぎると鉄器が広く使用され、生産力や軍事力の増大をもたらした。前7世紀には鉄製の武器を用いたアッシリアがオリエントを統一。中国では戦国時代初期までに鉄製農具・牛耕農法が普及し、インドでも前800年頃から鉄器を使用。',
+  yoko:['前6〜前5世紀、インド・中国ともに鉄器が普及して商工業・貨幣経済が著しく発展（ヨコの鉄則）'],src:'『同時に学べ』p.13／『ヨコから見る』p.14・16',rel:['assyria','zhou','buddhism']},
+ socrates:{n:'ソクラテスの活動',y:'前470頃〜前399年',b:'ギリシアの三大哲学者の筆頭。著作はひとつも残していないが、若者と対話しながら"無知の知"を説いてまわり、最後はアテネの国法に従って毒杯を飲み死んだ。弟子がプラトン（イデア論・哲人政治、アカデメイア）、その弟子がアリストテレス。前6世紀から小アジアのイオニア地方（ミレトス市など）ではオリエントの先進諸国とも接しやすかったため自然哲学が興った（タレス・デモクリトス・ピタゴラスなど）。',
+  yoko:['中国の孔子（前551頃〜前479）、インドのガウタマ＝シッダールタ（前563頃〜前483頃）とほぼ同時代。共通の背景は商工業の発展と平民層の台頭'],src:'『ヨコから見る』p.17〜18・21／『同時に学べ』p.14',rel:['athens','greece','confucius','buddhism']},
+ confucius:{n:'孔子の活動',y:'前551頃〜前479年',b:'諸子百家の代表・儒家の祖。礼と仁（血縁中心の愛）を説き、周の封建制度の復活を願った。孟子（性善説・王道政治）、荀子（性悪説、弟子に韓非や李斯）が代表。ほかに道家（老子・荘子）、法家（商鞅・韓非・李斯、秦で採用）、墨家（兼愛・非攻）など。諸子百家は各国の富国強兵策の中で生まれたため「処世的（現実対応）」な性格が強く、中でも儒家は後世への影響がとても大きい。',
+  yoko:['前6〜前5世紀に三大哲学者・仏教・諸子百家が同時に現れた共通の背景は、商工業の発展と平民層の台頭','プラトンの哲人政治は孟子の王道政治と似ている'],src:'『ヨコから見る』p.14〜15・17／『同時に学べ』p.14',rel:['zhou','socrates','buddhism']},
+ rice:{kw:['稲作','米づくり'],n:'九州北部で水田稲作',y:'前8世紀ごろ',b:'縄文時代の最末期にあたり、紀元前8世紀ごろから九州北部で水田による米づくりが始まる。前5〜前4世紀ごろには東日本にまで広がり、弥生文化が始まる。',src:'『同時に学べ』p.13〜14',rel:['jomon','jomon_yayoi']},
+ // ---- 川 ----
+ 'ナイル川':{n:'ナイル川',y:'',b:'エジプト文明の舞台（『同時に学べ』p.11 紀元前20世紀以前の地図）。前2・1世紀にはプトレマイオス朝エジプトの領域。',src:'『同時に学べ』p.11／補助：スタサプ',rel:['ptolemy','alexandria']},
+ 'ティグリス川':{n:'ティグリス川',y:'',b:'ユーフラテス川とともにメソポタミア文明の舞台（『同時に学べ』p.11）。前7世紀アッシリア、前6〜前4世紀アケメネス朝の中心域。',src:'『同時に学べ』p.11・13〜14',rel:['assyria','achaemenid']},
+ 'ユーフラテス川':{n:'ユーフラテス川',y:'',b:'ティグリス川とともにメソポタミア文明の舞台（『同時に学べ』p.11）。',src:'『同時に学べ』p.11',rel:['assyria','achaemenid']},
+ 'インダス川':{n:'インダス川',y:'',b:'インダス文明の舞台（『同時に学べ』p.11）。アレクサンドロスの帝国は「ギリシアからインドの北西まで」及んだ。',src:'『同時に学べ』p.11・15',rel:['alexander','maurya']},
+ 'ガンジス川':{n:'ガンジス川',y:'',b:'アーリヤ人は前1000年頃、ガンジス川流域に進出。豊かな土地と鉄器の使用（前800年頃）により農業生産は飛躍的に向上し、商工業も発展。マガダ国やコーサラ国が統一をうかがい、この流域で仏教・ジャイナ教が生まれた。',src:'『ヨコから見る』p.16',rel:['buddhism','maurya','pataliputra']},
+ '黄河':{kw:['黄河'],n:'黄河',y:'',b:'黄河文明の舞台（『同時に学べ』p.11）。中国の黄河流域では高度に発達した青銅器を特徴とする殷王朝があらわれ（前20〜前11世紀）、周がこれにとってかわった。',src:'『同時に学べ』p.11〜13',rel:['zhou','luoyi']},
+ '長江':{kw:['長江'],n:'長江',y:'',b:'長江文明の舞台（『同時に学べ』p.11）。戦国時代、長江文明の後継である楚は謎の蟻鼻銭を使った。',src:'『同時に学べ』p.11／『ヨコから見る』p.15',rel:['zhou']},
 };
 const GEO = [
  {p:0,title:'前10〜前7世紀の世界',src:'『同時に学べ』p.13',
   areas:[['assyria','I','アッシリア'],['zhou','C','周']],
-  marks:[[23,39,4,2.5,'W','ギリシア人'],[36,31,2.5,2,'I','フェニキア人'],[136,36,4,2,'J','縄文時代']],
-  dashed:[[35,35,16,7,'鉄器使用の広がり'],[112,35,12,7,'鉄器使用の広がり']],
-  notes:[[126,27,'九州北部で水田稲作']],arrows:[],cities:['luoyi','tyre'],rivers:true},
+  marks:[[23,39,4,2.5,'W','ギリシア人','greeks'],[36,31,2.5,2,'I','フェニキア人','phoenicia'],[136,36,4,2,'J','縄文時代','jomon']],
+  dashed:[[35,35,16,7,'鉄器使用の広がり','iron'],[112,35,12,7,'鉄器使用の広がり','iron']],
+  notes:[[126,27,'九州北部で水田稲作','rice']],arrows:[],cities:['luoyi','tyre'],rivers:true},
  {p:0,title:'前6・5世紀の世界',src:'『同時に学べ』p.14',
   areas:[['achaemenid','I','アケメネス朝ペルシア'],['greece','W','ギリシア'],['zhou','C','春秋時代']],
-  marks:[[12,43,2.5,2,'W','ローマ'],[10,35,3,1.5,'W','カルタゴ'],[84,26,5,3,'S','仏教の創始'],[136,36,4,2,'J','縄文→弥生']],
-  notes:[[12,46,'ソクラテスの活動'],[113,28,'孔子の活動']],
-  arrows:[[46,36,27,38,'ペルシア戦争']],cities:['athens','susa','persepolis','sardes','luoyi'],routes:['王の道'],rivers:true},
+  marks:[[12,43,2.5,2,'W','ローマ','rome_early'],[10,35,3,1.5,'W','カルタゴ','carthage'],[84,26,5,3,'S','仏教の創始','buddhism'],[136,36,4,2,'J','縄文→弥生','jomon_yayoi']],
+  notes:[[12,46,'ソクラテスの活動','socrates'],[113,28,'孔子の活動','confucius']],
+  arrows:[[46,36,27,38,'ペルシア戦争','ペルシア戦争']],cities:['athens','susa','persepolis','sardes','luoyi'],routes:['王の道'],rivers:true},
  {p:0,title:'前4・3世紀の世界',src:'『同時に学べ』p.15',
   areas:[['alexander','W','アレクサンドロスの帝国（前4世紀）'],['maurya','S','マウリヤ朝（前3世紀）'],['qin','C','戦国時代→秦'],['xiongnu','C','匈奴'],['carthage','W','カルタゴ']],
-  marks:[[13,42,3,2,'W','ローマ（共和政）'],[136,36,4,2,'J','弥生時代']],
-  arrows:[[24,38,62,32,'東方遠征']],cities:['pella','alexandria','babylon','pataliputra','xianyang'],rivers:true},
+  marks:[[13,42,3,2,'W','ローマ（共和政）','rome_early'],[136,36,4,2,'J','弥生時代','yayoi']],
+  arrows:[[24,38,62,32,'東方遠征','東方遠征']],cities:['pella','alexandria','babylon','pataliputra','xianyang'],rivers:true},
  {p:0,title:'前2・1世紀の世界',src:'『同時に学べ』p.16',
   areas:[['rome_bc1','W','共和政ローマ'],['ptolemy','W','プトレマイオス朝エジプト'],['parthia','I','パルティア'],['hanwu','C','前漢'],['xiongnu','C','匈奴']],
-  marks:[[66,37,6,3,'I','大月氏'],[73,42,3,2,'I','大宛'],[136,36,4,2,'J','弥生時代']],
-  arrows:[[100,45,104,38,''],[110,45,112,39,''],[120,44,120,39,'']],cities:['rome','alexandria','antioch','changan','dunhuang'],routes:['絹の道','海の道'],rivers:true},
+  marks:[[66,37,6,3,'I','大月氏','大月氏'],[73,42,3,2,'I','大宛','大宛'],[136,36,4,2,'J','弥生時代','yayoi']],
+  arrows:[[100,45,104,38,'','匈奴の圧迫'],[110,45,112,39,'','匈奴の圧迫'],[120,44,120,39,'','匈奴の圧迫']],cities:['rome','alexandria','antioch','changan','dunhuang'],routes:['絹の道','海の道'],rivers:true},
 ];
 
 // 同時代マップ（オリジナル模式図）。p: PERIODS index。zones: W 西欧・地中海 / I 西アジア / S インド / C 中国 / J 日本
@@ -909,9 +1030,9 @@ const CURATED_KYOTSU = [
  opts:['あ―Ｘ','あ―Ｙ','あ―Ｚ','い―Ｘ','い―Ｙ','い―Ｚ'],a:0,
  exp:'冒頓単于（位前209〜前174）。商鞅は戦国時代に秦の孝公に仕えた法家で，匈奴の君主ではない。武帝は前139張騫派遣→前129衛青・霍去病の匈奴討伐→前121頃河西四郡（敦煌・武威・張掖・酒泉）設置→前111南越に9郡→前108朝鮮に楽浪郡など4郡。'},
 {set:'古代（紀元前）',yoko:true,type:'課題と事例の組合せ',src:'『ヨコから見る世界史』LESSON1 p.16・p.19／LESSON3 p.38',
- q:'生徒たちは，古代の世界について探究するための課題を考えた。課題あ・いと，それぞれの課題を考察するための事例として最も適当なものＷ〜Ｚとについて，組合せとして正しいものを，次の①〜④のうちから一つ選べ。\n\n課題\nあ　前6〜前5世紀に，ギリシア・インド・中国で新しい思想や宗教が同時に生まれたのはなぜか。\nい　前2世紀以降，東西の交易路はどのように使われたのか。\n\n事例\nＷ　ガンジス川流域での鉄器の使用と，クシャトリヤ・ヴァイシャの台頭\nＸ　河西四郡の設置と，オアシスの住民による隊商交易\nＹ　ハドリアヌス帝の墓の城塞化\nＺ　ヴォルテールによる中世観の形成',
+ q:'生徒たちは，古代の世界について探究するための課題を考えた。課題あ・いと，それぞれの課題を考察するための事例として最も適当なものＷ〜Ｚとについて，組合せとして正しいものを，次の①〜④のうちから一つ選べ。\n\n課題\nあ　前6〜前5世紀に，ギリシア・インド・中国で新しい思想や宗教が同時に生まれたのはなぜか。\nい　前2世紀以降，東西の交易路はどのように使われたのか。\n\n事例\nＷ　ガンジス川流域での鉄器の使用と，クシャトリヤ・ヴァイシャの台頭\nＸ　河西四郡の設置と，オアシスの住民による隊商交易\nＹ　アケメネス朝のサトラップ制と秦の郡県制の類似\nＺ　ローマの「分割して統治せよ」によるイタリア半島支配',
  opts:['あ―Ｗ　い―Ｘ','あ―Ｗ　い―Ｙ','あ―Ｘ　い―Ｗ','あ―Ｙ　い―Ｚ'],a:0,
- exp:'あ：教材のまとめ表は「経済発展（植民都市・鋳造貨幣／鉄器／鉄製農具）→社会変化（ポリス民主化／クシャトリヤ・ヴァイシャの台頭／富国強兵と人材登用）→思想・宗教」と3地域を並べる。い：武帝が河西四郡を置いて西域経営が本格化し，オアシス住民の隊商交易が絹の道の利益を生んだ。Ｙ・Ｚは2026追試の第2問・第3問の素材で時代が異なる。'},
+ exp:'あ：教材のまとめ表は「経済発展（植民都市・鋳造貨幣／鉄器／鉄製農具）→社会変化（ポリス民主化／クシャトリヤ・ヴァイシャの台頭／富国強兵と人材登用）→思想・宗教」と3地域を並べる。い：武帝が河西四郡を置いて西域経営が本格化し，オアシス住民の隊商交易が絹の道の利益を生んだ。Ｙは統治制度の比較，Ｚはローマ国内の統治で，どちらの課題にも直接は対応しない。'},
 {set:'古代（紀元前）',yoko:true,type:'時点の正誤（ヨコ）',src:'『ヨコから見る世界史』LESSON1〜3／『世界史と日本史は同時に学べ』p.14〜16',
  q:'古代の世界の各地域について，時期の関係を述べた文として最も適当なものを，次の①〜④のうちから一つ選べ。',
  opts:['アショーカ王が即位した時点で，中国はすでに秦によって統一されていた。','武帝が河西四郡を設置した時点で，ローマはすでにカルタゴを滅ぼしていた。','マウリヤ朝が成立した時点で，アレクサンドロス大王はまだ存命であった。','ソクラテスが処刑された時点で，孔子はまだ存命であった。'],a:1,
@@ -1082,9 +1203,9 @@ const CURATED_KYOTSU = [
  opts:['あ―Ｗ　い―Ｘ','あ―Ｗ　い―Ｙ','あ―Ｚ　い―Ｘ','あ―Ｙ　い―Ｚ'],a:0,
  exp:'Ｗは「遠征→統一の機運→マウリヤ朝成立」という地域間の政治的連鎖。Ｘは思想・制度の伝播（儒教の農業重視→ケネーの重農主義も同種）。Ｙ・Ｚは一地域内の出来事でヨコの関係ではない。'},
 {set:'古代（紀元前）',yoko:true,type:'年代整序（6択）',src:'『世界史と日本史は同時に学べ』p.13〜16',
- q:'次の出来事Ⅰ〜Ⅲについて，古いものから年代順に正しく配列したものを，次の①〜⑥のうちから一つ選べ。\n\nⅠ　前漢の武帝が匈奴を破り，河西四郡を設置した。\nⅡ　ペルシア戦争で，ギリシアがアケメネス朝ペルシアの侵攻を撃退した。\nⅢ　周王朝が殷王朝にとってかわった。',
+ q:'次の出来事Ⅰ〜Ⅲについて，古いものから年代順に正しく配列したものを，次の①〜⑥のうちから一つ選べ。\n\nⅠ　前漢の武帝が匈奴を破り，河西四郡を設置した。\nⅡ　ペルシア戦争で，ギリシアがアケメネス朝ペルシアの侵攻を撃退した。\nⅢ　周王朝が，西方の遊牧民の侵入を受けて都を洛邑に移した。',
  opts:['Ⅰ―Ⅱ―Ⅲ','Ⅰ―Ⅲ―Ⅱ','Ⅱ―Ⅰ―Ⅲ','Ⅱ―Ⅲ―Ⅰ','Ⅲ―Ⅰ―Ⅱ','Ⅲ―Ⅱ―Ⅰ'],a:5,
- exp:'Ⅲ 周の成立は前11世紀。Ⅱ ペルシア戦争は前5世紀前半（前490マラトン〜前479プラタイア）。Ⅰ 河西四郡は前121年頃。地域をまたぐ整序は「前11C 周／前7C アッシリア／前6〜5C ペルシア帝国・孔子／前4C アレクサンドロス／前3C 秦・ポエニ戦争／前2C 武帝・カルタゴ滅亡」の骨格で解く。'},
+ exp:'Ⅲ 周の東遷は前770年。Ⅱ ペルシア戦争は前5世紀前半（前490マラトン〜前479プラタイア）。Ⅰ 河西四郡は前121年頃。地域をまたぐ整序は「前11C 周／前7C アッシリア／前6〜5C ペルシア帝国・孔子／前4C アレクサンドロス／前3C 秦・ポエニ戦争／前2C 武帝・カルタゴ滅亡」の骨格で解く。'},
 {set:'古代（紀元前）',yoko:true,type:'あ・いの正誤',src:'『ヨコから見る世界史』LESSON1 p.16〜17',
  q:'前6世紀頃のヨコのつながりについて述べた文あ・いの正誤の組合せとして正しいものを，次の①〜④のうちから一つ選べ。\n\nあ　インドと中国では，鉄器の普及によって農業生産が向上し，商工業と貨幣経済が著しく発展した。\nい　ギリシアでは，小アジアのリディアから鋳造貨幣が入り，本土と植民都市・エジプト・南ロシアを結ぶ商業・貿易が発展した。',
  opts:['あ―正　い―正','あ―正　い―誤','あ―誤　い―正','あ―誤　い―誤'],a:0,
@@ -1323,29 +1444,44 @@ function landPath(key,PX){if(!landCache[key])landCache[key]=LAND.map(poly=>'M'+p
 function geoSVG(g,viewKey){
   viewKey=viewKey||'all';const v=VIEWS[viewKey];const {H,PX}=mkPX(v);const LP=landPath(viewKey,PX);
   const inV=(lon,lat)=>lon>=v.lon[0]-3&&lon<=v.lon[1]+3&&lat>=v.lat[0]-3&&lat<=v.lat[1]+3;
-  const fs=viewKey==='all'?8.5:10;
+  const fs=viewKey==='all'?8.5:10;let hits='';
   let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
   s+=`<rect width="360" height="${H}" fill="#dfe8ee"/>`;
   s+=`<defs><clipPath id="lc-${viewKey}"><path d="${LP}" fill-rule="evenodd"/></clipPath><marker id="gah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/></marker></defs>`;
   s+=`<path d="${LP}" fill="#f1ede4" stroke="#b9b2a4" stroke-width="0.6" fill-rule="evenodd"/>`;
-  if(g.rivers){for(const [name,pts] of Object.entries(RIVERS)){s+=`<polyline points="${pts.map(p=>PX(p[0],p[1]).join(',')).join(' ')}" fill="none" stroke="#7fb0d0" stroke-width="${viewKey==='all'?0.9:1.4}" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(g.rivers){for(const [name,pts] of Object.entries(RIVERS)){const rp=pts.map(p=>PX(p[0],p[1]).join(',')).join(' ');s+=`<polyline points="${rp}" fill="none" stroke="#7fb0d0" stroke-width="${viewKey==='all'?0.9:1.4}" stroke-linejoin="round" stroke-linecap="round" style="pointer-events:none"/>`;hits+=`<polyline class="tap river" data-key="${name}" points="${rp}" fill="none" stroke="transparent" stroke-width="7"/>`;
     if(viewKey!=='all'){const m=pts[Math.floor(pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);s+=`<text x="${x+3}" y="${y-2}" font-size="7" fill="#4f88aa">${name}</text>`}}}}
-  for(const a of (g.areas||[])){const poly=TERR[a[0]];s+=`<polygon class="area" data-key="${a[0]}" points="${poly.map(p=>PX(p[0],p[1]).join(',')).join(' ')}" fill="var(--${a[1]})" fill-opacity="0.4" stroke="var(--${a[1]})" stroke-width="1.4" stroke-linejoin="round" clip-path="url(#lc-${viewKey})" style="cursor:pointer"><title>${esc(a[2])}</title></polygon>`}
-  for(const rn of (g.routes||[])){const r=ROUTES[rn];s+=`<polyline points="${r.pts.map(p=>PX(p[0],p[1]).join(',')).join(' ')}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round"/>`;const m=r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y-4}" text-anchor="middle" font-size="${fs-1}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(rn)}</text>`}}
-  for(const dd of (g.dashed||[])){const [x,y]=PX(dd[0],dd[1]);const {PX:_}=mkPX(v);const rx=dd[2]*360/(v.lon[1]-v.lon[0]),ry=dd[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--sub)" stroke-width="1" stroke-dasharray="3,2"/><text x="${x}" y="${y-ry-3}" text-anchor="middle" font-size="${fs-1}" fill="var(--sub)">${esc(dd[4])}</text>`}
-  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const rx=m[2]*360/(v.lon[1]-v.lon[0]),ry=m[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="var(--${m[4]})" fill-opacity="0.35" stroke="var(--${m[4]})" stroke-width="1.2"/>`}
-  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);s+=`<circle cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><text x="${x+3}" y="${y+3}" font-size="${fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}
-  for(const n of (g.notes||[])){if(!inV(n[0],n[1]))continue;const [x,y]=PX(n[0],n[1]);s+=`<text x="${x}" y="${y}" text-anchor="middle" font-size="${fs-0.5}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="2" paint-order="stroke">${esc(n[2])}</text>`}
+  for(const a of (g.areas||[])){const poly=TERR[a[0]];s+=`<polygon class="area tap" data-key="${a[0]}" points="${poly.map(p=>PX(p[0],p[1]).join(',')).join(' ')}" fill="var(--${a[1]})" fill-opacity="0.4" stroke="var(--${a[1]})" stroke-width="1.4" stroke-linejoin="round" clip-path="url(#lc-${viewKey})" style="cursor:pointer"><title>${esc(a[2])}</title></polygon>`}
+  s+=hits;
+  for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).join(',')).join(' ');s+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="9"/>`;const m=r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);s+=`<text class="tapt" data-key="${esc(rn)}" x="${x}" y="${y-4}" text-anchor="middle" font-size="${fs-1}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(rn)}</text>`}}
+  for(const dd of (g.dashed||[])){const [x,y]=PX(dd[0],dd[1]);const {PX:_}=mkPX(v);const rx=dd[2]*360/(v.lon[1]-v.lon[0]),ry=dd[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap dashed" data-key="${dd[5]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--sub)" stroke-width="1" stroke-dasharray="3,2" style="pointer-events:stroke"/><text class="tapt" data-key="${dd[5]||''}" x="${x}" y="${y-ry-3}" text-anchor="middle" font-size="${fs-1}" fill="var(--sub)">${esc(dd[4])}</text>`}
+  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const rx=m[2]*360/(v.lon[1]-v.lon[0]),ry=m[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap mark" data-key="${m[6]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="var(--${m[4]})" fill-opacity="0.35" stroke="var(--${m[4]})" stroke-width="1.2"/>`}
+  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s+=`<circle class="tap city" data-key="${cky}" cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><circle class="tap" data-key="${cky}" cx="${x}" cy="${y}" r="8" fill="transparent"/><text class="tapt" data-key="${cky}" x="${x+3}" y="${y+3}" font-size="${fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}
+  for(const n of (g.notes||[])){if(!inV(n[0],n[1]))continue;const [x,y]=PX(n[0],n[1]);s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="${fs-0.5}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="2" paint-order="stroke" text-decoration="underline">${esc(n[2])}</text>`}
   for(const a of g.arrows){if(!inV(a[0],a[1])&&!inV(a[2],a[3]))continue;const [x1,y1]=PX(a[0],a[1]),[x2,y2]=PX(a[2],a[3]);const mx=(x1+x2)/2,my=(y1+y2)/2-10;
-    s+=`<path d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)"/>`;
-    if(a[4])s+=`<text x="${mx}" y="${my-2}" text-anchor="middle" font-size="${fs}" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(a[4])}</text>`}
-  for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke" style="pointer-events:none">${esc(a[2])}</text>`}
+    s+=`<path d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)" style="pointer-events:none"/><path class="tap arrow" data-key="${a[5]||''}" d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="transparent" stroke-width="7"/>`;
+    if(a[4])s+=`<text class="tapt" data-key="${a[5]||''}" x="${mx}" y="${my-2}" text-anchor="middle" font-size="${fs}" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(a[4])}</text>`}
+  for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(a[2])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><div class="mapcap muted" style="font-size:12px;min-height:1.2em;padding:2px 4px">勢力の色をタップすると説明が出ます</div>`;
+  s+=`</svg><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap">${s}</div>`;
 }
-function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('polygon.area').forEach(pg=>pg.onclick=()=>{const cap=w.querySelector('.mapcap');cap.textContent=(pg.querySelector('title').textContent)+'：'+(INFO[pg.dataset.key]||'');cap.style.color='var(--ink)'})})}
+function infoTerm(k){const f=INFO[k];if(!f)return '';return f.n.replace(/^日本：/,'').split(/[（(／]/)[0].replace(/の帝国$|の活動$|の圧迫.*$/,'')}
+function infoQs(k){const f=INFO[k];const t=infoTerm(k);const kws=f.kw||(t.length>=2?[t]:[]);if(!kws.length)return [];return ALL_CURATED.map((c,i)=>[c,i]).filter(([c])=>!c.hidden&&kws.some(w=>((c.q||'')+(c.ctx||'')+(c.opts||[]).join('')+(c.exp||'')).includes(w)))}
+function showInfo(w,k){
+  const f=INFO[k];const box=w.querySelector('.mapinfo');if(!f||!box)return;
+  w.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));w.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'));
+  const qs=infoQs(k);
+  box.innerHTML=`<h4>${esc(f.n)}${f.y?`<span class="yr">${esc(f.y)}</span>`:''}</h4><div class="body">${esc(f.b)}</div>
+  ${f.yoko&&f.yoko.length?`<div class="yoko"><b>同時代のヨコ</b>${f.yoko.map(y=>`<div>・${esc(y)}</div>`).join('')}</div>`:''}
+  <div class="src">出典：${esc(f.src||'')}</div>
+  <div class="rel">${(f.rel||[]).filter(r=>INFO[r]).map(r=>`<button data-rel="${esc(r)}">${esc(INFO[r].n.split(/[（(／]/)[0])}</button>`).join('')}${qs.length?`<button class="q" data-qs="1">この項目が出る問題 ${qs.length}問</button>`:''}</div><div class="qlist" hidden></div>`;
+  box.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>showInfo(w,b.dataset.rel));
+  const qb=box.querySelector('[data-qs]');if(qb)qb.onclick=()=>{const l=box.querySelector('.qlist');if(!l.hidden){l.hidden=true;return}l.hidden=false;l.innerHTML=qs.map(([c])=>`<div class="qitem">${c.type?`<span class="muted">【${esc(c.type)}】</span>`:''}${esc(c.q.replace(/\n[\s\S]*/,'').slice(0,70))}${c.q.length>70?'…':''}\n<b>正解：${esc(c.opts[c.a])}</b>${c.src?`\n<span class="muted">出典：${esc(c.src)}</span>`:''}</div>`).join('')};
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
 function viewChips(){return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
