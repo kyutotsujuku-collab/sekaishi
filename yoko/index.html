@@ -55,6 +55,9 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .sheet .close{position:absolute;right:12px;top:8px;border:0;background:var(--chip);color:var(--ink);border-radius:999px;width:32px;height:32px;font-size:18px}
 .dyn{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:13px;margin:8px 0 10px;padding:8px 10px;background:var(--bg);border-radius:8px}
 .dyn span:nth-child(odd){color:var(--sub)}
+.mapwrap{margin:8px 0 12px}
+.mapwrap svg{width:100%;height:auto;display:block;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.mapbtn{margin-top:8px}
 .rtag{font-size:11px;color:#fff;border-radius:4px;padding:0 5px;margin-right:4px;white-space:nowrap}
 /* quiz */
 .q{font-size:16px;font-weight:600;margin:10px 0 12px;white-space:pre-wrap}
@@ -84,11 +87,11 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v6</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v8</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
-    <button data-tab="cur">厳選問題</button>
+    <button data-tab="cur">共テ形式模倣問題</button>
     <button data-tab="wrong">間違い一覧</button>
   </nav>
 </header>
@@ -717,6 +720,20 @@ const PERIOD_NOTES = [
 'ゴルバチョフ（1985）→ベルリンの壁崩壊・天安門事件（1989）→ドイツ統一（1990）→ソ連解体・湾岸戦争（1991）→EU（1993）。',
 ];
 
+
+// 同時代マップ（オリジナル模式図）。p: PERIODS index。zones: W 西欧・地中海 / I 西アジア / S インド / C 中国 / J 日本
+const MAPS = [
+ {p:0,title:'前7〜前6世紀：初の世界帝国と思想の誕生',sub:'アッシリア→アケメネス朝。3地域で同時に思想・宗教',
+  zones:{W:'ギリシア（ポリス）\nソクラテスら\n植民市・リディアの貨幣',I:'アッシリア（前7C）\n→アケメネス朝（前550〜）\nゾロアスター教・ユダヤ教',S:'ガンジス川流域\nマガダ国など\n仏教・ジャイナ教',C:'周（春秋時代）\n孔子・諸子百家\n鉄製農具・牛耕',J:'縄文最末期\n九州北部で\n水田稲作開始'},
+  links:[['I','W','ペルシア戦争（前5C）'],['I','W','リディアの鋳造貨幣が伝わる']]},
+ {p:0,title:'前4〜前3世紀：アレクサンドロスと三大帝国',sub:'東方遠征がインドを刺激。ローマ・秦・マウリヤが並ぶ',
+  zones:{W:'マケドニア→ヘレニズム3国\nローマ（共和政）\nポエニ戦争（前264〜）',I:'アケメネス朝滅亡（前330）\nセレウコス朝\n→パルティア自立',S:'マウリヤ朝（前317頃〜）\nアショーカ王（前3C）\n仏教保護',C:'戦国時代\n→秦の統一（前221）\n→前漢（前202）',J:'弥生時代\n稲作が東日本へ'},
+  links:[['W','I','東方遠征（前334〜前330）'],['I','S','遠征に刺激→マウリヤ朝成立'],['W','S','ヘレニズム文化→ガンダーラ美術']]},
+ {p:0,title:'前2〜前1世紀：東西の二つの帝国',sub:'ローマとカルタゴ、前漢と匈奴。パルティアが中継',
+  zones:{W:'ローマ（共和政）\nカルタゴ滅亡（前146）\n→内乱の1世紀',I:'パルティア\nローマと敵対\n前漢と交易',S:'マウリヤ朝滅亡（前180頃）\n季節風貿易へ',C:'前漢 武帝（前141〜）\n張騫→大月氏\n河西四郡・楽浪郡',J:'弥生時代\n「倭」が前漢へ遣使\n（『漢書』）'},
+  links:[['C','I','張騫の派遣・絹の道'],['I','W','ローマ⇄パルティア⇄前漢の交易'],['J','C','楽浪郡へ使者']]},
+];
+
 // 厳選ヨコ問題  {set, src, q, opts:[4], a:index, exp}
 // set: 問題セット名（タブに表示） / src: 出典
 // ---- セット「古代（紀元前）」共通テスト形式：2026追試（歴史総合・世界史探究）の設問型に準拠 ----
@@ -1156,6 +1173,40 @@ const qt=s=>s.replace(/（[^）]*\d[^）]*）/g,'').replace(/\d{3,4}/g,'').repla
 const NUM='①②③④⑤⑥⑦⑧';
 const rtag=r=>`<span class="rtag" style="background:var(--${r})">${REG[r].short}</span>`;
 
+// ---------- 同時代マップ ----------
+const ZONES=[['W','西欧・地中海'],['I','西アジア'],['S','インド'],['C','中国'],['J','日本']];
+function mapSVG(m){
+  const W=360,x0=8,y0=46,rowH=58,lab=72;
+  const zoneY=i=>y0+i*(rowH+6);
+  const nL=m.links.length;
+  const H=y0+ZONES.length*(rowH+6)+14+nL*26+4;
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif">`;
+  s+=`<text x="${x0}" y="20" font-size="14" font-weight="700" fill="var(--ink)">${esc(m.title)}</text>`;
+  s+=`<text x="${x0}" y="37" font-size="10.5" fill="var(--sub)">${esc(m.sub)}</text>`;
+  ZONES.forEach(([id,name],i)=>{
+    const y=zoneY(i);
+    s+=`<rect x="${x0}" y="${y}" width="${W-x0*2}" height="${rowH}" rx="8" fill="var(--${id})" fill-opacity="0.12" stroke="var(--${id})" stroke-width="1.5"/>`;
+    s+=`<rect x="${x0}" y="${y}" width="${lab}" height="${rowH}" rx="8" fill="var(--${id})"/>`;
+    s+=`<text x="${x0+lab/2}" y="${y+rowH/2+4}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">${name}</text>`;
+    const lines=(m.zones[id]||'').split('\n');const top=y+rowH/2-(lines.length-1)*7.5+4;
+    lines.forEach((ln,k)=>{s+=`<text x="${x0+lab+10}" y="${top+k*15}" font-size="11.5" fill="var(--ink)">${esc(ln)}</text>`});
+  });
+  const zn=id=>ZONES.find(z=>z[0]===id)[1];
+  m.links.forEach((l,k)=>{
+    const y=zoneY(ZONES.length)+8+k*26;
+    s+=`<rect x="${x0}" y="${y}" width="${W-x0*2}" height="22" rx="11" fill="var(--accent)" fill-opacity="0.1"/>`;
+    s+=`<circle cx="${x0+12}" cy="${y+11}" r="5" fill="var(--${l[0]})"/><text x="${x0+22}" y="${y+15}" font-size="11" fill="var(--ink)">→</text><circle cx="${x0+40}" cy="${y+11}" r="5" fill="var(--${l[1]})"/>`;
+    s+=`<text x="${x0+52}" y="${y+15}" font-size="11" fill="var(--ink)">${esc(zn(l[0])+'→'+zn(l[1])+'：'+l[2])}</text>`;
+  });
+  s+=`</svg>`;
+  return `<div class="mapwrap">${s}</div>`;
+}
+function openMaps(p){
+  const ms=MAPS.filter(m=>m.p===p);
+  $('#sheet').innerHTML=`<button class="close" id="shClose">×</button><h2>同時代マップ：${PERIODS[p].n}</h2><div class="muted" style="margin-bottom:6px">地域を縦に並べた模式図（オリジナル）。下段は地域間の影響・接触。</div>${ms.map(mapSVG).join('')}`;
+  $('#sheet').classList.add('open');$('#sheetBg').classList.add('open');$('#shClose').onclick=closeSheet;
+}
+
 // ---------- tabs ----------
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
@@ -1176,6 +1227,7 @@ function renderTL(){
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
   if(note)h+=`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`;
+  MAPS.filter(m=>m.p===curP).forEach(m=>h+=mapSVG(m));
   for(const r of REGIONS){
     const list=evs.filter(e=>e.r===r.id);
     if(!list.length)continue;
@@ -1208,19 +1260,20 @@ const delWrong=key=>{delete wrong[key];store.set(WK,wrong)};
 // ---------- question generators ----------
 function genCent(t,corFixed){
   const pi=pidx(t.y);const P=PERIODS[pi];
-  const lim=P.t-P.f>300?100:9999;
-  const cands=EV.filter(e=>e.i!==t.i&&e.r!==t.r&&pidx(e.y)===pi&&Math.abs(e.y-t.y)<=lim);
+  const NEAR=60, FAR_MIN=100, FAR_MAX=400;
+  const cands=EV.filter(e=>e.i!==t.i&&e.r!==t.r&&Math.abs(e.y-t.y)<=NEAR);
   if(!cands.length&&!corFixed)return null;
   const cor=corFixed||pick(cands);
-  const far=e=>pidx(e.y)!==pi&&Math.abs(e.y-t.y)>=(P.t-P.f>=100?100:40);
-  let pool=EV.filter(e=>e.r===cor.r&&far(e));
-  if(pool.length<3)pool=EV.filter(far);
-  const ds=[];const usedP=new Set([pi]);
-  for(const e of shuffle(pool)){const ep=pidx(e.y);if(usedP.has(ep))continue;usedP.add(ep);ds.push(e);if(ds.length===3)break}
+  const far=(e,max)=>{const d=Math.abs(e.y-t.y);return d>=FAR_MIN&&d<=max};
+  let pool=EV.filter(e=>e.r===cor.r&&far(e,FAR_MAX));
+  if(pool.length<6)pool=EV.filter(e=>far(e,FAR_MAX));
+  if(pool.length<6)pool=EV.filter(e=>far(e,900));
+  const ds=[];
+  for(const e of shuffle(pool)){if(ds.some(x=>Math.abs(x.y-e.y)<60))continue;ds.push(e);if(ds.length===3)break}
   if(ds.length<3)return null;
   const opts=shuffle([cor,...ds]);
-  return {key:`cent:${t.i}:${cor.i}`,label:`「${t.t}」と同じ時代`,
-    q:`「${qt(t.t)}」と同じ時代区分（${P.n}${P.s?`：${P.s}`:''}）に起きた出来事はどれか。`,
+  return {key:`cent:${t.i}:${cor.i}`,label:`「${t.t}」と同じ時期`,
+    q:`「${qt(t.t)}」とほぼ同じ時期（前後${NEAR}年以内）に起きた出来事はどれか。`,
     opts:opts.map(e=>qt(e.t)),a:opts.indexOf(cor),
     exp:`「${t.t}」は${yfmt(t.y)}年（${P.n}）。\n`+opts.map((e,k)=>`${'①②③④'[k]} ${yfmt(e.y)}年 ${REG[e.r].short}（${PERIODS[pidx(e.y)].n}）`).join('\n')+(PERIOD_NOTES[pi]?`\n\n【${P.n}のヨコ】${PERIOD_NOTES[pi]}`:'')};
 }
@@ -1230,7 +1283,7 @@ function genDyn(t,R){
   const list=DYNASTIES[R];const idx=list.findIndex(d=>t.y>=d[0]&&t.y<d[1]);
   if(idx<0)return null;
   const cor=list[idx];
-  const neigh=list.filter((d,k)=>k!==idx&&Math.abs(k-idx)<=4);
+  const near2=list.filter((d,k)=>k!==idx&&Math.abs(k-idx)<=2);const neigh=near2.length>=3?near2:list.filter((d,k)=>k!==idx&&Math.abs(k-idx)<=4);
   const ds=shuffle(neigh.length>=3?neigh:list.filter((d,k)=>k!==idx)).slice(0,3);
   if(ds.length<3)return null;
   const opts=shuffle([cor,...ds]);
@@ -1275,13 +1328,13 @@ function genFromKey(key){
   if(m==='cur'){const c=ALL_CURATED[+a];return c?curQ(+a):null}
   return null;
 }
-function curQ(k){const c=ALL_CURATED[k];const fixed=!!c.type;const order=fixed?c.opts.map((o,i)=>i):shuffle(c.opts.map((o,i)=>i));return {key:`cur:${k}`,label:(c.type?`【${c.type}】`:'')+c.q.replace(/\n[\s\S]*/,'').slice(0,26)+'…',q:c.q,ctx:c.ctx||'',type:c.type||'',yoko:!!c.yoko,opts:order.map(o=>c.opts[o]),a:order.indexOf(c.a),exp:c.exp+(c.src?`\n\n出典：${c.src}`:'')}}
+function curQ(k){const c=ALL_CURATED[k];const fixed=!!c.type;const order=fixed?c.opts.map((o,i)=>i):shuffle(c.opts.map((o,i)=>i));return {key:`cur:${k}`,label:(c.type?`【${c.type}】`:'')+c.q.replace(/\n[\s\S]*/,'').slice(0,26)+'…',q:c.q,ctx:c.ctx||'',type:c.type||'',yoko:!!c.yoko,mapP:c.p!==undefined?c.p:(c.set==='古代（紀元前）'?0:undefined),opts:order.map(o=>c.opts[o]),a:order.indexOf(c.a),exp:c.exp+(c.src?`\n\n出典：${c.src}`:'')}}
 
 // ---------- quiz UI ----------
 const qs={mode:store.get('yoko_mode','mix'),sel:store.get('yoko_sel',[]),src:'all',n:store.get('yoko_n',10)};
 function renderQuizSetup(){
   const el=$('#tab-quiz');
-  const modes=[['mix','ミックス'],['cent','同じ時代は？'],['dyn','その時どこは？'],['order','年代整序']];
+  const modes=[['mix','ミックス'],['cent','同じ時期は？'],['dyn','その時どこは？'],['order','年代整序']];
   const wrongN=Object.keys(wrong).filter(k=>!k.startsWith('cur:')).length;
   el.innerHTML=`
   <div class="setting"><div class="lab">出題形式</div><div class="chips">${modes.map(m=>`<button class="chip ${qs.mode===m[0]?'on':''}" data-k="mode" data-v="${m[0]}">${m[1]}</button>`).join('')}</div></div>
@@ -1289,7 +1342,7 @@ function renderQuizSetup(){
   <div class="setting"><div class="lab">出題対象</div><div class="chips"><button class="chip ${qs.src==='all'?'on':''}" data-k="src" data-v="all">全問</button><button class="chip ${qs.src==='wrong'?'on':''}" data-k="src" data-v="wrong">前回の間違いだけ（${wrongN}）</button></div></div>
   <div class="setting"><div class="lab">問題数</div><div class="chips">${[10,20,30].map(n=>`<button class="chip ${qs.n===n?'on':''}" data-k="n" data-v="${n}">${n}問</button>`).join('')}</div></div>
   <button class="btn" id="qStart">スタート</button>
-  <p class="muted">「同じ時代は？」は本の24区分で出題（年は隠す）。「その時どこは？」は他地域の王朝を答える。解説に全選択肢の年を表示。</p>`;
+  <p class="muted">「同じ時期は？」は前後60年以内の出来事が正解、誤答は100〜400年離れた出来事（年は隠す）。「その時どこは？」は他地域の王朝を答える。解説に全選択肢の年を表示。</p>`;
   el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const k=b.dataset.k;
     if(k==='sel'){const v=+b.dataset.v;if(v<0)qs.sel=[];else qs.sel=qs.sel.includes(v)?qs.sel.filter(x=>x!==v):[...qs.sel,v].sort((a,b)=>a-b);}
     else qs[k]=(k==='n')?+b.dataset.v:b.dataset.v;
@@ -1333,7 +1386,8 @@ function answer(k){
   const q=run.set[run.k];const el=$(run.host);const ok=k===q.a;
   if(ok){run.ok++;delWrong(q.key)}else{run.wrongs.push(q);addWrong(q.key,q.label)}
   el.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('ok');else if(i===k)b.classList.add('ng')});
-  el.querySelector('#qexp').innerHTML=`<div class="exp"><div class="v ${ok?'ok':'ng'}">${ok?'正解':'不正解'}　正解は ${NUM[q.a]}</div>${esc(q.exp)}</div><button class="btn" id="qNext">${run.k+1<run.set.length?'次へ':'結果を見る'}</button>`;
+  el.querySelector('#qexp').innerHTML=`<div class="exp"><div class="v ${ok?'ok':'ng'}">${ok?'正解':'不正解'}　正解は ${NUM[q.a]}</div>${esc(q.exp)}</div>${q.mapP!==undefined&&MAPS.some(m=>m.p===q.mapP)?`<button class="btn sec mapbtn" id="qMap">同時代マップを見る</button>`:''}<button class="btn" id="qNext">${run.k+1<run.set.length?'次へ':'結果を見る'}</button>`;
+  const mb=el.querySelector('#qMap');if(mb)mb.onclick=()=>openMaps(q.mapP);
   el.querySelector('#qNext').onclick=()=>{run.k++;run.k<run.set.length?showQ():showResult()};
   el.querySelector('#qNext').scrollIntoView({block:'nearest'});
 }
@@ -1377,7 +1431,7 @@ function renderCurSetup(){
 function renderWrong(){
   const el=$('#tab-wrong');const keys=Object.keys(wrong).sort((a,b)=>wrong[b].t-wrong[a].t);
   el.innerHTML=`<p class="muted">間違えた問題はここに保存され、正解すると消えます（この端末のみ）。${keys.length}件</p>
-  ${keys.length?`<div class="card">${keys.map(k=>`<div class="wrongitem">${esc(wrong[k].l)}<br><small>${k.split(':')[0]==='cur'?'厳選':k.split(':')[0]==='cent'?'同じ時代':k.split(':')[0]==='dyn'?'その時どこは':'年代整序'}</small></div>`).join('')}</div>
+  ${keys.length?`<div class="card">${keys.map(k=>`<div class="wrongitem">${esc(wrong[k].l)}<br><small>${k.split(':')[0]==='cur'?'厳選':k.split(':')[0]==='cent'?'同じ時期':k.split(':')[0]==='dyn'?'その時どこは':'年代整序'}</small></div>`).join('')}</div>
   <button class="btn sec" id="wClear">すべて消去</button>`:''}`;
   const c=$('#wClear');if(c)c.onclick=()=>{if(confirm('間違い記録を消去しますか？')){wrong={};store.set(WK,wrong);renderWrong()}};
 }
