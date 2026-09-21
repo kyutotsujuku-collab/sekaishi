@@ -127,11 +127,21 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .yc{padding:7px 10px 8px}.ye{font-weight:700;font-size:14px;line-height:1.5}.yx{font-size:13px;color:var(--sub);line-height:1.55;margin-top:2px}
 .yyoko{border-top:1px solid var(--line);background:color-mix(in srgb,var(--accent) 9%,transparent);padding:8px 10px;font-size:13px;line-height:1.55;color:var(--accent);font-weight:600}
 .ytbl .pic{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:6px;font-size:11px;padding:0 5px;margin:0 3px;line-height:1.5;vertical-align:middle;cursor:pointer}
+
+.mapwrap svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
+.mapbox{position:relative}
+.zoomb{position:absolute;right:8px;top:8px;font-size:12px;padding:3px 8px;border-radius:14px;border:1px solid #b9b2a4;background:rgba(255,255,255,.92);color:#1f2328;cursor:pointer}
+#mz{position:fixed;inset:0;background:var(--bg);z-index:25;display:none;flex-direction:column}
+.mzbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px}.mzbar .muted{flex:1;font-size:11px}.mzbar .btn{width:auto;margin:0;padding:6px 12px;font-size:13px}
+.mzstage{position:relative;height:52vh;overflow:hidden;background:#dfe8ee;touch-action:none;user-select:none;-webkit-user-select:none}
+.mzstage svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f;background:#dfe8ee}
+.mzctl{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line)}.mzctl button{flex:1;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px}
+.mzinfo{flex:1;overflow:auto;padding:6px 10px 20px}
 </style>
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v28</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v29</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1634,7 +1644,7 @@ function geoSVG(g,viewKey){
   viewKey=viewKey||'all';const v=VIEWS[viewKey];const {H,PX}=mkPX(v);const LP=landPath(viewKey,PX);
   const inV=(lon,lat)=>lon>=v.lon[0]-3&&lon<=v.lon[1]+3&&lat>=v.lat[0]-3&&lat<=v.lat[1]+3;
   const fs=viewKey==='all'?8.5:10;let hits='';
-  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
+  let s=`<div class="mapbox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
   s+=`<rect width="360" height="${H}" fill="#dfe8ee"/>`;
   s+=`<defs><clipPath id="lc-${viewKey}"><path d="${LP}" fill-rule="evenodd"/></clipPath><marker id="gah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/></marker></defs>`;
   s+=`<path d="${LP}" fill="#f1ede4" stroke="#b9b2a4" stroke-width="0.6" fill-rule="evenodd"/>`;
@@ -1653,7 +1663,7 @@ function geoSVG(g,viewKey){
   for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(a[2])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><div class="modern">${modernSVG(g,viewKey)}</div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
+  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button></div><div class="modern mapbox">${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap" data-gi="${GEO.indexOf(g)}" data-vw="${viewKey}">${s}</div>`;
 }
 function modernSVG(g,viewKey){
@@ -1702,7 +1712,27 @@ function showInfo(w,k){
   box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function openPic(im){let lb=document.getElementById('lb');if(!lb){lb=document.createElement('div');lb.id='lb';lb.onclick=()=>{lb.style.display='none';lb.innerHTML=''};document.body.appendChild(lb)}lb.innerHTML=`<img src="${esc(im.src)}" alt=""><div class="cap">${esc(im.cap||'')}</div><div class="close">タップで閉じる</div>`;lb.style.display='flex'}
-function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
+function openZoom(w,svg){let mz=document.getElementById('mz');if(!mz){mz=document.createElement('div');mz.id='mz';document.body.appendChild(mz)}
+  const title=([...svg.querySelectorAll('text')].find(x=>x.getAttribute('font-size')==='11')||{}).textContent||'地図';
+  mz.innerHTML=`<div class="mzbar"><b>${esc(title)}</b><span class="muted">ピンチで拡大・ドラッグで移動</span><button class="btn sec mzclose" type="button">閉じる</button></div><div class="mzstage"></div><div class="mzctl"><button type="button" data-z="-">－</button><button type="button" data-z="+">＋</button><button type="button" data-z="0">リセット</button></div><div class="mzinfo mapwrap" data-gi="${w.dataset.gi||''}" data-vw="${w.dataset.vw||''}"><div class="mapinfo"><div class="hint">拡大地図の勢力・都市・川・交易路をタップすると説明が出ます</div></div></div>`;
+  mz.style.display='flex';document.body.style.overflow='hidden';const st=mz.querySelector('.mzstage');const c=svg.cloneNode(true);st.appendChild(c);
+  const vb=svg.viewBox.baseVal;const W=st.clientWidth,Hh=st.clientHeight;let base=Math.max(W/vb.width,Hh/vb.height)*1.0;let sc=1,tx=0,ty=0;
+  const fit=()=>{base=Math.min(W/vb.width*1.7,Hh/vb.height);sc=1;tx=(W-vb.width*base)/2;ty=(Hh-vb.height*base)/2};
+  const ap=()=>{c.style.transform=`translate(${tx}px,${ty}px) scale(${base*sc})`};
+  c.style.width=vb.width+'px';c.style.height=vb.height+'px';c.style.transformOrigin='0 0';c.style.position='absolute';c.style.left='0';c.style.top='0';
+  fit();ap();
+  const pts=new Map();let last=null;
+  st.onpointerdown=e=>{st.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);last=null};
+  st.onpointermove=e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,[e.clientX,e.clientY]);const P=[...pts.values()];
+    if(P.length===1){if(last){tx+=P[0][0]-last[0];ty+=P[0][1]-last[1];ap()}last=P[0].slice()}
+    else if(P.length>=2){const d=Math.hypot(P[0][0]-P[1][0],P[0][1]-P[1][1]);const mx=(P[0][0]+P[1][0])/2,my=(P[0][1]+P[1][1])/2;if(last&&last.d){const k=d/last.d;const r=st.getBoundingClientRect();const px=mx-r.left,py=my-r.top;tx=px-(px-tx)*k;ty=py-(py-ty)*k;sc*=k;tx+=mx-last.mx;ty+=my-last.my;ap()}last={d,mx,my}}};
+  st.onpointerup=st.onpointercancel=e=>{pts.delete(e.pointerId);last=null};
+  let moved=false;st.addEventListener('pointerdown',()=>{moved=false});st.addEventListener('pointermove',()=>{moved=true});
+  mz.querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{const z=b.dataset.z;if(z==='0'){fit();ap();return}const k=z==='+'?1.4:1/1.4;const px=W/2,py=Hh/2;tx=px-(px-tx)*k;ty=py-(py-ty)*k;sc*=k;ap()});
+  mz.querySelector('.mzclose').onclick=()=>{mz.style.display='none';mz.innerHTML='';document.body.style.overflow=''};
+  const iw=mz.querySelector('.mzinfo');c.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k])return;el.onclick=ev=>{ev.stopPropagation();if(moved)return;showInfo(iw,k);c.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));c.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'))}});
+}
+function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
 function viewChips(){return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
