@@ -37,7 +37,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .chip.on{background:var(--chip-on);color:var(--bg);border-color:var(--chip-on)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;margin:6px 0 10px}
 .grid .chip{width:100%;text-align:center;padding:7px 4px}
-.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;margin:8px 0 12px}
+.note{white-space:pre-wrap;line-height:1.6;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px;margin:8px 0 12px}
 .note b{color:var(--accent)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:10px}
 .card h3{margin:0 0 6px;font-size:14px;display:flex;align-items:center;gap:6px}
@@ -74,7 +74,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mapinfo .yoko{background:var(--bg);border-left:3px solid var(--accent);border-radius:6px;padding:6px 8px;margin:6px 0;font-size:13px}
 .mapinfo .yoko b{color:var(--accent)}
 .mapinfo .yoko div{padding:1px 0 1px 1em;text-indent:-1em}
-.mapinfo .pic,.exp .pic{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:6px;font-size:11px;padding:0 5px;margin:0 3px;line-height:1.5;vertical-align:middle;cursor:pointer}
+.mapinfo .pic,.exp .pic,.note .pic{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:6px;font-size:11px;padding:0 5px;margin:0 3px;line-height:1.5;vertical-align:middle;cursor:pointer}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px}#lb img{max-width:100%;max-height:70vh;border-radius:8px}#lb .cap{color:#fff;font-size:13px;margin-top:10px;text-align:center}#lb .close{color:#bbb;font-size:12px;margin-top:8px}
 .mapinfo figure{margin:6px 0}.mapinfo figure img{width:100%;border-radius:8px;display:block}.mapinfo figcaption{font-size:11.5px;color:var(--sub);margin-top:2px}
 .mapinfo .src{color:var(--sub);font-size:11.5px;margin-top:4px}
@@ -120,7 +120,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v26</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v27</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -736,6 +736,10 @@ const PERIODS = [
 ];
 
 // 区分ごとのヨコのつながり解説（PERIODSと同じ順）
+const PERIOD_YOKO = [
+'【全体像】前8世紀から前1世紀までの800年で、地中海・オリエント・インド・中国の4つの世界がそれぞれ「小さな都市国家の時代」から「大帝国の時代」へ進み、前2世紀に武帝の張騫（ちょうけん）派遣とローマの地中海制覇（せいは）で東西がシルクロードでつながる。この「同時進行」を世紀ごとに押さえるのがヨコの学習。\n\n【前8〜前6世紀｜都市国家と鉄器の時代】\n・ギリシア：人口増と土地不足から植民（しょくみん）活動（ビザンティオン・ネアポリス・マッサリア）。小アジアのリディアから鋳造（ちゅうぞう）貨幣が入り商業が発展。\n・オリエント：アッシリアが初めてオリエントを統一（前7世紀）→前612年に滅び4国分立。\n・中国：前770年、犬戎（けんじゅう）の侵入で周が鎬京（こうけい）から洛邑（らくゆう）へ東遷→春秋時代。鉄製農具・牛耕（ぎゅうこう）で農業が飛躍。\n・日本：縄文末期。前8世紀ごろ九州北部で水田稲作が始まる。\n→ 鉄器の普及と商業の発展が、ギリシア・インド・中国で同時に社会を動かした（ヨコの鉄則）。\n\n【前6〜前5世紀｜「軸の時代」】\n・オリエント：アケメネス朝ペルシア（キュロス2世）が4国を統一、ダレイオス1世が最盛期。「王の道」（サルデス〜スサ）と駅伝制。\n・ギリシア：ペルシア戦争（前500〜前449）に勝ってアテネ民主政が完成（ペリクレス）。ソクラテス（前470頃〜前399）。\n・インド：ガンジス川流域で商工業が発展し、バラモン教に不満を持つクシャトリヤ・ヴァイシャの支持で仏教（ガウタマ＝シッダールタ）とジャイナ教が誕生。\n・中国：孔子（前551〜前479）と諸子百家（しょしひゃっか）。\n→ 孔子・ブッダ・ソクラテスがほぼ同時代。「経済の発展→古い身分・宗教への疑問→新しい思想」という同じ流れが3地域で同時に起きた。\n\n【前4世紀｜アレクサンドロスと戦国時代】\n・アレクサンドロスの東方遠征（前334〜前324）でアケメネス朝が滅び、ギリシア文化がオリエントへ（ヘレニズム）。死後セレウコス朝・プトレマイオス朝・アンティゴノス朝に分裂。\n・中国：晋が趙（ちょう）・魏（ぎ）・韓（かん）に分裂（前403）して戦国時代へ。秦の商鞅（しょうおう）の変法。\n・インド：チャンドラグプタがマウリヤ朝を建国（前317頃）、都パータリプトラ。\n\n【前3世紀｜三大帝国の世紀】\n・ローマ：ポエニ戦争（前264〜前146）でカルタゴと激突。ハンニバルのアルプス越え（前218）。\n・中国：秦の始皇帝が統一（前221）、郡県制（ぐんけんせい）・焚書坑儒（ふんしょこうじゅ）・長城。わずか15年で滅び、劉邦（りゅうほう）が前漢を建国（前202）。\n・インド：アショーカ王（前268頃〜前232頃）が仏教を保護、法（ダルマ）の政治。\n・草原：匈奴（きょうど）の冒頓単于（ぼくとつぜんう）が即位（前209）。秦の滅亡とほぼ同時。\n→ ザマの戦い（前202）と前漢成立は同じ年。ローマ・秦漢・マウリヤという「三大帝国」が同時に立ち上がる。\n\n【前2世紀｜東西がつながる】\n・ローマ：カルタゴとコリントを滅ぼし（前146）地中海の覇者に。国内では貧富の差が広がりグラックス兄弟の改革（前133〜）。\n・中国：武帝（前141〜前87）が匈奴を挟撃（きょうげき）するため張騫を大月氏（だいげっし）へ派遣（前139）。衛青（えいせい）・霍去病（かくきょへい）の匈奴討伐、河西四郡（かせいしぐん）と敦煌（とんこう）、朝鮮に楽浪郡（らくろうぐん）（前108）。\n・西アジア：セレウコス朝からパルティア（安息）とバクトリアが自立。大月氏がバクトリアを征服。\n→ 武帝の西域経営とローマの地中海制覇で、オアシスの道が東西からつながりシルクロードが成立。\n\n【前1世紀｜ローマ帝政へ】\n・ローマ：内乱の1世紀。カエサル（前44年暗殺）→オクタウィアヌスがアクティウムの海戦（前31）で勝ち、プトレマイオス朝滅亡（前30）。前27年アウグストゥスの称号で元首政（げんしゅせい）＝帝政の始まり。\n・セレウコス朝はローマに滅ぼされ（前64）、地中海世界は完全にローマのもの。\n・日本：倭人（わじん）が100余国に分かれ、楽浪郡を通じて前漢に遣使（『漢書』地理志）。\n→ 東の後漢（25年〜）と西のローマ帝国がそろい、次の1・2世紀「シルクロード最初の繁栄」へ。',
+'【全体像】「シルクロードが最初の繁栄を迎えた時代」。西からローマ帝国・パルティア（安息（あんそく））・クシャーナ朝・後漢（ごかん）という4つの安定した大帝国が並び、草原の道・オアシスの道・海の道の3ルートで人・モノ・宗教（仏教・キリスト教）が動いた。2世紀末（180年 五賢帝の終焉、184年 黄巾（こうきん）の乱）にローマと後漢が同時に衰え始めるところまでが1セット。\n\n【ローマ帝国｜元首政と五賢帝】\n・前27年、アウグストゥスが元首政（げんしゅせい、プリンキパトゥス）を開始。「元老院の第一人者」として共和政の形式を保ちながら実質は皇帝。\n・9年 トイトブルク森の戦いでゲルマン人に大敗→ライン川・ドナウ川を防衛線とする。\n・同じころパレスチナでイエスが登場。ペテロ・パウロら使徒が伝道し、1〜2世紀は弾圧（だんあつ）の対象。\n・96〜180年 五賢帝（ごけんてい）時代（ネルウァ・トラヤヌス・ハドリアヌス・アントニヌス＝ピウス・マルクス＝アウレリウス＝アントニヌス）。トラヤヌスがダキア征服、115〜117年にはパルティアの都クテシフォンを一時占領して最大版図（はんと）。ハドリアヌスはブリタニアに長城を築き守りに転じる。マルクス＝アウレリウスはゲルマン人・パルティアとの戦いに追われ、180年に死去して「ローマの平和（パクス＝ロマーナ）」が終わる。\n\n【後漢｜光武帝から黄巾の乱まで】\n・8年 王莽（おうもう）の新→25年 劉秀（りゅうしゅう、光武帝（こうぶてい））が漢を復興、都は洛陽（らくよう）。周辺諸国と冊封（さくほう）関係を結ぶ。\n・57年 倭の奴国（なこく）王が朝貢し「漢委奴國王（かんのわのなのこくおう）」の金印を授かる（福岡・志賀島（しかのしま）出土）。\n・91年 班超（はんちょう）が西域都護（せいいきとご）となり北匈奴を追ってオアシスの道を確保。97年 部下の甘英（かんえい）を大秦（たいしん、ローマ）へ派遣するが、パルティアで海の広さを聞かされ引き返す。\n・105年 蔡倫（さいりん）が製紙法を改良。107年 倭国王帥升（すいしょう）が生口（せいこう）160人を献上。\n・166年 大秦王安敦（あんとん、マルクス＝アウレリウス）の使者が海路で日南郡（にちなんぐん、ベトナム中部）に到着＝海の道で東西が直結。\n・184年 太平道の張角（ちょうかく）が黄巾の乱→後漢は事実上崩壊し三国時代へ。\n\n【インド｜クシャーナ朝と大乗仏教】\n・1世紀、大月氏から出たクシャーナ朝がプルシャプラ（現ペシャワール）を都に建国。2世紀のカニシカ王が最盛期、仏教を保護。\n・仏教は個人の悟りを目指す上座部（じょうざぶ）から、菩薩（ぼさつ）信仰で万人の救済を説く大乗（だいじょう）仏教へ。ガンダーラ地方でギリシア彫刻の影響を受けた最初の仏像が生まれ、大乗仏教と仏像はオアシスの道を通って中国へ（洛陽の白馬寺（はくばじ）伝説）。\n・デカン高原のサータヴァーハナ朝はローマ帝国と季節風（モンスーン）貿易で結ばれ、ローマ金貨が大量に流入。\n\n【周辺｜海の道と草原の道】\n・東南アジア：メコン川下流の扶南（ふなん）、港市オケオからローマ金貨・インド仏像・漢の銅鏡が出土。2世紀末、ベトナム中部に林邑（りんゆう、チャンパー）が後漢から自立。\n・アフリカ：ナイル上流のクシュ王国（都メロエ、製鉄）と紅海沿岸のアクスム王国が海の道の西の端。\n・草原：北匈奴は後漢・南匈奴・鮮卑（せんぴ）に圧迫されて西へ去り、モンゴル高原は鮮卑のものに。朝鮮半島北部には高句麗（こうくり）。\n・日本：弥生中期〜後期。「クニ」が分立し、金印・銅鏡など中国の文物と称号を手に入れて他を圧倒しようとした。\n\n【ヨコの鉄則】4帝国の安定＝交易の繁栄＝宗教の伝播（でんぱ）。だから180年（五賢帝の終わり）と184年（黄巾の乱）がほぼ同時なのは偶然ではなく、次の「3世紀の危機」（ローマ軍人皇帝時代・中国三国時代・ササン朝の登場）へ同時に向かう。'
+];
 const PERIOD_NOTES = [
 '前5世紀は「軸の時代」：ペルシア戦争→アテネ民主政、インドの仏教・ジャイナ教、中国の孔子ら諸子百家が同時に現れる。前4世紀にアレクサンドロスの東方遠征（ヘレニズム）、中国は戦国時代、インドはマウリヤ朝（前317）。前3世紀は三大帝国の世紀：ローマ（ポエニ戦争）・秦の統一（前221）と前漢・アショーカ王。匈奴の冒頓単于（前209）と秦の滅亡はほぼ同時。前2世紀、ローマの地中海制覇（前146）と武帝の匈奴討伐・張騫派遣（前139）で東西からシルクロードが整う。前1世紀はローマ内乱→アウグストゥス（前27）、前108楽浪郡設置。',
 '「シルクロードが最初の繁栄を迎えた時代」：ローマ帝国（前27年〜アウグストゥスの元首政、五賢帝96〜180）・パルティア（安息）・クシャーナ朝（カニシカ王）・後漢（25年〜光武帝）という東西に安定した統治を行う大帝国が並び、草原の道・オアシスの道・海の道で活発に交易した。57年 倭の奴国王が光武帝から金印、91年 班超が西域都護、97年 甘英を大秦へ、115〜117年 トラヤヌスがクテシフォンを一時占領、166年 大秦王安敦の使者が日南郡へ。南インドはサータヴァーハナ朝と季節風貿易、東南アジアには扶南（港オケオ）・林邑。180年 五賢帝時代の終焉、184年 黄巾の乱→ローマ・後漢はともに衰退へ。',
@@ -1660,8 +1664,8 @@ function modernSVG(g,viewKey){
 function infoTerm(k){const f=INFO[k];if(!f)return '';return f.n.replace(/^日本：/,'').split(/[（(／]/)[0].replace(/の帝国$|の活動$|の圧迫.*$/,'')}
 function infoQs(k){const f=INFO[k];const t=infoTerm(k);const kws=f.kw||(t.length>=2?[t]:[]);if(!kws.length)return [];return ALL_CURATED.map((c,i)=>[c,i]).filter(([c])=>!c.hidden&&kws.some(w=>((c.q||'')+(c.ctx||'')+(c.opts||[]).join('')+(c.exp||'')).includes(w)))}
 let PIC_WORDS=null;
-function picExp(h){if(!PIC_WORDS){const seen=new Set();PIC_WORDS=[];Object.values(INFO).forEach(f=>(f.img||[]).forEach(im=>{if(!im.w||seen.has(im.src))return;seen.add(im.src);PIC_WORDS.push(im)}));PIC_WORDS.sort((a,b)=>b.w.length-a.w.length)}
-  const ims=[];const used=new Set();for(const im of PIC_WORDS){if(ims.length>=5)break;if([...used].some(u=>u.includes(im.w)))continue;const w=esc(im.w);const at=h.indexOf(w);if(at<0)continue;used.add(im.w);ims.push(im);const btn=`<button class="pic" data-ei="${ims.length-1}" title="写真を見る">📷</button>`;h=h.slice(0,at+w.length)+btn+h.slice(at+w.length)}
+function picExp(h,max=5){if(!PIC_WORDS){const seen=new Set();PIC_WORDS=[];Object.values(INFO).forEach(f=>(f.img||[]).forEach(im=>{if(!im.w||seen.has(im.src))return;seen.add(im.src);PIC_WORDS.push(im)}));PIC_WORDS.sort((a,b)=>b.w.length-a.w.length)}
+  const ims=[];const used=new Set();for(const im of PIC_WORDS){if(ims.length>=max)break;if([...used].some(u=>u.includes(im.w)))continue;const w=esc(im.w);const at=h.indexOf(w);if(at<0)continue;used.add(im.w);ims.push(im);const btn=`<button class="pic" data-ei="${ims.length-1}" title="写真を見る">📷</button>`;h=h.slice(0,at+w.length)+btn+h.slice(at+w.length)}
   return {html:h,ims}}
 function showInfo(w,k){
   const f=INFO[k];const box=w.querySelector('.mapinfo');if(!f||!box)return;
@@ -1707,9 +1711,11 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
-  if(note)h+=`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`;
+  const long=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP])||note;const np=long?picExp(esc(long),14):null;
+  if(long)h+=`<div class="note"><b>ヨコのつながり</b><br>${np.html.replace(/【([^】]+)】/g,'<strong>【$1】</strong>')}</div>`;
   if(GEO.some(g=>g.p===curP))h+=viewChips();GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
   $('#tlbody').innerHTML=h;
+  if(np)$('#tlbody').querySelectorAll('.note .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(np.ims[+b.dataset.ei])});
   $('#tlbody').querySelectorAll('.ev').forEach(d=>d.onclick=()=>openSame(+d.dataset.i));bindMaps($('#tlbody'));$('#tlbody').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{curView=b.dataset.view;renderTL()});
 }
 function openSame(i){
