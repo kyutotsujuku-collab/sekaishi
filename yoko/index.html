@@ -118,7 +118,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v21</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v22</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1639,7 +1639,7 @@ function geoSVG(g,viewKey){
   for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(a[2])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><div class="maptools"><button class="chip" data-modern="1">現代の地図と見比べる</button></div><div class="modern" hidden></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
+  s+=`</svg><div class="modern">${modernSVG(g,viewKey)}</div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap" data-gi="${GEO.indexOf(g)}" data-vw="${viewKey}">${s}</div>`;
 }
 function modernSVG(g,viewKey){
@@ -1671,7 +1671,7 @@ function showInfo(w,k){
   const qb=box.querySelector('[data-qs]');if(qb)qb.onclick=()=>{const l=box.querySelector('.qlist');if(!l.hidden){l.hidden=true;return}l.hidden=false;l.innerHTML=qs.map(([c])=>`<div class="qitem">${c.type?`<span class="muted">【${esc(c.type)}】</span>`:''}${esc(c.q.replace(/\n[\s\S]*/,'').slice(0,70))}${c.q.length>70?'…':''}\n<b>正解：${esc(c.opts[c.a])}</b>${c.src?`\n<span class="muted">出典：${esc(c.src)}</span>`:''}</div>`).join('')};
   box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
-function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{const mb=w.querySelector('[data-modern]');if(mb)mb.onclick=()=>{const box=w.querySelector('.modern');if(box.hidden){box.innerHTML=modernSVG(GEO[+w.dataset.gi],w.dataset.vw);box.hidden=false;mb.textContent='現代の地図を閉じる';mb.classList.add('on')}else{box.hidden=true;box.innerHTML='';mb.textContent='現代の地図と見比べる';mb.classList.remove('on')}};w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
+function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
 function viewChips(){return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
