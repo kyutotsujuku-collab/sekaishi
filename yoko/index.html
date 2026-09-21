@@ -74,7 +74,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mapinfo .yoko{background:var(--bg);border-left:3px solid var(--accent);border-radius:6px;padding:6px 8px;margin:6px 0;font-size:13px}
 .mapinfo .yoko b{color:var(--accent)}
 .mapinfo .yoko div{padding:1px 0 1px 1em;text-indent:-1em}
-.mapinfo figure{margin:6px 0}.mapinfo figure img{width:100%;border-radius:8px;display:block}.mapinfo figcaption{font-size:11.5px;color:var(--sub);margin-top:2px}
+.mapinfo .imgbtn{font-size:12px;padding:4px 10px;margin:4px 0}.mapinfo figure{margin:6px 0}.mapinfo figure img{width:100%;border-radius:8px;display:block}.mapinfo figcaption{font-size:11.5px;color:var(--sub);margin-top:2px}
 .mapinfo .src{color:var(--sub);font-size:11.5px;margin-top:4px}
 .mapinfo .rel{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .mapinfo .rel button{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:3px 9px;font-size:12px}
@@ -118,7 +118,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v20</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v21</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1662,11 +1662,12 @@ function showInfo(w,k){
   w.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));w.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'));
   const qs=infoQs(k);
   box.innerHTML=`<h4>${esc(f.n)}${f.y?`<span class="yr">${esc(f.y)}</span>`:''}</h4><div class="body">${esc(f.b)}</div>
-  ${(f.img||[]).map(im=>`<figure><img src="${esc(im.src)}" alt="${esc(im.cap||'')}" loading="lazy"><figcaption>${esc(im.cap||'')}</figcaption></figure>`).join('')}
+  ${(f.img||[]).length?`<button class="chip imgbtn" data-imgs="1">写真を見る（${f.img.length}枚）</button><div class="imgbox" hidden>${f.img.map(im=>`<figure><img data-src="${esc(im.src)}" alt="${esc(im.cap||'')}"><figcaption>${esc(im.cap||'')}</figcaption></figure>`).join('')}</div>`:''}
   ${f.yoko&&f.yoko.length?`<div class="yoko"><b>同時代のヨコ</b>${f.yoko.map(y=>`<div>・${esc(y)}</div>`).join('')}</div>`:''}
   <div class="src">出典：${esc(f.src||'')}</div>
   <div class="rel">${(f.rel||[]).filter(r=>INFO[r]).map(r=>`<button data-rel="${esc(r)}">${esc(INFO[r].n.split(/[（(／]/)[0])}</button>`).join('')}${qs.length?`<button class="q" data-qs="1">この項目が出る問題 ${qs.length}問</button>`:''}</div><div class="qlist" hidden></div>`;
   box.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>showInfo(w,b.dataset.rel));
+  const ib=box.querySelector('[data-imgs]');if(ib)ib.onclick=()=>{const ibox=box.querySelector('.imgbox');if(ibox.hidden){ibox.querySelectorAll('img[data-src]').forEach(im=>{im.src=im.dataset.src;im.removeAttribute('data-src')});ibox.hidden=false;ib.textContent='写真を閉じる';ib.classList.add('on')}else{ibox.hidden=true;ib.textContent=`写真を見る（${f.img.length}枚）`;ib.classList.remove('on')}};
   const qb=box.querySelector('[data-qs]');if(qb)qb.onclick=()=>{const l=box.querySelector('.qlist');if(!l.hidden){l.hidden=true;return}l.hidden=false;l.innerHTML=qs.map(([c])=>`<div class="qitem">${c.type?`<span class="muted">【${esc(c.type)}】</span>`:''}${esc(c.q.replace(/\n[\s\S]*/,'').slice(0,70))}${c.q.length>70?'…':''}\n<b>正解：${esc(c.opts[c.a])}</b>${c.src?`\n<span class="muted">出典：${esc(c.src)}</span>`:''}</div>`).join('')};
   box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
