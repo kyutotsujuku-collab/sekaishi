@@ -139,11 +139,12 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mzinfo{flex:1;overflow:auto;padding:6px 10px 20px}
 .kt{color:var(--kt);font-weight:700}
 .modtog{display:block;width:100%;margin-top:6px;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:13px;font-weight:600;text-align:left;cursor:pointer}
+.maphelp{background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.5;margin:0 0 8px}.maphelp b{color:var(--accent)}
 </style>
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v35</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v36</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1939,7 +1940,7 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
-  if(GEO.some(g=>g.p===curP))h+=viewChips();GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
+  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<div class="maphelp">👆 地図の<b>勢力名・都市・川・交易路・矢印・下線つきの注記</b>をタップすると、その説明と「同時代のヨコ」が下に出ます。「⤢ 拡大」でピンチ拡大できます。</div>`;GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
   const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
