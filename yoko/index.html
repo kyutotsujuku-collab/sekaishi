@@ -138,11 +138,12 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mzctl{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line)}.mzctl button{flex:1;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px}
 .mzinfo{flex:1;overflow:auto;padding:6px 10px 20px}
 .kt{color:var(--kt);font-weight:700}
+.modtog{display:block;width:100%;margin-top:6px;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:13px;font-weight:600;text-align:left;cursor:pointer}
 </style>
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v34</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v35</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1829,7 +1830,7 @@ function geoSVG(g,viewKey){
   for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(a[2])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button></div><div class="modern mapbox">${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
+  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button></div><button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap" data-gi="${GEO.indexOf(g)}" data-vw="${viewKey}">${s}</div>`;
 }
 function modernSVG(g,viewKey){
@@ -1910,7 +1911,7 @@ function openZoom(w,svg){let mz=document.getElementById('mz');if(!mz){mz=documen
   mz.querySelector('.mzclose').onclick=()=>{mz.style.display='none';mz.innerHTML='';document.body.style.overflow=''};
   const iw=mz.querySelector('.mzinfo');c.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k])return;el.onclick=ev=>{ev.stopPropagation();if(moved)return;showInfo(iw,k);c.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));c.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'))}});
 }
-function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
+function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.modtog').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const m=b.nextElementSibling;m.hidden=!m.hidden;b.textContent=m.hidden?'🗺 現在の地図と見比べる ▾':'🗺 現在の地図を閉じる ▴'});w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
 function viewChips(){return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
