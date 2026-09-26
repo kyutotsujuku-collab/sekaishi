@@ -23,8 +23,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
 header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 0}
-.hrow{display:flex;align-items:baseline;justify-content:space-between}
-h1{font-size:18px;margin:0;font-weight:700}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:6px}
+h1{font-size:18px;margin:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .ver{font-size:12px;color:var(--sub)}
 nav{display:flex;gap:4px;margin-top:8px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -140,11 +140,16 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .kt{color:var(--kt);font-weight:700}
 .modtog{display:block;width:100%;margin-top:6px;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:13px;font-weight:600;text-align:left;cursor:pointer}
 .maphelp{background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.5;margin:0 0 8px}.maphelp b{color:var(--accent)}
+.notelegend{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}.notelegend .nl{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 8px;font-size:12.5px;text-align:left;cursor:pointer}.notelegend .nl:active{background:var(--chip)}
+.fsz{margin-left:auto;margin-right:8px;display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.fsz button{border:0;background:var(--card);color:var(--ink);padding:2px 7px;font-weight:700;line-height:1;cursor:pointer}
+.fsz button:nth-child(1){font-size:11px}.fsz button:nth-child(2){font-size:14px}.fsz button:nth-child(3){font-size:17px}
+.fsz button.on{background:var(--chip-on);color:var(--bg)}
 </style>
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="ver">v37</span></div>
+  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v39</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -1158,7 +1163,7 @@ const GEO = [
  {p:2,title:'3・4世紀の世界',src:'『同時に学べ』p.34〜35',
   areas:[['rome_ad2','W','ローマ帝国',null,'rome_34'],['sassanid','I','ササン朝ペルシア',[5,-3.5]],['kushan_34','S','クシャーナ朝',[6,1]],['gupta','S','グプタ朝（4世紀）',[4,-2]],['wei','C','魏',[-4,-1]],['shu','C','蜀',[-2,-2]],['wu','C','呉',[1,-1]],['xianbei_34','C','鮮卑'],['s_xiongnu','C','匈奴',[-1,0.5]],['goguryeo','J','高句麗',[1,1]]],
   marks:[[10,53,4,2.5,'W','ゲルマン人','ゲルマン人の大移動'],[136,36,4,2,'J','日本','yamatai']],
-  notes:[[24,25.5,'ローマの分裂とキリスト教の拡大','christianity_34'],[44,19,'ササン朝の成立と発展','sassanid'],[108,58,'遊牧系民族の南下','五胡'],[78,8.5,'クシャーナ朝・サータヴァーハナ朝の滅亡','india_3c'],[118,14,'後漢滅亡→魏晋南北朝時代へ','三国時代'],[127,20.5,'邪馬台国と「空白の4世紀」','yamatai'],[66,57,'「3世紀の危機」（寒冷化）','crisis3']],
+  notes:[[24,25.5,'ローマの分裂とキリスト教の拡大','christianity_34'],[44,19,'ササン朝の成立と発展','sassanid'],[108,58,'遊牧系民族の南下','五胡'],[78,8.5,'クシャーナ朝・サータヴァーハナ朝の滅亡','india_3c'],[118,14,'後漢滅亡→魏晋南北朝時代へ','三国時代'],[127,20.5,'邪馬台国と「空白の4世紀」','yamatai'],[80,60,'「3世紀の危機」（寒冷化）','crisis3']],
   arrows:[[12,51,12,46,'','ゲルマン人の大移動'],[47,36.5,38,37.5,'','ササン朝とローマの抗争'],[112,46,112,42.5,'南下','五胡'],[131,33,120,35.5,'卑弥呼','卑弥呼の遣使'],[66,49,40,50,'フン人の西進','フン人の西進']],
   cities:['rome','constantinople','ctesiphon','pataliputra','luoyang','chengdu','jianye'],routes:['オアシスの道','海の道'],rivers:true},
 ];
@@ -1767,6 +1772,8 @@ const REG=Object.fromEntries(REGIONS.map(r=>[r.id,r]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+function applyZoom(z){document.body.style.zoom=z;document.querySelectorAll('#fsz button').forEach(b=>b.classList.toggle('on',+b.dataset.z===z))}
+(function(){const z=store.get('yoko_zoom',1.15);applyZoom(z);document.querySelectorAll('#fsz button').forEach(b=>b.onclick=()=>{const z=+b.dataset.z;store.set('yoko_zoom',z);applyZoom(z)})})();
 const EV=EVENTS.map((e,i)=>({i,y:e[0],r:e[1],t:e[2],n:e[3]||''}));
 const inSel=(e,sel)=>(sel.length?sel:AVAILABLE).includes(pidx(e.y));
 const dynAt=(R,y)=>{const l=DYNASTIES[R].find(d=>y>=d[0]&&y<d[1]);return l?l[2]:null};
@@ -1811,7 +1818,7 @@ function landPath(key,PX){if(!landCache[key])landCache[key]=LAND.map(poly=>'M'+p
 function geoSVG(g,viewKey){
   viewKey=viewKey||'all';const v=VIEWS[viewKey];const {H,PX}=mkPX(v);const LP=landPath(viewKey,PX);
   const inV=(lon,lat)=>lon>=v.lon[0]-3&&lon<=v.lon[1]+3&&lat>=v.lat[0]-3&&lat<=v.lat[1]+3;
-  const fs=viewKey==='all'?8.5:10;let hits='';
+  const fs=viewKey==='all'?9.5:12.5;let hits='';const NUM='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮';let legend=[];
   let s=`<div class="mapbox"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
   s+=`<rect width="360" height="${H}" fill="#dfe8ee"/>`;
   s+=`<defs><clipPath id="lc-${viewKey}"><path d="${LP}" fill-rule="evenodd"/></clipPath><marker id="gah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/></marker></defs>`;
@@ -1823,15 +1830,15 @@ function geoSVG(g,viewKey){
   for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).join(',')).join(' ');s+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="9"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);s+=`<text class="tapt" data-key="${esc(rn)}" x="${x}" y="${y-4}" text-anchor="middle" font-size="${fs-1}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(rn)}</text>`}}
   for(const dd of (g.dashed||[])){const [x,y]=PX(dd[0],dd[1]);const {PX:_}=mkPX(v);const rx=dd[2]*360/(v.lon[1]-v.lon[0]),ry=dd[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap dashed" data-key="${dd[5]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--sub)" stroke-width="1" stroke-dasharray="3,2" style="pointer-events:stroke"/><text class="tapt" data-key="${dd[5]||''}" x="${x}" y="${y-ry-3}" text-anchor="middle" font-size="${fs-1}" fill="var(--sub)">${esc(dd[4])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const rx=m[2]*360/(v.lon[1]-v.lon[0]),ry=m[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap mark" data-key="${m[6]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="var(--${m[4]})" fill-opacity="0.35" stroke="var(--${m[4]})" stroke-width="1.2"/>`}
-  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s+=`<circle class="tap city" data-key="${cky}" cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><circle class="tap" data-key="${cky}" cx="${x}" cy="${y}" r="8" fill="transparent"/><text class="tapt" data-key="${cky}" x="${x+3}" y="${y+3}" font-size="${fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}
-  for(const n of (g.notes||[])){if(!inV(n[0],n[1]))continue;const [x,y]=PX(n[0],n[1]);s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="${fs-0.5}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="2" paint-order="stroke" text-decoration="underline">${esc(n[2])}</text>`}
+  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s+=`<circle class="tap city" data-key="${cky}" cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><circle class="tap" data-key="${cky}" cx="${x}" cy="${y}" r="8" fill="transparent"/>${viewKey==="all"?"":`<text class="tapt" data-key="${cky}" x="${x+3}" y="${y+3}" font-size="${fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}`}
+  (g.notes||[]).forEach((n,ni)=>{if(!inV(n[0],n[1]))return;const [x,y]=PX(n[0],n[1]);if(viewKey==='all'){legend.push(`<button class="tapt nl" data-key="${n[3]||''}">${NUM[ni]||'●'} ${esc(n[2])}</button>`);s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)" stroke="#fff" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}</text>`}else{s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="${fs-1.5}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="2.5" paint-order="stroke" text-decoration="underline">${esc(n[2])}</text>`}})
   for(const a of g.arrows){if(!inV(a[0],a[1])&&!inV(a[2],a[3]))continue;const [x1,y1]=PX(a[0],a[1]),[x2,y2]=PX(a[2],a[3]);const mx=(x1+x2)/2,my=(y1+y2)/2-10;
     s+=`<path d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)" style="pointer-events:none"/><path class="tap arrow" data-key="${a[5]||''}" d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="transparent" stroke-width="7"/>`;
     if(a[4])s+=`<text class="tapt" data-key="${a[5]||''}" x="${mx}" y="${my-2}" text-anchor="middle" font-size="${fs}" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(a[4])}</text>`}
   for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}const [x,y]=PX(cx/n,cy/n);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(a[2])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button></div><button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
+  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button></div>${legend.length?`<div class="notelegend">${legend.join('')}</div>`:''}<button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap" data-gi="${GEO.indexOf(g)}" data-vw="${viewKey}">${s}</div>`;
 }
 function modernSVG(g,viewKey){
