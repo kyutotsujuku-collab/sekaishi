@@ -56,13 +56,23 @@ h2{font-size:15px;color:var(--sub);margin:16px 0 8px}
 .sheet .st{font-weight:700;text-align:center;margin-bottom:4px}
 .sheet button{border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:700;background:var(--acc);color:#fff}
 .sheet button.r{background:var(--ng)}.sheet button.g{background:#e2e2e6;color:#333}
+.sum{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:6px 0 4px}
+.sum .t{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin:4px 0 3px}
+.sum .t b{font-size:18px;color:var(--acc)}
+.sum .t small{color:var(--sub)}
+.sum .bar{margin-bottom:8px}
+.sum .bar div{background:var(--ok)}
+.sum .rs{display:block;margin:6px 0 0 auto;background:transparent;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--sub)}
+.dn{display:inline-block;margin-left:6px;background:#e9f7ee;color:var(--ok);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700}
 .hide{display:none}
 </style>
 </head>
 <body>
-<header><span id="ttl">世界史 文化史・年号</span><span style="font-size:11px;color:#aaa;margin-left:auto;margin-right:8px">v7</span><button id="home" class="hide">TOP</button></header>
+<header><span id="ttl">世界史 文化史・年号</span><span style="font-size:11px;color:#aaa;margin-left:auto;margin-right:8px">v8</span><button id="home" class="hide">TOP</button></header>
 <main>
 <div id="menu">
+  <h2>達成度</h2>
+  <div class="sum" id="sum"></div>
   <h2>モード</h2>
   <div class="seg" id="mode">
     <button data-m="quiz" class="on">4択</button>
@@ -93,6 +103,19 @@ const $ = s => document.querySelector(s);
 const KEY = "sekaishi_wrong";
 function loadW() { try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { return {}; } }
 function saveW(title, qs) { try { const w = loadW(); w[title] = qs; localStorage.setItem(KEY, JSON.stringify(w)); } catch (e) {} }
+const DKEY = "sekaishi_done";
+function loadD() { try { return JSON.parse(localStorage.getItem(DKEY) || "{}"); } catch (e) { return {}; } }
+function setDone(k, v) { try { const d = loadD(); if (v) d[k] = 1; else delete d[k]; localStorage.setItem(DKEY, JSON.stringify(d)); } catch (e) {} }
+function doneOf(items) { const d = loadD(); return items.filter(x => d[x.k]).length; }
+function doneBadge(items) { const n = doneOf(items); return n ? `<span class="dn">覚えた${n}</span>` : ""; }
+function drawSum() {
+  const cu = []; DATA.chapters.forEach(c => c.items.forEach(x => cu.push({ k: ck(x) })));
+  const yr = DATA.years.map(x => ({ k: yk(x) }));
+  const row = (name, its) => { const n = doneOf(its), t = its.length, p = Math.round(n / t * 100); return `<div class="t"><span>${name}</span><span><b>${p}%</b> <small>${n} / ${t}</small></span></div><div class="bar"><div style="width:${p}%"></div></div>`; };
+  $("#sum").innerHTML = row("<b>全体</b>", cu.concat(yr)) + row("文化史", cu) + row("年号", yr) + `<button class="rs" id="rs">達成度をリセット</button>`;
+  $("#rs").onclick = () => { if (confirm("達成度の記録を消しますか？")) { try { localStorage.removeItem(DKEY); } catch (e) {} refreshMenu(); } };
+}
+const ck = x => "c|" + x.q + "|" + x.a, yk = x => "y|" + x.y + "|" + x.e;
 function wrongOf(title, items) { const w = loadW()[title] || []; return items.filter(x => w.includes(x.q)); }
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
@@ -115,40 +138,59 @@ function choose(title, items, poolFn) {
   ov.onclick = e => { if (e.target === ov) ov.remove(); };
 }
 function refreshMenu() { $("#chaps").innerHTML = ""; $("#years").innerHTML = ""; buildMenu(); }
+function seedDone() {
+  try {
+    if (localStorage.getItem(DKEY) !== null) return;
+    const w = loadW(); if (!Object.keys(w).length) return;
+    const d = {};
+    const mark = (title, items) => { if (!(title in w)) return; const wr = w[title]; items.forEach(x => { if (!wr.includes(x.q)) d[x.k] = 1; }); };
+    const all = [];
+    DATA.chapters.forEach(c => { const its = c.items.map(x => ({ q: x.q, k: ck(x) })); mark(c.title, its); all.push(...its); });
+    mark("文化史 全範囲", all);
+    const GR = [["古代（紀元前）", 0, 15], ["1〜9世紀", 15, 28], ["10〜14世紀", 28, 42], ["15〜17世紀", 42, 55], ["18〜19世紀", 55, 70], ["20世紀", 70, 84]];
+    [["fwd", "出来事→年号"], ["rev", "年号→出来事"]].forEach(([dir, lab]) => {
+      const mk = x => ({ q: dir === "fwd" ? x.e : x.y, k: yk(x) });
+      GR.forEach(([name, s, e]) => mark(`${name}（${lab}）`, DATA.years.slice(s, e).map(mk)));
+      mark(`年号 全範囲（${lab}）`, DATA.years.map(mk));
+    });
+    localStorage.setItem(DKEY, JSON.stringify(d));
+  } catch (e) {}
+}
 function buildMenu() {
+  seedDone(); drawSum();
   const ch = $("#chaps");
   const all = [];
   DATA.chapters.forEach((c, i) => {
     const d = document.createElement("div"); d.className = "row";
-    const its = c.items.map(x => ({ sec: x.sec, q: x.q, a: x.a }));
-    d.innerHTML = `<span>${c.title}</span><small>${c.items.length}問${badge(c.title, its)}</small>`;
+    const its = c.items.map(x => ({ sec: x.sec, q: x.q, a: x.a, k: ck(x) }));
+    d.innerHTML = `<span>${c.title}</span><small>${c.items.length}問${doneBadge(its)}${badge(c.title, its)}</small>`;
     d.onclick = () => choose(c.title, its, () => all.map(x => x.a));
     ch.appendChild(d);
     all.push(...c.items);
   });
   const d = document.createElement("div"); d.className = "row";
-  const allIts = all.map(x => ({ sec: x.sec, q: x.q, a: x.a }));
-  d.innerHTML = `<span><b>文化史 全範囲</b></span><small>${all.length}問${badge("文化史 全範囲", allIts)}</small>`;
+  const allIts = all.map(x => ({ sec: x.sec, q: x.q, a: x.a, k: ck(x) }));
+  d.innerHTML = `<span><b>文化史 全範囲</b></span><small>${all.length}問${doneBadge(allIts)}${badge("文化史 全範囲", allIts)}</small>`;
   d.onclick = () => choose("文化史 全範囲", allIts, () => all.map(x => x.a));
   ch.appendChild(d);
 
   const yr = $("#years");
   const GROUPS = [["古代（紀元前）", 0, 15, "1万年前〜前27"], ["1〜9世紀", 15, 28, "96〜870"], ["10〜14世紀", 28, 42, "907〜1368"],
                   ["15〜17世紀", 42, 55, "1402〜1689"], ["18〜19世紀", 55, 70, "1701〜1899"], ["20世紀", 70, 84, "1908〜1991"]];
-  const mk = x => ydir === "fwd" ? { sec: "出来事→年号", q: x.e, a: x.y, g: x.g } : { sec: "年号→出来事", q: x.y, a: x.e, g: x.g };
+  const mk = x => ydir === "fwd" ? { sec: "出来事→年号", q: x.e, a: x.y, g: x.g, k: yk(x) } : { sec: "年号→出来事", q: x.y, a: x.e, g: x.g, k: yk(x) };
   const allY = DATA.years.map(mk);
   const lab = ydir === "fwd" ? "出来事→年号" : "年号→出来事";
   GROUPS.forEach(([name, s, e, rng]) => {
     const items = DATA.years.slice(s, e).map(mk);
     const title = `${name}（${lab}）`;
     const r = document.createElement("div"); r.className = "row";
-    r.innerHTML = `<span>${name} <small>${rng}</small></span><small>${items.length}問${badge(title, items)}</small>`;
+    r.innerHTML = `<span>${name} <small>${rng}</small></span><small>${items.length}問${doneBadge(items)}${badge(title, items)}</small>`;
     r.onclick = () => choose(title, items, () => allY.map(x => x.a));
     yr.appendChild(r);
   });
   const ra = document.createElement("div"); ra.className = "row";
   const ta = `年号 全範囲（${lab}）`;
-  ra.innerHTML = `<span><b>年号 全範囲</b></span><small>${allY.length}問${badge(ta, allY)}</small>`;
+  ra.innerHTML = `<span><b>年号 全範囲</b></span><small>${allY.length}問${doneBadge(allY)}${badge(ta, allY)}</small>`;
   ra.onclick = () => choose(ta, allY, () => allY.map(x => x.a));
   yr.appendChild(ra);
 }
@@ -216,6 +258,7 @@ function render() {
       const ok = b.dataset.a === it.a;
       document.querySelectorAll(".opts button").forEach(x => { if (x.dataset.a === it.a) x.classList.add("ok"); });
       if (ok) score++; else { b.classList.add("ng"); wrong.push(it); }
+      setDone(it.k, ok);
       $("#next").classList.remove("hide");
       if (it.g) $("#ans").classList.remove("hide");
       if (ok && !it.g) setTimeout(() => { idx++; render(); }, 500);
@@ -223,8 +266,8 @@ function render() {
     $("#next").onclick = () => { idx++; render(); };
   } else {
     $("#show").onclick = () => { $("#ans").classList.remove("hide"); $("#c1").classList.add("hide"); $("#c2").classList.remove("hide"); };
-    $("#ok").onclick = () => { score++; idx++; render(); };
-    $("#ng").onclick = () => { wrong.push(it); idx++; render(); };
+    $("#ok").onclick = () => { setDone(it.k, true); score++; idx++; render(); };
+    $("#ng").onclick = () => { setDone(it.k, false); wrong.push(it); idx++; render(); };
   }
 }
 
