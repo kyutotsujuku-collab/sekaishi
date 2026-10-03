@@ -24,7 +24,7 @@
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
 header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 16px 0}
 .hrow{display:flex;align-items:center;justify-content:space-between;gap:6px}
-h1{font-size:18px;margin:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+h1{font-size:17px;margin:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
 .ver{font-size:12px;color:var(--sub)}
 nav{display:flex;gap:4px;margin-top:8px;overflow-x:auto;scrollbar-width:none}
 nav::-webkit-scrollbar{display:none}
@@ -143,6 +143,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 .modtog{display:block;width:100%;margin-top:6px;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--accent);font-size:13px;font-weight:600;text-align:left;cursor:pointer}
 .maphelp{background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.5;margin:0 0 8px}.maphelp b{color:var(--accent)}
 .notelegend{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:6px}.notelegend .nlhead{width:100%;font-size:12px;color:var(--sub);margin:0 0 -2px 2px}.notelegend .nl{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:4px 8px;font-size:12.5px;text-align:left;cursor:pointer}.notelegend .nl:active{background:var(--chip)}
+.rsbtn{border:1px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:3px 7px;font-weight:700;font-size:11px;cursor:pointer;margin-right:8px;white-space:nowrap}body.redsheet .rsbtn{background:var(--kt);color:#fff}
 .fsz{margin-left:auto;margin-right:8px;display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .fsz button{border:0;background:var(--card);color:var(--ink);padding:2px 7px;font-weight:700;line-height:1;cursor:pointer}
 .fsz button:nth-child(1){font-size:11px}.fsz button:nth-child(2){font-size:14px}.fsz button:nth-child(3){font-size:17px}
@@ -151,7 +152,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史 ヨコのつながり</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v46</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v47</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -2385,6 +2386,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function applyZoom(z){document.body.style.zoom=z;document.querySelectorAll('#fsz button').forEach(b=>b.classList.toggle('on',+b.dataset.z===z))}
 document.body.classList.toggle('redsheet',!!store.get('yoko_sheet',false));
+$('#rsbtn').onclick=()=>{const on=!document.body.classList.contains('redsheet');document.body.classList.toggle('redsheet',on);store.set('yoko_sheet',on);document.querySelectorAll('#tab-tl .kt.show').forEach(k=>k.classList.remove('show'));if(typeof renderTL==='function')renderTL()};
 const setHdr=()=>document.documentElement.style.setProperty('--hdr',document.querySelector('header').offsetHeight+'px');setHdr();window.addEventListener('resize',setHdr);
 document.addEventListener('click',ev=>{if(!document.body.classList.contains('redsheet'))return;const k=ev.target.closest('#tab-tl .kt');if(!k)return;k.classList.toggle('show');ev.stopPropagation();ev.preventDefault()},true);
 (function(){const z=store.get('yoko_zoom',1.15);applyZoom(z);document.querySelectorAll('#fsz button').forEach(b=>b.onclick=()=>{const z=+b.dataset.z;store.set('yoko_zoom',z);applyZoom(z)})})();
@@ -2568,10 +2570,9 @@ function renderTL(){
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
   if(GEO.some(g=>g.p===curP))h+=viewChips()+`<div class="maphelp">👆 地図の<b>勢力名・都市・川・交易路・矢印・下線つきの注記</b>をタップすると、その説明と「同時代のヨコ」が下に出ます。「⤢ 拡大」でピンチ拡大できます。<br>「全体」地図の<b>①②③…はこの時代の主な出来事</b>。文字の重なりを防ぐため番号にしてあり、内容は地図の下のボタンにあります（番号・ボタンどちらをタップしても説明が出ます）。</div>`;GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
-  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=`<div class="sheetbar"><button type="button" class="sheetbtn">${document.body.classList.contains('redsheet')?'🟥 赤シートON（タップで解除）':'🟥 赤シート：重要語を隠す'}</button><span class="muted">隠した語は1つずつタップで表示</span></div>`+yp.html;
+  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は上の「赤シート」ボタン）</div>`:'')+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
-  const sb=$('#tlbody').querySelector('.sheetbtn');if(sb)sb.onclick=()=>{const on=!document.body.classList.contains('redsheet');document.body.classList.toggle('redsheet',on);store.set('yoko_sheet',on);sb.textContent=on?'🟥 赤シートON（タップで解除）':'🟥 赤シート：重要語を隠す';$('#tlbody').querySelectorAll('.kt.show').forEach(k=>k.classList.remove('show'))};
   $('#tlbody').querySelectorAll('.ev').forEach(d=>d.onclick=()=>openSame(+d.dataset.i));bindMaps($('#tlbody'));$('#tlbody').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{curView=b.dataset.view;renderTL()});
 }
 function openSame(i){
