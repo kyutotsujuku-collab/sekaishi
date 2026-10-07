@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"><meta name="theme-color" content="#fff7e2">
+<title>世界史B 確認テスト</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@700;900&display=swap">
+<style>
+/* layout: 1カラムの答案返却シート。上に固定タブ、点数だけ大きく、あとは表と帯で読ませる */
+:root{
+  --bg:#fff7e2; --surface:#fffdf5; --ink:#3b2516; --muted:#806651; --line:#ecd9ae;
+  --yellow:#f7c520; --yellow-soft:#fdeeb0; --orange:#e2701a; --red:#c5301c; --red-soft:#fbdcd2; --ok:#66771a; --ok-soft:#e9edc4;
+  --display:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1e1510; --surface:#291d16; --ink:#f7ebd9; --muted:#c2ab92; --line:#4d392b;
+  --yellow:#f2c230; --yellow-soft:#4a3a12; --orange:#f39347; --red:#f26b52; --red-soft:#4a211a; --ok:#b9ca62; --ok-soft:#353c16; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1e1510; --surface:#291d16; --ink:#f7ebd9; --muted:#c2ab92; --line:#4d392b;
+  --yellow:#f2c230; --yellow-soft:#4a3a12; --orange:#f39347; --red:#f26b52; --red-soft:#4a211a; --ok:#b9ca62; --ok-soft:#353c16; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.75}
+.wrap{max-width:860px;margin:0 auto;padding-inline:16px;padding-block:20px 80px;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.35}
+h1{font-size:clamp(26px,6vw,38px);font-weight:900}
+h2{font-size:24px;font-weight:900;padding-bottom:8px;border-bottom:3px solid var(--yellow)}
+h3{font-size:18px;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted);font-size:14px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav div{max-width:860px;margin:0 auto;padding:8px 16px;display:flex;gap:6px;overflow-x:auto}
+nav a{flex:none;color:var(--ink);text-decoration:none;font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav a:hover,nav a:focus-visible{background:var(--yellow-soft);outline:none;border-color:var(--yellow)}
+section{display:flex;flex-direction:column;gap:18px;scroll-margin-top:64px}
+.hero{display:flex;flex-wrap:wrap;gap:20px 36px;align-items:flex-end}
+.score{font-family:var(--display);font-weight:900;font-size:clamp(72px,20vw,120px);line-height:.9;color:var(--orange);font-variant-numeric:tabular-nums}
+.score small{font-size:.28em;color:var(--muted);margin-left:6px}
+.hero ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;font-weight:500}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;font-size:14px}
+.bar{height:14px;background:var(--red-soft);border-radius:3px;overflow:hidden;min-width:0}
+.bar i{display:block;height:100%;background:var(--yellow)}
+.bars b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55}
+th,td{padding:7px 10px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:var(--yellow-soft);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n,th.n{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.ng td{background:var(--red-soft)}
+.mark{font-weight:700}.mark.o{color:var(--ok)}.mark.x{color:var(--red)}
+.pat{border-left:6px solid var(--orange);padding:4px 0 4px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.pat .head{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.chip{display:inline-block;font-size:13px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--yellow-soft);border:1px solid var(--yellow);white-space:nowrap}
+.fix{background:var(--ok-soft);padding:6px 10px;border-radius:4px;font-size:15px}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+ol.prio{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+ol.prio a{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;text-decoration:none;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+ol.prio a:hover,ol.prio a:focus-visible{border-color:var(--orange);outline:none}
+ol.prio .rk{font-family:var(--display);font-weight:900;font-size:30px;color:var(--orange);text-align:center;line-height:1}
+ol.prio .t{font-weight:700}
+.unit{display:flex;flex-direction:column;gap:14px;scroll-margin-top:64px;padding-top:6px}
+.unit>h3{font-size:21px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.unit>h3 span{color:var(--orange);font-size:26px}
+.blk{display:flex;flex-direction:column;gap:6px;min-width:0}
+.blk h4{margin:0;font-size:15px;font-weight:700;color:var(--orange)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:6px}
+summary{cursor:pointer;padding:9px 12px;font-weight:500;list-style-position:outside;margin-left:18px}
+summary:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+details p{padding:0 12px 10px 30px;font-weight:700;color:var(--ok)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.wr{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-bottom:1px dashed var(--line);min-width:0}
+.wr .l{font-size:14px}.wr .l b{display:inline-block;min-width:3em}
+.q{display:flex;flex-direction:column;gap:8px;padding:16px 0;border-bottom:1px solid var(--line);min-width:0}
+.q .stem{font-weight:500}
+.q .pre{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-size:15px;overflow-x:auto}
+.q .pre table{width:auto}.q .pre td,.q .pre th{white-space:nowrap}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts.six{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.opts label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;min-width:0}
+.opts input{margin-top:6px;accent-color:var(--orange);flex:none}
+.opts label:has(input:checked){border-color:var(--orange);background:var(--yellow-soft)}
+.opts label:has(input:focus-visible){outline:2px solid var(--orange)}
+.graded .opts label.right{border-color:var(--ok);background:var(--ok-soft)}
+.graded .opts label.miss{border-color:var(--red);background:var(--red-soft)}
+.ex{font-size:14px;background:var(--surface);border-left:4px solid var(--yellow);padding:6px 10px}
+button{font:inherit;font-weight:700;border-radius:999px;padding:10px 22px;cursor:pointer;border:2px solid var(--orange);background:var(--orange);color:var(--surface)}
+button.ghost{background:transparent;color:var(--orange)}
+button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;position:sticky;bottom:env(safe-area-inset-bottom,0px);background:var(--bg);border-top:2px solid var(--yellow);padding:10px 0;z-index:4}
+.actions .stat{font-weight:700;font-variant-numeric:tabular-nums;margin-right:auto}
+.opts label{min-height:48px;align-items:center;padding:10px 14px;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.opts input{width:22px;height:22px;margin:0}
+@media (min-width:700px){body{font-size:17px}.q{padding:22px 0;gap:12px}.q .stem{font-size:18px}.opts{gap:8px}}
+#result{font-weight:700;font-size:18px}
+</style>
+</head><body style="margin:0">
+<div class="wrap" style="gap:20px">
+<header style="display:flex;flex-direction:column;gap:6px"><p class="muted">令和5年度 共通テスト追試 世界史B の類題</p><h1>世界史B　確認テスト</h1></header>
+<section id="test">
+
+<p>共通テスト形式の20問。1問5点、目安15分。選択肢をタップして答え、最後に「採点する」を押す。途中の解答はこの端末に保存される。</p>
+<form id="quiz" novalidate></form>
+<div class="actions">
+  <span class="stat" id="stat"></span>
+  <button type="button" id="grade">採点する</button>
+  <button type="button" class="ghost" id="reset">やり直す</button>
+  <span id="result" role="status"></span>
+</div>
+<p class="note" id="feedback" hidden></p>
+</section>
+</div>
+<script>
+const D={test:[{"cat":"混同","q":"18世紀のヨーロッパの戦争について述べた文として最も適当なものを一つ選べ。","o":["スペイン継承戦争の結果、アーヘン条約が結ばれた。","プロイセンは、オーストリア継承戦争でシュレジエンを獲得した。","イギリスは、七年戦争でオーストリアを支援した。","外交革命とは、イギリスとフランスとの同盟の締結を指す。"],"a":2,"ex":"①はユトレヒト条約。③イギリスが支援したのはプロイセン。④はオーストリアとフランスの同盟。"},{"cat":"混同","q":"マリア=テレジアの子で、啓蒙専制君主として改革を進めた人物の名 あ・い と、その人物の事績 X・Y との組合せとして正しいものを一つ選べ。","pre":"<b>人物の名</b>　あ　フリードリヒ2世　　い　ヨーゼフ2世<br><b>事績</b>　X　農奴解放令を発した。　　Y　サンスーシ宮殿を建てた。","o":["あ―X","あ―Y","い―X","い―Y"],"a":3,"ex":"ヨーゼフ2世は宗教寛容令と農奴解放令。フリードリヒ2世はプロイセン王で、サンスーシ宮殿を建てた。"},{"cat":"混同","q":"次の文章中の空欄 ア に入れる語 う〜お と、空欄 イ に入れる文 Y・Z との組合せとして正しいものを一つ選べ。","pre":"1538年、スレイマン1世時代のオスマン帝国の艦隊は、［ ア ］の海戦でスペイン・ヴェネツィアなどの連合艦隊を破った。その結果、［ イ ］。<br><b>ア</b>　う　プレヴェザ　　え　レパント　　お　アクティウム<br><b>イ</b>　Y　オスマン帝国は地中海の制海権をほぼ手中にした<br>　　Z　オスマン帝国は地中海から撤退することになった","o":["う―Y","う―Z","え―Y","え―Z","お―Y","お―Z"],"a":1,"ex":"1538年はプレヴェザの海戦で、オスマン帝国の勝利。レパントは1571年で連合艦隊の勝利。"},{"cat":"混同","q":"ハンガリーの歴史について述べた文として最も適当なものを一つ選べ。","o":["1848年革命の際に、コシューシコが独立運動を指導した。","第一次世界大戦の講和条約として、サン=ジェルマン条約を結んだ。","1968年に、「プラハの春」と呼ばれる改革運動が起こった。","モハーチの戦いで国王が戦死した後、ハプスブルク家が王位を継いだ。"],"a":4,"ex":"①はコシュート。②ハンガリーはトリアノン条約。③はチェコスロヴァキア。"},{"cat":"混同","q":"次の文章中の空欄 ア に入れる語 あ・い と、空欄 イ に入れる人物 X・Y との組合せとして正しいものを一つ選べ。","pre":"ロシアは13世紀から15世紀にかけて［ ア ］の支配を受け、これは「タタールのくびき」と呼ばれる。この支配から自立したモスクワ大公は［ イ ］である。<br><b>ア</b>　あ　キプチャク=ハン国　　い　イル=ハン国<br><b>イ</b>　X　ピョートル1世　　Y　イヴァン3世","o":["あ―X","あ―Y","い―X","い―Y"],"a":2,"ex":"ロシアを支配したのはキプチャク=ハン国。1480年にイヴァン3世が自立した。イル=ハン国はイラン方面。"},{"cat":"時期","q":"19世紀のロシアについて述べた文として最も適当なものを一つ選べ。","o":["清とネルチンスク条約を結んだ。","北方戦争でスウェーデンを破った。","北京条約で沿海州を獲得した。","ポーランド分割に参加した。"],"a":3,"ex":"北京条約は1860年。ネルチンスク条約は1689年、北方戦争は18世紀初め、ポーランド分割は18世紀後半。"},{"cat":"時期","q":"義和団事件の後に清朝が行った改革（光緒新政）の内容として最も適当なものを一つ選べ。","o":["理藩院を設置した。","科挙を廃止した。","地丁銀制を導入した。","ヨーロッパ船の来航を広州一港に限定した。"],"a":2,"ex":"科挙の廃止は1905年。ほかはいずれも17〜18世紀の清の政策。"},{"cat":"混同","q":"ヌルハチが建てた国について述べた文として最も適当なものを一つ選べ。","o":["猛安・謀克という軍事・行政制度を敷いた。","北面官・南面官による二重統治体制を採った。","八旗と呼ばれる軍事・行政組織を編成した。","骨品制という身分制度を敷いた。"],"a":3,"ex":"ヌルハチの後金は八旗。①は12世紀の金、②は遼、④は新羅。"},{"cat":"読取","q":"朝鮮王朝の都 a〜c と、永楽帝が遷都して以降の明の都の歴史について述べた文 あ・い との組合せとして正しいものを一つ選べ。","pre":"<b>朝鮮王朝の都</b>　a　開城　　b　慶州　　c　漢城<br><b>明の都の歴史</b>　あ　太平天国が占領し、天京と改称した。　　い　フビライが都を置き、大都と称した。","o":["a―あ","a―い","b―あ","b―い","c―あ","c―い"],"a":6,"ex":"朝鮮王朝の都は漢城。永楽帝は北京に遷都し、北京は元の大都と同じ場所。天京は南京。"},{"cat":"時期","q":"次の あ・い と「チョーラ朝のシュリーヴィジャヤ遠征」を、年代の古いものから順に正しく配列したものを一つ選べ。","pre":"あ　鄭和が南海遠征を行った。<br>い　ポルトガルがマラッカを占領した。","o":["あ → い → チョーラ朝の遠征","あ → チョーラ朝の遠征 → い","い → あ → チョーラ朝の遠征","い → チョーラ朝の遠征 → あ","チョーラ朝の遠征 → あ → い","チョーラ朝の遠征 → い → あ"],"a":5,"ex":"チョーラ朝の遠征は11世紀、鄭和は1405〜33年、マラッカ占領は1511年。"},{"cat":"混同","q":"百年戦争について述べた文として最も適当なものを一つ選べ。","o":["カペー朝が断絶してヴァロワ朝が成立すると、エドワード3世がフランス王位の継承権を主張した。","戦争中、フランスでワット=タイラーの乱が起こった。","ジャンヌ=ダルクが、カレーを解放した。","戦争の終結後、フランスでバラ戦争が起こった。"],"a":1,"ex":"②フランスはジャックリーの乱。③解放したのはオルレアン。④バラ戦争はイングランド。"},{"cat":"時期","q":"15世紀末から16世紀前半までの時期に起こった出来事として最も適当なものを一つ選べ。","o":["ユーグ=カペーが、フランスで王朝を開いた。","第4回十字軍が、コンスタンティノープルを占領した。","アンリ4世が、ナントの王令を発した。","ルターが、九十五か条の論題を発表した。"],"a":4,"ex":"ルターは1517年。①は987年、②は1204年、③は1598年（16世紀末）。"},{"cat":"時期","q":"米西戦争（アメリカ=スペイン戦争）の後のアメリカ合衆国の対外政策について述べた文として最も適当なものを一つ選べ。","o":["テキサスを併合した。","ロシアからアラスカを買収した。","プラット条項によって、キューバを保護国化した。","モンロー宣言（教書）を発表した。"],"a":3,"ex":"米西戦争は1898年。テキサス併合は1845年、アラスカ買収は1867年、モンロー宣言は1823年。"},{"cat":"時期","q":"アメリカ合衆国における差別やその解消について述べた文として<u>誤っているもの</u>を一つ選べ。","o":["ジャクソン大統領の下で、先住民に対する強制移住法が制定された。","セオドア=ローズヴェルト大統領の下で、公民権法が成立した。","1880年代に、中国人移民を禁止する法律が制定された。","南北戦争後の南部諸州では、黒人の権利を制限する州法が制定された。"],"a":2,"ex":"公民権法は1964年、ジョンソン大統領の時。ほかは正しい。"},{"cat":"読取","q":"「19世紀以降に活躍した、君主でもその配偶者でもない女性」の例として最も適当なものを一つ選べ。","o":["ラジウムを発見したマリ=キュリー","インド皇帝を兼ねたヴィクトリア女王","『アンクル=トムの小屋』を著し、奴隷制を擁護したストウ","オルレアンを解放したジャンヌ=ダルク"],"a":1,"ex":"②は君主。③ストウは奴隷制を批判した。④は15世紀。"},{"cat":"読取","q":"次の表はドイツの失業者数（年平均の概数）を示したものである。表から読み取れる内容として最も適当なものを一つ選べ。","pre":"<table class='mini'><tr><th>1932年</th><th>1933年</th><th>1934年</th><th>1936年</th><th>1938年</th></tr><tr><td>約560万人</td><td>約480万人</td><td>約270万人</td><td>約160万人</td><td>約40万人</td></tr></table>","o":["全権委任法が成立した年、失業者数は前年より増加した。","ラインラント進駐の年、失業者数は300万人を超えていた。","オーストリア併合の年、失業者数は表中で最多となった。","ヒトラー内閣が成立した年以降、失業者数は減少を続けた。"],"a":4,"ex":"ヒトラー内閣と全権委任法は1933年、ラインラント進駐は1936年、オーストリア併合は1938年。出来事の年を確定してから表と照らす。"},{"cat":"時期","q":"オスマン帝国とヨーロッパ諸国との関係に関する次の出来事 あ〜う を、年代の古いものから順に正しく配列したものを一つ選べ。","pre":"あ　第2次ウィーン包囲が失敗した。<br>い　レパントの海戦が起こった。<br>う　カルロヴィッツ条約が結ばれた。","o":["あ → い → う","あ → う → い","い → あ → う","い → う → あ","う → あ → い","う → い → あ"],"a":3,"ex":"レパント（1571）→ 第2次ウィーン包囲（1683）→ カルロヴィッツ条約（1699）。"},{"cat":"時期","q":"清の雍正帝の治世に行われた事柄として最も適当なものを一つ選べ。","o":["ネルチンスク条約を結んだ。","軍機処を設置した。","『四庫全書』を編纂させた。","国号を清と改めた。"],"a":2,"ex":"①は康熙帝、③は乾隆帝、④はホンタイジ。雍正帝はほかにキャフタ条約。"},{"cat":"混同","q":"19世紀から20世紀初めのイギリスとロシアの対立について述べた文として最も適当なものを一つ選べ。","o":["英露協商によって、イラン全土がロシアの勢力範囲とされた。","ロシアは、イリ条約によってコーカンド=ハン国を獲得した。","クリミア戦争に勝利したロシアは、黒海から地中海へ進出した。","イギリスは、第2次アフガン戦争の結果、アフガニスタンを保護国とした。"],"a":4,"ex":"①イラン北部がロシア、南部がイギリス。②イリ条約は清との国境の条約。③ロシアはクリミア戦争に敗れた。"},{"cat":"混同","q":"ヴァロワ朝の断絶後に成立したブルボン朝の、初代国王の事績として最も適当なものを一つ選べ。","o":["三部会を初めて招集した。","ナントの王令を発して、ユグノーに信仰の自由を認めた。","ナントの王令を廃止した。","三十年戦争に介入した。"],"a":2,"ex":"初代はアンリ4世。①はフィリップ4世（カペー朝）、③はルイ14世、④はルイ13世の時代。"}]};
+</script>
+<script>
+const $=id=>document.getElementById(id), C="①②③④⑤⑥";
+// 確認テスト
+const quiz=$("quiz");
+quiz.innerHTML=D.test.map((q,i)=>`<fieldset class="q" id="q${i}" style="border:0;margin:0;padding-inline:0"><legend class="stem" style="padding:0"><b>${i+1}</b>　${q.q}</legend>${q.pre?`<div class="pre">${q.pre}</div>`:""}<div class="opts ${q.o.length>4?"six":""}">${q.o.map((o,j)=>`<label><input type="radio" name="t${i}" id="t${i}_${j}" value="${j+1}"><span>${C[j]}　${o}</span></label>`).join("")}</div><div class="ex" hidden></div></fieldset>`).join("");
+const KEY="sekaishi-r5-test-only"; let t0=null, timer=null, done=false;
+const load=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return {}}};
+const save=()=>{const o={};new FormData(quiz).forEach((v,k)=>o[k]=v);try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}};
+const stat=()=>{const n=new Set([...quiz.querySelectorAll("input:checked")].map(i=>i.name)).size;
+  const sec=t0?Math.floor((Date.now()-t0)/1000):0;
+  $("stat").textContent=`解答済み ${n} / ${D.test.length}`+(t0?`　${Math.floor(sec/60)}分${String(sec%60).padStart(2,"0")}秒`:"");};
+Object.entries(load()).forEach(([k,v])=>{const el=quiz.querySelector(`input[name="${k}"][value="${v}"]`);if(el)el.checked=true});
+quiz.addEventListener("change",()=>{if(done)return;if(!t0){t0=Date.now();timer=setInterval(stat,1000)}save();stat()});
+stat();
+$("grade").onclick=()=>{
+  done=true;clearInterval(timer);stat();
+  let pts=0;const miss={};
+  D.test.forEach((q,i)=>{
+    const box=$("q"+i), sel=quiz.querySelector(`input[name=t${i}]:checked`), v=sel?+sel.value:0;
+    box.classList.add("graded");
+    box.querySelectorAll("label").forEach((l,j)=>{l.classList.toggle("right",j+1===q.a);l.classList.toggle("miss",j+1===v&&v!==q.a)});
+    const ok=v===q.a; if(ok)pts+=5; else miss[q.cat]=(miss[q.cat]||0)+1;
+    const ex=box.querySelector(".ex"); ex.hidden=false;
+    ex.innerHTML=`<b class="mark ${ok?"o":"x"}">${ok?"○ 正解":v?"× 不正解":"× 未解答"}</b>　正解 ${C[q.a-1]}。${q.ex}　`;
+  });
+  $("result").textContent=`${pts} / 100点`;
+  const names={混同:"似た事項の取り違え",時期:"時期のずれ",読取:"読み落とし"};
+  const m=Object.entries(miss).sort((a,b)=>b[1]-a[1]);
+  const fb=$("feedback"); fb.hidden=false;
+  fb.textContent=m.length?("誤答の内訳："+m.map(([k,n])=>`${names[k]} ${n}問`).join("、")+"。80点未満なら、解説を読んでからもう一度解き直す。"):"全問正解。";
+  $("result").scrollIntoView({block:"center",behavior:"smooth"});
+};
+$("reset").onclick=()=>{quiz.reset();done=false;t0=null;clearInterval(timer);try{localStorage.removeItem(KEY)}catch(e){}stat();quiz.querySelectorAll(".q").forEach(b=>{b.classList.remove("graded");b.querySelectorAll("label").forEach(l=>l.classList.remove("right","miss"));b.querySelector(".ex").hidden=true});$("result").textContent="";$("feedback").hidden=true;scrollTo(0,0)};
+</script>
+</body></html>
