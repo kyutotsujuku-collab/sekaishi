@@ -130,8 +130,8 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 
 .mapwrap svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
 .mapbox{position:relative}
-.mapwrap.pinned>.mapbox:first-child{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}.mapwrap.pinned>.mapbox:first-child svg{max-height:36vh;width:auto;max-width:100%;display:block;margin:0 auto}
-.pinb{position:absolute;left:8px;top:8px;font-size:12px;padding:3px 8px;border-radius:14px;border:1px solid var(--accent);background:rgba(255,255,255,.92);color:var(--accent);font-weight:700;cursor:pointer;display:none}.mapwrap.pinned>.mapbox:first-child .pinb{display:inline-block}
+#pinhold{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}#pinhold:empty{display:none;box-shadow:none}#pinhold svg{max-height:36vh;width:auto;max-width:100%;display:block;margin:0 auto}
+.pinb{position:absolute;left:8px;top:8px;font-size:12px;padding:3px 8px;border-radius:14px;border:1px solid var(--accent);background:rgba(255,255,255,.92);color:var(--accent);font-weight:700;cursor:pointer}#pinhold .pinb{background:var(--accent);color:#fff}.mapwrap:not(.pinned) .mapbox:not(:first-child) .pinb,#sheet .pinb{display:none}
 .zoomb{position:absolute;right:8px;top:8px;font-size:12px;padding:3px 8px;border-radius:14px;border:1px solid #b9b2a4;background:rgba(255,255,255,.92);color:#1f2328;cursor:pointer}
 #mz{position:fixed;inset:0;background:var(--bg);z-index:25;display:none;flex-direction:column}
 .mzbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px}.mzbar .muted{flex:1;font-size:11px}.mzbar .btn{width:auto;margin:0;padding:6px 12px;font-size:13px}
@@ -154,7 +154,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v49</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v50</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -2602,7 +2602,7 @@ function geoSVG(g,viewKey){
   for(const [x,y,lbl] of areaLbl){s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(lbl)}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);s+=`<text x="${x}" y="${y+3}" text-anchor="middle" font-size="${fs}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
-  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button><button class="pinb" type="button">📌 地図を固定中（タップで解除）</button></div>${legend.length?`<div class="notelegend"><div class="nlhead">🔢 地図上の番号＝この時代の主な出来事（タップで説明）</div>${legend.join('')}</div>`:''}<button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
+  s+=`</svg><button class="zoomb" type="button">⤢ 拡大</button><button class="pinb" type="button">📌 地図を見ながら読む</button></div>${legend.length?`<div class="notelegend"><div class="nlhead">🔢 地図上の番号＝この時代の主な出来事（タップで説明）</div>${legend.join('')}</div>`:''}<button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,viewKey)}<button class="zoomb" type="button">⤢ 拡大</button></div><div class="mapinfo"><div class="hint">地図の勢力・都市・川・交易路・矢印・注記をタップすると、本の記述にもとづく説明と「同時代のヨコ」が出ます</div></div>`;
   return `<div class="mapwrap" data-gi="${GEO.indexOf(g)}" data-vw="${viewKey}">${s}</div>`;
 }
 function modernSVG(g,viewKey){
@@ -2642,7 +2642,7 @@ function yokoTable(Y){const ims=[];const seen=new Set();
   return {html:h+`</div>`,ims}}
 function showInfo(w,k){
   const f=INFO[k];const box=w.querySelector('.mapinfo');if(!f||!box)return;
-  w.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));w.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'));
+  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'));const hold=$('#pinhold');[w,...(hold&&w.classList.contains('pinned')?[hold]:[])].forEach(r=>r.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel')));
   const qs=infoQs(k);
   let bodyH=esc(f.b);const headBtns=[];
   (f.img||[]).forEach((im,i)=>{const btn=`<button class="pic" data-pi="${i}" title="写真を見る">📷</button>`;const w=im.w?esc(im.w):'';const at=w?bodyH.indexOf(w):-1;if(at>=0){bodyH=bodyH.slice(0,at+w.length)+btn+bodyH.slice(at+w.length)}else headBtns.push(btn)});
@@ -2653,7 +2653,7 @@ function showInfo(w,k){
   box.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>showInfo(w,b.dataset.rel));
   box.querySelectorAll('.pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(f.img[+b.dataset.pi])});
   const qb=box.querySelector('[data-qs]');if(qb)qb.onclick=()=>{const l=box.querySelector('.qlist');if(!l.hidden){l.hidden=true;return}l.hidden=false;l.innerHTML=qs.map(([c])=>`<div class="qitem">${c.type?`<span class="muted">【${esc(c.type)}】</span>`:''}${esc(c.q.replace(/\n[\s\S]*/,'').slice(0,70))}${c.q.length>70?'…':''}\n<b>正解：${esc(c.opts[c.a])}</b>${c.src?`\n<span class="muted">出典：${esc(c.src)}</span>`:''}</div>`).join('')};
-  if(w.closest('#tlbody')){w.classList.add('pinned');const mb=w.querySelector('.mapbox');requestAnimationFrame(()=>{const hdr=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))||88;const z=document.body.style.zoom?parseFloat(document.body.style.zoom):1;const y=mb.getBoundingClientRect().top*z+window.scrollY-hdr*z;window.scrollTo({top:y,behavior:'smooth'})})}
+  if(w.closest('#tlbody')){pinMap(w,true);requestAnimationFrame(()=>scrollUnderPin(box))}
   else box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 const SMALL_ORIG=['Confucius_Tang_Dynasty.jpg','Good_Shepherd_Catacomb_of_Priscilla.jpg','%E6%BC%A2%E6%AD%A6%E5%B8%9D.jpg'];
@@ -2684,7 +2684,12 @@ function openZoom(w,svg){let mz=document.getElementById('mz');if(!mz){mz=documen
   mz.querySelector('.mzclose').onclick=()=>{mz.style.display='none';mz.innerHTML='';document.body.style.overflow=''};
   const iw=mz.querySelector('.mzinfo');c.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k])return;el.onclick=ev=>{ev.stopPropagation();if(moved)return;showInfo(iw,k);c.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));c.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'))}});
 }
-function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.pinb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();w.classList.remove('pinned')});w.querySelectorAll('.modtog').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const m=b.nextElementSibling;m.hidden=!m.hidden;b.textContent=m.hidden?'🗺 現在の地図と見比べる ▾':'🗺 現在の地図を閉じる ▴'});w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
+function pinMap(w,on){const hold=$('#pinhold');if(!hold)return;const cur=hold.querySelector('.mapbox');if(cur&&cur._home!==w){cur._home.classList.remove('pinned');cur._home.insertBefore(cur,cur._home.firstChild);const pb=cur.querySelector('.pinb');if(pb)pb.textContent='📌 地図を見ながら読む'}
+  const mb=w.classList.contains('pinned')?hold.querySelector('.mapbox'):w.querySelector('.mapbox');if(!mb)return;const pb=mb.querySelector('.pinb');
+  if(on){if(!w.classList.contains('pinned')){mb._home=w;hold.appendChild(mb);w.classList.add('pinned')}if(pb)pb.textContent='📌 固定中（タップで解除）'}
+  else{w.classList.remove('pinned');w.insertBefore(mb,w.firstChild);if(pb)pb.textContent='📌 地図を見ながら読む'}}
+function scrollUnderPin(el){const hold=$('#pinhold');const hdr=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))||88;const z=document.body.style.zoom?parseFloat(document.body.style.zoom):1;const hh=hold?hold.getBoundingClientRect().height:0;window.scrollTo({top:(el.getBoundingClientRect().top+window.scrollY/z)*z-(hdr+hh)*z-6,behavior:'smooth'})}
+function bindMaps(root){root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.pinb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const on=!w.classList.contains('pinned');pinMap(w,on);if(on)requestAnimationFrame(()=>scrollUnderPin(w))});w.querySelectorAll('.modtog').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const m=b.nextElementSibling;m.hidden=!m.hidden;b.textContent=m.hidden?'🗺 現在の地図と見比べる ▾':'🗺 現在の地図を閉じる ▴'});w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
 function viewChips(){const eu=GEO.some(g=>g.p===curP&&g.eu);if(curView==='europe'&&!eu)curView='all';return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).filter(([k,v])=>!v.opt||eu).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
@@ -2712,7 +2717,7 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
-  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<div class="maphelp">👆 地図の<b>勢力名・都市・川・交易路・矢印・下線つきの注記</b>をタップすると、その説明と「同時代のヨコ」が下に出ます。「⤢ 拡大」でピンチ拡大できます。<br>「全体」地図の<b>①②③…はこの時代の主な出来事</b>。文字の重なりを防ぐため番号にしてあり、内容は地図の下のボタンにあります（番号・ボタンどちらをタップしても説明が出ます）。</div>`;GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
+  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<div class="maphelp">👆 地図の<b>勢力名・都市・川・交易路・矢印・下線つきの注記</b>をタップすると、その説明と「同時代のヨコ」が下に出ます。「⤢ 拡大」でピンチ拡大、「📌 地図を見ながら読む」で地図を画面上部に固定したまま下の説明・年表を読めます。<br>「全体」地図の<b>①②③…はこの時代の主な出来事</b>。文字の重なりを防ぐため番号にしてあり、内容は地図の下のボタンにあります（番号・ボタンどちらをタップしても説明が出ます）。</div>`;h+='<div id="pinhold"></div>';GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
   const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は上の「赤シート」ボタン）</div>`:'')+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
