@@ -2619,7 +2619,7 @@ function gSVG(g,st){
   const W=st.W,H=st.H,z=st.z,s=st.base*z,K=GM.K;
   const PX=(lon,lat)=>[W/2+(lon-st.cx)*s,H/2-(lat-st.cy)*s*K];
   const inV=(lon,lat)=>{const [x,y]=PX(lon,lat);return x>-40&&x<W+40&&y>-30&&y<H+30};
-  const lvl=s>=12?2:s>=7?1:0; // 0:番号 1:注記文・都市名 2:＋川名
+  const lvl=s>=9?2:s>=5.2?1:0; // 0:番号 1:注記文・都市名 2:＋川名
   const gid='g'+(GEO.indexOf(g));const sel=st.sel||'';
   let s_=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
   s_+=`<rect width="${W}" height="${H}" fill="#dfe8ee"/>`;
@@ -2637,7 +2637,7 @@ function gSVG(g,st){
   for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route${sel===rn?' sel':''}" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="10"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])&&(lvl>=1||!/旅行路/.test(rn))){const [x,y]=PX(m[0],m[1]);lab+=`<text class="tapt" data-key="${esc(rn)}" x="${x.toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" font-size="${lvl?10.5:9}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(rn)}</text>`}}
   for(const dd of (g.dashed||[])){if(!inV(dd[0],dd[1]))continue;const [x,y]=PX(dd[0],dd[1]);lab+=`<text class="tapt" data-key="${dd[5]||''}" x="${x.toFixed(1)}" y="${(y-dd[3]*s*K-3).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(dd[4])}</text>`}
   // 都市
-  const fsA=11,fsC=10;const boxes=[];
+  const fsA=11,fsC=9.5;const boxes=[];
   for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s_+=`<circle class="tap city${sel===cky?' sel':''}" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${lvl?2.8:2}" fill="#222" stroke="#fff" stroke-width="0.9"/><circle class="tap" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="transparent"/>`;
     if(lvl>=1){lab+=`<text class="tapt" data-key="${cky}" x="${(x+4).toFixed(1)}" y="${(y+3.5).toFixed(1)}" font-size="${fsC}" fill="#222" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(c[2])}</text>`;boxes.push([x,y-5,x+4+c[2].length*fsC,y+6])}}
   // 勢力名
@@ -2648,7 +2648,7 @@ function gSVG(g,st){
   const OFF=[[0,0],[0,-14],[0,14],[-14,0],[14,0],[-12,-12],[12,-12],[-12,12],[12,12],[0,-27],[0,27],[-26,0],[26,0],[-22,-20],[22,-20],[-22,20],[22,20],[0,-40],[0,40]];
   (g.notes||[]).forEach((n,ni)=>{if(!inV(n[0],n[1]))return;let [x,y]=PX(n[0],n[1]);const k=n[3]||'';
     if(lvl===0){for(const [dx,dy] of OFF){const bx=[x+dx-8,y+dy-12,x+dx+8,y+dy+3];if(bx[0]<2||bx[2]>W-2||bx[1]<20)continue;if(!hit(bx)){x+=dx;y+=dy;boxes.push(bx);break}}lab+=`<text class="tapt nn" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)" stroke="#fff" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}</text>`}
-    else{const t=n[2];const fs=10.5;const bx=[x-t.length*fs/2,y-fs,x+t.length*fs/2,y+3];let dy=0;for(const d of [0,-13,13,-26,26]){const b2=[bx[0],bx[1]+d,bx[2],bx[3]+d];if(!hit(b2)){dy=d;boxes.push(b2);break}}y+=dy;lab+=`<text class="tapt" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke" text-decoration="underline">${NUM[ni]||'●'}${esc(t)}</text>`}});
+    else{const t=n[2];const fs=10;const bx=[x-t.length*fs/2,y-fs,x+t.length*fs/2,y+3];let dy=0;for(const d of [0,-13,13,-26,26]){const b2=[bx[0],bx[1]+d,bx[2],bx[3]+d];if(!hit(b2)){dy=d;boxes.push(b2);break}}y+=dy;lab+=`<text class="tapt" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke" text-decoration="underline">${NUM[ni]||'●'}${esc(t)}</text>`}});
   for(const a of g.arrows){if(!inV(a[0],a[1])&&!inV(a[2],a[3]))continue;const [x1,y1]=PX(a[0],a[1]),[x2,y2]=PX(a[2],a[3]);const mx=(x1+x2)/2,my=(y1+y2)/2-10*Math.sqrt(z);const k=a[5]||'';
     s_+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)" style="pointer-events:none"/><path class="tap arrow${sel===k?' sel':''}" data-key="${k}" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="transparent" stroke-width="8"/>`;
     if(a[4])lab+=`<text class="tapt" data-key="${k}" x="${mx.toFixed(1)}" y="${(my-2).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(a[4])}</text>`}
