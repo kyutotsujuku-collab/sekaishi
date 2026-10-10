@@ -46,6 +46,7 @@ b.k{color:var(--red);font-weight:700}
 dl.kw dt b.k{font-size:15px}
 .hide b.k{color:transparent;background:var(--red);border-radius:4px;cursor:pointer;-webkit-user-select:none;user-select:none}
 .hide b.k.sh{color:var(--red);background:var(--yel2)}
+.hide dl.kw.m-w dd b.k,.hide dl.kw.m-d dt b.k{color:var(--red);background:none;cursor:auto}
 #hd{position:fixed;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:25;border:0;border-radius:22px;background:var(--red);color:#fff;font:inherit;font-weight:700;font-size:14px;padding:10px 16px;box-shadow:0 3px 10px rgba(120,30,20,.35)}
 #hd.on{background:var(--yel);color:#4a2b00}
 .tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--yel);margin-left:6px}
@@ -101,7 +102,7 @@ select{font:inherit;width:100%;padding:10px;border-radius:10px;border:1px solid 
 </style>
 </head>
 <body>
-<header><button id="back" hidden>‹ 戻る</button><h1 id="ttl">世界史 タテの流れマスター</h1><span class="ver">v2</span></header>
+<header><button id="back" hidden>‹ 戻る</button><h1 id="ttl">世界史 タテの流れマスター</h1><span class="ver">v3</span></header>
 <main id="app"></main>
 <nav id="nav">
 <button data-t="learn"><i>📖</i>学習</button>
@@ -177,12 +178,13 @@ function vUnit(u){
   '<div class="lead" style="margin-top:10px">'+mk(u,u.ld)+'</div>'+
   '<h3>ストーリー（因果でつなぐ）</h3><div class="note">赤字＝重要語。右下の「赤字をかくす」で全部かくれる（タップで1語ずつ表示）。年号はかくれない。</div><div class="story">'+story(u.st)+'</div>'+
   '<h3>因果つき年表</h3>'+tlHtml(u)+
-  '<h3>キーワード</h3><dl class="kw">'+u.kw.map(function(k){return '<dt><b class="k">'+esc(k[0])+'</b></dt><dd>'+mk(u,k[1])+'</dd>';}).join('')+'</dl>'+
+  '<h3>キーワード</h3><div class="chips" id="km"><span class="sub" style="align-self:center">かくす側：</span><button class="chip'+(S.km==='d'?'':' on')+'" data-km="w">語句</button><button class="chip'+(S.km==='d'?' on':'')+'" data-km="d">説明文の赤字</button></div><dl class="kw m-'+(S.km==='d'?'d':'w')+'">'+u.kw.map(function(k){return '<dt><b class="k">'+esc(k[0])+'</b></dt><dd>'+mk(u,k[1])+'</dd>';}).join('')+'</dl>'+
   (u.nx?'<h3>次へのつながり</h3><div class="note" style="font-size:14px;color:var(--ink)">'+mk(u,u.nx)+'</div>':'')+
   '<button class="btn" id="nx">アウトプットへ（穴埋め）▶</button></div><button id="hd">赤字をかくす</button>';
   h(s);
   app.onclick=function(e){if(e.target.id==='hd'){var r=document.getElementById('rd');r.classList.toggle('hide');e.target.classList.toggle('on');e.target.textContent=r.classList.contains('hide')?'赤字を表示':'赤字をかくす';[].forEach.call(r.querySelectorAll('b.k'),function(b){b.classList.remove('sh');});return;}
-   if(e.target.tagName==='B'&&e.target.closest('.hide')){e.target.classList.toggle('sh');return;}
+   var kb=e.target.closest('[data-km]');if(kb){S.km=kb.dataset.km;save();var dl=app.querySelector('dl.kw');dl.className='kw m-'+S.km;[].forEach.call(document.querySelectorAll('#km .chip'),function(c){c.classList.toggle('on',c.dataset.km===S.km);});[].forEach.call(dl.querySelectorAll('b.k'),function(b){b.classList.remove('sh');});return;}
+   if(e.target.tagName==='B'&&e.target.closest('.hide')){if(e.target.closest('dl.kw.m-w dd,dl.kw.m-d dt'))return;e.target.classList.toggle('sh');return;}
    if(e.target.id==='nx')cloze();};
  }
  function cloze(){runQuiz(u.cz.map(function(q,i){return{k:'c',u:u,i:i};}),steps(1),function(r){ses.czOK=r.ok;ses.czN=r.n;mc();},'4択へ ▶');}
