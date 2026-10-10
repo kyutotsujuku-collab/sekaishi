@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>世界史 タテの流れマスター（各国史）</title>
 <style>
-:root{--bg:#FFF7E8;--card:#FFFDF7;--ink:#3A2A1E;--sub:#7A6452;--line:#EBD9BC;--main:#C4502F;--main2:#E07A3F;--yel:#F4B81A;--yel2:#FFE9A8;--ok:#5E8B2F;--okbg:#EEF5DF;--ng:#C22F2F;--ngbg:#FBE6E0;--chip:#FBEBCB}
+:root{--bg:#FFF7E8;--card:#FFFDF7;--ink:#3A2A1E;--sub:#7A6452;--line:#EBD9BC;--main:#C4502F;--main2:#E07A3F;--yel:#F4B81A;--yel2:#FFE9A8;--ok:#5E8B2F;--okbg:#EEF5DF;--ng:#C22F2F;--red:#D62828;--ngbg:#FBE6E0;--chip:#FBEBCB}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;font-size:16px;line-height:1.7;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
@@ -41,9 +41,13 @@ h3{font-size:15px;margin:16px 0 8px;color:var(--main);border-left:5px solid var(
 .chain em{font-style:normal;color:var(--main);font-weight:700}
 .lead{background:var(--yel2);border-radius:10px;padding:9px 12px;font-weight:700;font-size:15px;line-height:1.6}
 .story{font-size:16px;line-height:1.95;text-align:justify}
-.story b,.k{color:var(--main);font-weight:700;background:linear-gradient(transparent 62%,var(--yel2) 62%)}
-.hide .story b{color:transparent;background:var(--main2);border-radius:4px;cursor:pointer}
-.hide .story b.sh{color:var(--main);background:linear-gradient(transparent 62%,var(--yel2) 62%)}
+b.k{color:var(--red);font-weight:700}
+.story b.k{background:linear-gradient(transparent 62%,var(--yel2) 62%)}
+dl.kw dt b.k{font-size:15px}
+.hide b.k{color:transparent;background:var(--red);border-radius:4px;cursor:pointer;-webkit-user-select:none;user-select:none}
+.hide b.k.sh{color:var(--red);background:var(--yel2)}
+#hd{position:fixed;right:12px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:25;border:0;border-radius:22px;background:var(--red);color:#fff;font:inherit;font-weight:700;font-size:14px;padding:10px 16px;box-shadow:0 3px 10px rgba(120,30,20,.35)}
+#hd.on{background:var(--yel);color:#4a2b00}
 .tl{list-style:none;margin:0;padding:0;border-left:3px solid var(--yel);margin-left:6px}
 .tl li{position:relative;padding:0 0 12px 14px}
 .tl li:before{content:"";position:absolute;left:-8px;top:8px;width:11px;height:11px;border-radius:50%;background:var(--main);border:2px solid var(--bg)}
@@ -53,7 +57,7 @@ h3{font-size:15px;margin:16px 0 8px;color:var(--main);border-left:5px solid var(
 .tl .wr i{font-style:normal;display:inline-block;font-size:11px;font-weight:700;border-radius:4px;padding:0 5px;margin-right:4px;color:#fff}
 .tl .wr i.w{background:var(--main2)} .tl .wr i.r{background:var(--ok)}
 .tl .src{font-size:10.5px;color:#b39b80;margin-left:4px;white-space:nowrap}
-dl.kw{margin:0} dl.kw dt{font-weight:700;color:var(--main);margin-top:8px;font-size:15px} dl.kw dd{margin:0;font-size:14px;color:var(--ink);line-height:1.55}
+dl.kw{margin:0} dl.kw dt{font-weight:700;color:var(--red);margin-top:8px;font-size:15px} dl.kw dd{margin:0;font-size:14px;color:var(--ink);line-height:1.55}
 .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--main);color:#fff;font:inherit;font-weight:700;font-size:16px;padding:12px;margin:10px 0 0}
 .btn.y{background:var(--yel);color:#4a2b00}
 .btn.g{background:var(--chip);color:var(--ink);border:1px solid var(--line)}
@@ -97,7 +101,7 @@ select{font:inherit;width:100%;padding:10px;border-radius:10px;border:1px solid 
 </style>
 </head>
 <body>
-<header><button id="back" hidden>‹ 戻る</button><h1 id="ttl">世界史 タテの流れマスター</h1><span class="ver">v1</span></header>
+<header><button id="back" hidden>‹ 戻る</button><h1 id="ttl">世界史 タテの流れマスター</h1><span class="ver">v2</span></header>
 <main id="app"></main>
 <nav id="nav">
 <button data-t="learn"><i>📖</i>学習</button>
@@ -128,7 +132,16 @@ function render(){var top=stack[stack.length-1];back.hidden=stack.length<=1;ttl.
 back.onclick=pop;
 document.getElementById('nav').onclick=function(e){var b=e.target.closest('button');if(!b)return;S.t=b.dataset.t;save();stack=[];go(TABS[S.t]);};
 function cdone(c){return c.u.filter(function(u){return S.u[u.id]&&S.u[u.id].d;}).length;}
-function story(s){return esc(s).replace(/【(.+?)】/g,'<b>$1</b>');}
+function story(s){return esc(s).replace(/【(.+?)】/g,'<b class="k">$1</b>');}
+/* 単元の重要語（ストーリーの【】＋年表の重要語＋キーワード）。年号・数字だけの語は除く */
+function terms(u){if(u._t)return u._t;var set={};
+ function add(w){w=String(w||'').trim();if(w.length<2||/^[前後約]?[\d〜～\-－・.，,世紀年代頃ごろ半初末前後期\s]+$/.test(w))return;set[w]=1;}
+ function addAll(w){add(w);var m=/^(.+?)（(.+?)）(.*)$/.exec(w);if(m){add(m[1]+m[3]);if(!m[3])add(m[2]);}}
+ (u.st.match(/【(.+?)】/g)||[]).forEach(function(x){addAll(x.slice(1,-1));});
+ u.tl.forEach(function(t){t.k.forEach(addAll);});u.kw.forEach(function(k){addAll(k[0]);});
+ var a=Object.keys(set).sort(function(x,y){return y.length-x.length;});
+ u._t=a.length?new RegExp(a.map(function(w){return esc(w).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|'),'g'):null;return u._t;}
+function mk(u,s){var r=terms(u),e=esc(s);return r?e.replace(r,'<b class="k">$&</b>'):e;}
 
 /* ---------- 学習 ---------- */
 function vLearn(){
@@ -153,23 +166,23 @@ function vCourse(c){
   if(e.target.closest('[data-f]'))go(function(){vFlowC(c);},c.n+' 通史');};
 }
 function chain(rg){return '<div class="chain">'+rg.map(function(x){return '<span>'+esc(x)+'</span>';}).join('<em>→</em>')+'</div>';}
-function tlHtml(u){return '<ul class="tl">'+u.tl.map(function(t){return '<li>'+(t.y?'<span class="y">'+esc(t.y)+'</span>':'')+'<span class="t">'+esc(t.t)+'</span><span class="src">'+esc(t.c)+'</span>'+
- (t.w?'<div class="wr"><i class="w">なぜ</i>'+esc(t.w)+'</div>':'')+(t.r?'<div class="wr"><i class="r">結果</i>'+esc(t.r)+'</div>':'')+'</li>';}).join('')+'</ul>';}
+function tlHtml(u){return '<ul class="tl">'+u.tl.map(function(t){return '<li>'+(t.y?'<span class="y">'+esc(t.y)+'</span>':'')+'<span class="t">'+mk(u,t.t)+'</span><span class="src">'+esc(t.c)+'</span>'+
+ (t.w?'<div class="wr"><i class="w">なぜ</i>'+mk(u,t.w)+'</div>':'')+(t.r?'<div class="wr"><i class="r">結果</i>'+mk(u,t.r)+'</div>':'')+'</li>';}).join('')+'</ul>';}
 function vUnit(u){
  S.l=u.id;save();
  var ses={u:u,step:0,mcOK:0,mcN:0,odOK:0,odN:0,czOK:0,czN:0};
  function steps(n){var L=['読む','穴埋め','4択','整序','判定'];return '<div class="steps">'+L.map(function(x,i){return '<span class="'+(i===n?'on':i<n?'dn':'')+'">'+x+'</span>';}).join('')+'</div>';}
  function read(){
   var s=steps(0)+'<div class="card" id="rd"><div class="sub">'+esc(u.c.n)+'　'+(u.i+1)+' / '+u.c.u.length+'</div><h2>'+esc(u.t)+'<span class="sub">　'+esc(u.sp)+'</span></h2>'+chain(u.rg)+
-  '<div class="lead" style="margin-top:10px">'+esc(u.ld)+'</div>'+
-  '<h3>ストーリー（因果でつなぐ）</h3><div class="chips"><button class="chip" id="hd">重要語をかくす</button></div><div class="story">'+story(u.st)+'</div>'+
+  '<div class="lead" style="margin-top:10px">'+mk(u,u.ld)+'</div>'+
+  '<h3>ストーリー（因果でつなぐ）</h3><div class="note">赤字＝重要語。右下の「赤字をかくす」で全部かくれる（タップで1語ずつ表示）。年号はかくれない。</div><div class="story">'+story(u.st)+'</div>'+
   '<h3>因果つき年表</h3>'+tlHtml(u)+
-  '<h3>キーワード</h3><dl class="kw">'+u.kw.map(function(k){return '<dt>'+esc(k[0])+'</dt><dd>'+esc(k[1])+'</dd>';}).join('')+'</dl>'+
-  (u.nx?'<h3>次へのつながり</h3><div class="note" style="font-size:14px;color:var(--ink)">'+esc(u.nx)+'</div>':'')+
-  '<button class="btn" id="nx">アウトプットへ（穴埋め）▶</button></div>';
+  '<h3>キーワード</h3><dl class="kw">'+u.kw.map(function(k){return '<dt><b class="k">'+esc(k[0])+'</b></dt><dd>'+mk(u,k[1])+'</dd>';}).join('')+'</dl>'+
+  (u.nx?'<h3>次へのつながり</h3><div class="note" style="font-size:14px;color:var(--ink)">'+mk(u,u.nx)+'</div>':'')+
+  '<button class="btn" id="nx">アウトプットへ（穴埋め）▶</button></div><button id="hd">赤字をかくす</button>';
   h(s);
-  app.onclick=function(e){if(e.target.id==='hd'){var r=document.getElementById('rd');r.classList.toggle('hide');e.target.classList.toggle('on');e.target.textContent=r.classList.contains('hide')?'重要語を表示':'重要語をかくす';[].forEach.call(r.querySelectorAll('.story b'),function(b){b.classList.remove('sh');});return;}
-   if(e.target.tagName==='B'&&e.target.closest('.hide'))e.target.classList.toggle('sh');
+  app.onclick=function(e){if(e.target.id==='hd'){var r=document.getElementById('rd');r.classList.toggle('hide');e.target.classList.toggle('on');e.target.textContent=r.classList.contains('hide')?'赤字を表示':'赤字をかくす';[].forEach.call(r.querySelectorAll('b.k'),function(b){b.classList.remove('sh');});return;}
+   if(e.target.tagName==='B'&&e.target.closest('.hide')){e.target.classList.toggle('sh');return;}
    if(e.target.id==='nx')cloze();};
  }
  function cloze(){runQuiz(u.cz.map(function(q,i){return{k:'c',u:u,i:i};}),steps(1),function(r){ses.czOK=r.ok;ses.czN=r.n;mc();},'4択へ ▶');}
