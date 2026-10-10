@@ -60,7 +60,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mapbtn{margin-top:8px}
 .mapwrap svg text{pointer-events:none}
 .mapwrap svg .tap{cursor:pointer}
-.mapwrap svg .tapt{pointer-events:auto;cursor:pointer}
+.mapwrap svg .tapt{pointer-events:auto;cursor:pointer}.mapwrap svg .tl{text-decoration:underline dotted;text-underline-offset:2px;text-decoration-thickness:1.5px}.mapwrap svg .nt{opacity:.85}
 .mapwrap svg .sel{filter:drop-shadow(0 0 2px #000)}
 .mapwrap svg .sel.area,.mapwrap svg .sel.mark{fill-opacity:.65;stroke-width:2.6}
 .mapwrap svg .sel.city{r:4.5}
@@ -149,7 +149,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 .modtog{display:block;margin:4px 0 0 auto;padding:2px 6px;border:0;background:none;color:var(--sub);font-size:12px;cursor:pointer;text-decoration:underline dotted}
 .maphelp{font-size:12.5px;line-height:1.5;margin:0 0 8px;color:var(--sub)}.maphelp summary{cursor:pointer;color:var(--accent);font-weight:600;list-style:none}.maphelp summary::-webkit-details-marker{display:none}.maphelp[open] summary{margin-bottom:4px}.maphelp b{color:var(--ink)}
 .notelegend{display:flex;flex-wrap:wrap;gap:0 14px;margin:4px 2px 0}.notelegend .nlhead{display:none}.notelegend .nl{border:0;background:none;color:var(--ink);padding:3px 2px;font-size:12.5px;text-align:left;cursor:pointer;line-height:1.35;border-radius:6px}.notelegend .nl:active{background:var(--chip)}
-.rsbtn{border:1px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:3px 7px;font-weight:700;font-size:11px;cursor:pointer;margin-right:8px;white-space:nowrap}body.redsheet .rsbtn{background:var(--kt);color:#fff}
+.rsbtn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:8;border:1.5px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:9px 13px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.25)}body.redsheet .rsbtn{background:var(--kt);color:#fff}
 .fsz{margin-left:auto;margin-right:8px;display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .fsz button{border:0;background:var(--card);color:var(--ink);padding:2px 7px;font-weight:700;line-height:1;cursor:pointer}
 .fsz button:nth-child(1){font-size:11px}.fsz button:nth-child(2){font-size:14px}.fsz button:nth-child(3){font-size:17px}
@@ -158,7 +158,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v56</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v58</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -174,6 +174,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </main>
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet"></div>
+<button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥 赤シート</button>
 <script>
 // 世界史 同時代（ヨコ）学習データ  v1
 // 出典：スタサプ スタンダード世界史探究／ベーシック世界史探究／ベーシック歴史総合 の用語・年代に準拠
@@ -2779,28 +2780,29 @@ function gSVG(g,st){
   s_+=`</g>`;
   let hits='',lab='';
   if(g.rivers){for(const [name,pts] of Object.entries(RIVERS)){const rp=pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="#7fb0d0" stroke-width="${lvl?1.4:1}" stroke-linejoin="round" stroke-linecap="round" style="pointer-events:none"/>`;hits+=`<polyline class="tap river${sel===name?' sel':''}" data-key="${name}" points="${rp}" fill="none" stroke="transparent" stroke-width="7"/>`;
-    if(lvl>=2){const m=pts[Math.floor(pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);lab+=`<text class="tapt" data-key="${name}" x="${(x+3).toFixed(1)}" y="${(y-2).toFixed(1)}" font-size="9" fill="#3f7a9e" stroke="#fff" stroke-width="2" paint-order="stroke">${name}</text>`}}}}
+    if(lvl>=2){const m=pts[Math.floor(pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);lab+=`<text class="${INFO[name]?'tapt tl':'nt'}" data-key="${name}" x="${(x+3).toFixed(1)}" y="${(y-2).toFixed(1)}" font-size="9" fill="${INFO[name]?'#3f7a9e':'var(--sub)'}" stroke="#fff" stroke-width="2" paint-order="stroke">${name}</text>`}}}}
   s_+=hits;
-  for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route${sel===rn?' sel':''}" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="10"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])&&(lvl>=1||!/旅行路/.test(rn))){const [x,y]=PX(m[0],m[1]);lab+=`<text class="tapt" data-key="${esc(rn)}" x="${x.toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" font-size="${lvl?10.5:9}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(rn)}</text>`}}
-  for(const dd of (g.dashed||[])){if(!inV(dd[0],dd[1]))continue;const [x,y]=PX(dd[0],dd[1]);lab+=`<text class="tapt" data-key="${dd[5]||''}" x="${x.toFixed(1)}" y="${(y-dd[3]*s*K-3).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(dd[4])}</text>`}
+  for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route${sel===rn?' sel':''}" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="10"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])&&(lvl>=1||!/旅行路/.test(rn))){const [x,y]=PX(m[0],m[1]);lab+=`<text class="${INFO[rn]?'tapt tl':'nt'}" data-key="${esc(rn)}" x="${x.toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" font-size="${lvl?10.5:9}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(rn)}</text>`}}
+  for(const dd of (g.dashed||[])){if(!inV(dd[0],dd[1]))continue;const [x,y]=PX(dd[0],dd[1]);lab+=`<text class="${INFO[dd[5]]?'tapt tl':'nt'}" data-key="${dd[5]||''}" x="${x.toFixed(1)}" y="${(y-dd[3]*s*K-3).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(dd[4])}</text>`}
   // 都市
   const fsA=11,fsC=9.5;const boxes=[];
   for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s_+=`<circle class="tap city${sel===cky?' sel':''}" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${lvl?2.8:2}" fill="#222" stroke="#fff" stroke-width="0.9"/><circle class="tap" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="transparent"/>`;
-    if(lvl>=1){lab+=`<text class="tapt" data-key="${cky}" x="${(x+4).toFixed(1)}" y="${(y+3.5).toFixed(1)}" font-size="${fsC}" fill="#222" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(c[2])}</text>`;boxes.push([x,y-5,x+4+c[2].length*fsC,y+6])}}
+    if(lvl>=1){lab+=`<text class="${INFO[cky]?'tapt tl':'nt'}" data-key="${cky}" x="${(x+4).toFixed(1)}" y="${(y+3.5).toFixed(1)}" font-size="${fsC}" fill="${INFO[cky]?'#222':'var(--sub)'}" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(c[2])}</text>`;boxes.push([x,y-5,x+4+c[2].length*fsC,y+6])}}
   // 勢力名
   const areaLbl=[];
-  for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){cx+=p[0];cy+=p[1];n++}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}if(!inV(cx/n,cy/n))continue;const [x,y]=PX(cx/n,cy/n);const lbl=(lvl===0&&a[5]!==undefined)?a[5]:a[2];if(!lbl)continue;areaLbl.push([x,y,lbl]);const w=lbl.length*fsA;boxes.push([x-w/2,y-fsA+3,x+w/2,y+4])}
+  for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){cx+=p[0];cy+=p[1];n++}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}if(!inV(cx/n,cy/n))continue;const [x,y]=PX(cx/n,cy/n);const lbl=(lvl===0&&a[5]!==undefined)?a[5]:a[2];if(!lbl)continue;areaLbl.push([x,y,lbl,a[4]||a[0]]);const w=lbl.length*fsA;boxes.push([x-w/2,y-fsA+3,x+w/2,y+4])}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const w=(m[5]||'').length*fsA;boxes.push([x-w/2,y-fsA+3,x+w/2,y+4])}
   const hit=(b)=>boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);
   const OFF=[[0,0],[0,-14],[0,14],[-14,0],[14,0],[-12,-12],[12,-12],[-12,12],[12,12],[0,-27],[0,27],[-26,0],[26,0],[-22,-20],[22,-20],[-22,20],[22,20],[0,-40],[0,40]];
   (g.notes||[]).forEach((n,ni)=>{if(!inV(n[0],n[1]))return;let [x,y]=PX(n[0],n[1]);const k=n[3]||'';
     if(lvl===0){for(const [dx,dy] of OFF){const bx=[x+dx-8,y+dy-12,x+dx+8,y+dy+3];if(bx[0]<2||bx[2]>W-2||bx[1]<20)continue;if(!hit(bx)){x+=dx;y+=dy;boxes.push(bx);break}}lab+=`<text class="tapt nn" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)" stroke="#fff" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}</text>`}
-    else{const t=n[2];const fs=10;const bx=[x-t.length*fs/2,y-fs,x+t.length*fs/2,y+3];let dy=0;for(const d of [0,-13,13,-26,26]){const b2=[bx[0],bx[1]+d,bx[2],bx[3]+d];if(!hit(b2)){dy=d;boxes.push(b2);break}}y+=dy;lab+=`<text class="tapt" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke" text-decoration="underline">${NUM[ni]||'●'}${esc(t)}</text>`}});
+    else{const t=n[2];const fs=10;const bx=[x-t.length*fs/2,y-fs,x+t.length*fs/2,y+3];let dy=0;for(const d of [0,-13,13,-26,26]){const b2=[bx[0],bx[1]+d,bx[2],bx[3]+d];if(!hit(b2)){dy=d;boxes.push(b2);break}}y+=dy;lab+=`<text class="${INFO[k]?'tapt tl':'nt'}" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--${INFO[k]?'ink':'sub'})" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}${esc(t)}</text>`}});
   for(const a of g.arrows){if(!inV(a[0],a[1])&&!inV(a[2],a[3]))continue;const [x1,y1]=PX(a[0],a[1]),[x2,y2]=PX(a[2],a[3]);const mx=(x1+x2)/2,my=(y1+y2)/2-10*Math.sqrt(z);const k=a[5]||'';
     s_+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)" style="pointer-events:none"/><path class="tap arrow${sel===k?' sel':''}" data-key="${k}" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="transparent" stroke-width="8"/>`;
-    if(a[4])lab+=`<text class="tapt" data-key="${k}" x="${mx.toFixed(1)}" y="${(my-2).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(a[4])}</text>`}
-  for(const [x,y,lbl] of areaLbl){lab+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(lbl)}</text>`}
-  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);lab+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
+    if(a[4])lab+=`<text class="${INFO[k]?'tapt tl':'nt'}" data-key="${k}" x="${mx.toFixed(1)}" y="${(my-2).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(a[4])}</text>`}
+  const TL=(k)=>INFO[k]?`class="tapt tl" data-key="${k}" fill="var(--ink)"`:`class="nt" fill="var(--sub)"`;
+  for(const [x,y,lbl,k] of areaLbl){lab+=`<text ${TL(k)} x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(lbl)}</text>`}
+  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);lab+=`<text ${TL(m[6]||'')} x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
   s_+=lab;
   s_+=`<text x="6" y="15" font-size="12" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}</text><text x="6" y="${H-5}" font-size="7.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
   return s_+`</svg>`;
@@ -2942,8 +2944,8 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
-  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>勢力名・都市・川・交易路・矢印・番号</b>をタップ → 下に説明と「同時代のヨコ」。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
-  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は上の「赤シート」ボタン）</div>`:'')+yp.html;
+  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>点線の下線がある文字</b>（勢力名・都市・川・交易路・矢印・番号）はタップで下に説明と「同時代のヨコ」が出ます。灰色の文字は説明なし。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
+  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は右下の「赤シート」ボタン）</div>`:'')+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
   $('#tlbody').querySelectorAll('.ev').forEach(d=>d.onclick=()=>openSame(+d.dataset.i));bindMaps($('#tlbody'));$('#tlbody').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{curView=b.dataset.view;renderTL()});
