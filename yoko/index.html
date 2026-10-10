@@ -131,6 +131,10 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mapwrap svg,#pinhold svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
 .mapbox{position:relative}.mapscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:10px}.mapwrap[data-vw="all"] .mapscroll svg,#pinhold .mapscroll svg{width:165%;height:auto;display:block}.mapscroll svg{display:block;width:100%;height:auto}
 #pinhold{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}#pinhold:empty{display:none;box-shadow:none}#pinhold .mapscroll{max-height:38vh}
+.gstage{position:relative;width:100%;height:clamp(220px,min(52vh,78vw),440px);overflow:hidden;background:#dfe8ee;border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.gstage:active{cursor:grabbing}.gstage svg{display:block;width:100%;height:100%;border:0;border-radius:0}#pinhold .gstage{height:clamp(170px,min(34vh,60vw),300px)}
+.gz{position:absolute;right:8px;bottom:22px;display:flex;flex-direction:column;gap:4px}.gz button{width:32px;height:32px;border-radius:8px;border:1px solid #b9b2a4;background:rgba(255,255,255,.95);color:#1f2328;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1}
+.gtabs{position:absolute;left:6px;top:32px;max-width:calc(100% - 12px);overflow-x:auto;scrollbar-width:none;display:flex;gap:0;border:1px solid var(--accent);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.95);white-space:nowrap}.gtabs button{border:0;background:none;color:var(--accent);font-size:11px;font-weight:700;padding:3px 7px;cursor:pointer;white-space:nowrap}.gtabs button.on{background:var(--accent);color:#fff}
+.gm .mapbox .pinb{right:8px}.gm .modern .pinb{display:none}
 .pinb{position:absolute;right:48px;top:8px;font-size:11px;padding:2px 7px;border-radius:14px;border:1px solid var(--accent);background:rgba(255,255,255,.92);color:var(--accent);font-weight:700;cursor:pointer}#pinhold .pinb{background:var(--accent);color:#fff}.mapwrap:not(.pinned) .mapbox:not(:first-child) .pinb,#sheet .pinb{display:none}
 .zoomb{position:absolute;right:8px;top:8px;font-size:13px;padding:2px 8px;border-radius:14px;border:1px solid #b9b2a4;background:rgba(255,255,255,.92);color:#1f2328;cursor:pointer}
 #mz{position:fixed;inset:0;background:var(--bg);z-index:25;display:none;flex-direction:column}
@@ -154,7 +158,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v54</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><button type="button" id="rsbtn" class="rsbtn" title="赤シート：解説の重要語を隠す／表示">🟥シート</button><span class="ver">v55</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -2515,7 +2519,7 @@ const inSel=(e,sel)=>(sel.length?sel:AVAILABLE).includes(pidx(e.y));
 const dynAt=(R,y)=>{const l=DYNASTIES[R].find(d=>y>=d[0]&&y<d[1]);return l?l[2]:null};
 const REG2DYN={C:['中国'],J:['日本','朝鮮'],I:['イラン・イラク','エジプト','アナトリア（小アジア）'],S:['北インド'],W:['フランス','イギリス'],E:[],A:[]};
 const qt=s=>s.replace(/（[^）]*\d[^）]*）/g,'').replace(/\d{3,4}/g,'').replace(/[、・]\s*$/,'').trim();
-const NUM='①②③④⑤⑥⑦⑧';
+const NUM='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚';
 const rtag=r=>`<span class="rtag" style="background:var(--${r})">${REG[r].short}</span>`;
 
 // ---------- 同時代マップ ----------
@@ -2554,7 +2558,7 @@ function landPath(key,PX){if(!landCache[key])landCache[key]=LAND.map(poly=>'M'+p
 function geoSVG(g,viewKey){
   viewKey=viewKey||'all';const v=VIEWS[viewKey];const {H,PX}=mkPX(v);const LP=landPath(viewKey,PX);
   const inV=(lon,lat)=>lon>=v.lon[0]-3&&lon<=v.lon[1]+3&&lat>=v.lat[0]-3&&lat<=v.lat[1]+3;
-  const fs=viewKey==='all'?9.5:12.5;let hits='';const NUM='①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚';let legend=[];
+  const fs=viewKey==='all'?9.5:12.5;let hits='';let legend=[];
   let s=`<div class="mapbox"><div class="mapscroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
   s+=`<rect width="360" height="${H}" fill="#dfe8ee"/>`;
   s+=`<defs><clipPath id="lc-${viewKey}"><path d="${LP}" fill-rule="evenodd"/></clipPath><marker id="gah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/></marker></defs>`;
@@ -2566,11 +2570,12 @@ function geoSVG(g,viewKey){
   for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).join(',')).join(' ');s+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="9"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);s+=`<text class="tapt" data-key="${esc(rn)}" x="${x}" y="${y-4}" text-anchor="middle" font-size="${fs-1}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(rn)}</text>`}}
   for(const dd of (g.dashed||[])){const [x,y]=PX(dd[0],dd[1]);const {PX:_}=mkPX(v);const rx=dd[2]*360/(v.lon[1]-v.lon[0]),ry=dd[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap dashed" data-key="${dd[5]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="none" stroke="var(--sub)" stroke-width="1" stroke-dasharray="3,2" style="pointer-events:stroke"/><text class="tapt" data-key="${dd[5]||''}" x="${x}" y="${y-ry-3}" text-anchor="middle" font-size="${fs-1}" fill="var(--sub)">${esc(dd[4])}</text>`}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const rx=m[2]*360/(v.lon[1]-v.lon[0]),ry=m[3]*H/(v.lat[1]-v.lat[0]);s+=`<ellipse class="tap mark" data-key="${m[6]||''}" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="var(--${m[4]})" fill-opacity="0.35" stroke="var(--${m[4]})" stroke-width="1.2"/>`}
-  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s+=`<circle class="tap city" data-key="${cky}" cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><circle class="tap" data-key="${cky}" cx="${x}" cy="${y}" r="8" fill="transparent"/>${viewKey==="all"?"":`<text class="tapt" data-key="${cky}" x="${x+3}" y="${y+3}" font-size="${fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}`}
+  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s+=`<circle class="tap city" data-key="${cky}" cx="${x}" cy="${y}" r="${viewKey==='all'?1.8:2.6}" fill="#222" stroke="#fff" stroke-width="0.8"/><circle class="tap" data-key="${cky}" cx="${x}" cy="${y}" r="8" fill="transparent"/>${`<text class="tapt" data-key="${cky}" x="${x+3}" y="${y+3}" font-size="${viewKey==="all"?fs-2.5:fs-1.5}" fill="#222" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(c[2])}</text>`}`}
   // 勢力名ラベルの位置を先に計算（番号との重なり回避に使う）
   const areaLbl=[];const boxes=[];
   for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){if(inV(p[0],p[1])){cx+=p[0];cy+=p[1];n++}}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}const [x,y]=PX(cx/n,cy/n);const lbl=(viewKey==='all'&&a[5]!==undefined)?a[5]:a[2];if(!lbl)continue;areaLbl.push([x,y,lbl]);const w=lbl.length*fs;boxes.push([x-w/2,y-fs+3,x+w/2,y+4])}
   for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const w=(m[5]||'').length*fs;boxes.push([x-w/2,y-fs+3,x+w/2,y+4])}
+  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const w=c[2].length*(fs-2.5);boxes.push([x,y-4,x+w+3,y+5])}
   const hit=(b)=>boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);
   const OFF=[[0,0],[0,-13],[0,13],[-13,0],[13,0],[-11,-11],[11,-11],[-11,11],[11,11],[0,-25],[0,25],[-24,0],[24,0],[-20,-18],[20,-18],[-20,18],[20,18],[0,-36],[0,36]];
   (g.notes||[]).forEach((n,ni)=>{if(!inV(n[0],n[1]))return;let [x,y]=PX(n[0],n[1]);if(viewKey==='all'){for(const [dx,dy] of OFF){const bx=[x+dx-7,y+dy-11,x+dx+7,y+dy+3];if(bx[0]<2||bx[2]>358||bx[1]<18)continue;if(!hit(bx)){x+=dx;y+=dy;boxes.push(bx);break}}legend.push(`<button class="tapt nl" data-key="${n[3]||''}">${NUM[ni]||'●'} ${esc(n[2])}</button>`);s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)" stroke="#fff" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}</text>`}else{s+=`<text class="tapt" data-key="${n[3]||''}" x="${x}" y="${y}" text-anchor="middle" font-size="${fs-1.5}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="2.5" paint-order="stroke" text-decoration="underline">${esc(n[2])}</text>`}})
@@ -2596,6 +2601,95 @@ function modernSVG(g,viewKey){
   s+=`<text x="6" y="14" font-size="11" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">現在の国境${viewKey!=='all'?'（'+v.n+'）':''}</text><text x="354" y="${H-5}" text-anchor="end" font-size="7" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">点線＝上の地図の勢力範囲／国境・地形：Natural Earth</text></svg>`;
   return s;
 }
+// ---------- Googleマップ風インライン地図 ----------
+const GM={lon:[-12,150],lat:[3,66],K:1.12,ZMIN:1,ZMAX:9};
+let landDeg=null;
+function landDegPath(){if(!landDeg)landDeg=LAND.map(poly=>'M'+poly.map(p=>p[0].toFixed(2)+','+(-p[1]).toFixed(2)).join('L')+'Z').join('');return landDeg}
+function gTab(g){return g.title.replace(/の世界.*$/,'').replace(/（.*$/,'')}
+function gmapHTML(gs,idx){
+  idx=idx||0;const g=gs[idx];
+  return `<div class="mapwrap gm" data-gi="${GEO.indexOf(g)}" data-gis="${gs.map(x=>GEO.indexOf(x)).join(',')}"><div class="mapbox" data-gi="${GEO.indexOf(g)}"><div class="gstage"></div>${gs.length>1?`<div class="gtabs">${gs.map((x,i)=>`<button type="button" class="${i===idx?'on':''}" data-ti="${i}">${esc(gTab(x))}</button>`).join('')}</div>`:''}<div class="gz"><button type="button" data-gz="+" title="拡大">＋</button><button type="button" data-gz="-" title="縮小">－</button><button type="button" data-gz="0" title="全体に戻す">⟲</button></div><button class="pinb" type="button">📌 固定</button></div><div class="notelegend"></div><button class="modtog" type="button">🗺 現在の地図と見比べる ▾</button><div class="modern mapbox" hidden>${modernSVG(g,'all')}<button class="zoomb" type="button">⤢</button></div><div class="mapinfo" hidden></div></div>`;
+}
+function gFit(st){const W=st.W,H=st.H;st.base=H/((GM.lat[1]-GM.lat[0])*GM.K);st.z=1;st.cx=GM.lon[0]+W/(2*st.base);st.cy=(GM.lat[0]+GM.lat[1])/2}
+function gClamp(st){st.z=Math.max(GM.ZMIN,Math.min(GM.ZMAX,st.z));const s=st.base*st.z;const hw=st.W/2/s,hh=st.H/2/(s*GM.K);
+  const lo=GM.lon[0]+hw,hi=GM.lon[1]-hw;st.cx=lo>hi?(GM.lon[0]+GM.lon[1])/2:Math.max(lo,Math.min(hi,st.cx));
+  const lo2=GM.lat[0]+hh,hi2=GM.lat[1]-hh;st.cy=lo2>hi2?(GM.lat[0]+GM.lat[1])/2:Math.max(lo2,Math.min(hi2,st.cy))}
+function legendHTML(g){return (g.notes||[]).length?`<div class="nlhead">🔢 地図上の番号＝この時代の主な出来事（タップで説明）</div>${g.notes.map((n,ni)=>`<button class="tapt nl" data-key="${n[3]||''}">${NUM[ni]||'●'} ${esc(n[2])}</button>`).join('')}`:''}
+function gSVG(g,st){
+  const W=st.W,H=st.H,z=st.z,s=st.base*z,K=GM.K;
+  const PX=(lon,lat)=>[W/2+(lon-st.cx)*s,H/2-(lat-st.cy)*s*K];
+  const inV=(lon,lat)=>{const [x,y]=PX(lon,lat);return x>-40&&x<W+40&&y>-30&&y<H+30};
+  const lvl=s>=12?2:s>=7?1:0; // 0:番号 1:注記文・都市名 2:＋川名
+  const gid='g'+(GEO.indexOf(g));const sel=st.sel||'';
+  let s_=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif" data-map="1">`;
+  s_+=`<rect width="${W}" height="${H}" fill="#dfe8ee"/>`;
+  const tr=`translate(${(W/2-st.cx*s).toFixed(2)},${(H/2+st.cy*s*K).toFixed(2)}) scale(${s.toFixed(4)},${(s*K).toFixed(4)})`;
+  s_+=`<defs><clipPath id="lc-${gid}" clipPathUnits="userSpaceOnUse"><path d="${landDegPath()}" fill-rule="evenodd"/></clipPath><marker id="gah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 z" fill="var(--accent)"/></marker></defs>`;
+  s_+=`<g transform="${tr}"><path d="${landDegPath()}" fill="#f1ede4" stroke="#b9b2a4" stroke-width="0.6" fill-rule="evenodd" vector-effect="non-scaling-stroke"/>`;
+  for(const a of (g.areas||[])){const poly=TERR[a[0]];const k=a[4]||a[0];s_+=`<polygon class="area tap${sel===k?' sel':''}" data-key="${k}" points="${poly.map(p=>p[0]+','+(-p[1])).join(' ')}" fill="var(--${a[1]})" fill-opacity="0.4" stroke="var(--${a[1]})" stroke-width="1.4" stroke-linejoin="round" vector-effect="non-scaling-stroke" clip-path="url(#lc-${gid})" style="cursor:pointer"><title>${esc(a[2])}</title></polygon>`}
+  for(const m of g.marks){const k=m[6]||'';s_+=`<ellipse class="tap mark${sel===k?' sel':''}" data-key="${k}" cx="${m[0]}" cy="${-m[1]}" rx="${m[2]}" ry="${m[3]}" fill="var(--${m[4]})" fill-opacity="0.35" stroke="var(--${m[4]})" stroke-width="1.2" vector-effect="non-scaling-stroke"/>`}
+  for(const dd of (g.dashed||[])){const k=dd[5]||'';s_+=`<ellipse class="tap dashed${sel===k?' sel':''}" data-key="${k}" cx="${dd[0]}" cy="${-dd[1]}" rx="${dd[2]}" ry="${dd[3]}" fill="none" stroke="var(--sub)" stroke-width="1" stroke-dasharray="3,2" vector-effect="non-scaling-stroke" style="pointer-events:stroke"/>`}
+  s_+=`</g>`;
+  let hits='',lab='';
+  if(g.rivers){for(const [name,pts] of Object.entries(RIVERS)){const rp=pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="#7fb0d0" stroke-width="${lvl?1.4:1}" stroke-linejoin="round" stroke-linecap="round" style="pointer-events:none"/>`;hits+=`<polyline class="tap river${sel===name?' sel':''}" data-key="${name}" points="${rp}" fill="none" stroke="transparent" stroke-width="7"/>`;
+    if(lvl>=2){const m=pts[Math.floor(pts.length/2)];if(inV(m[0],m[1])){const [x,y]=PX(m[0],m[1]);lab+=`<text class="tapt" data-key="${name}" x="${(x+3).toFixed(1)}" y="${(y-2).toFixed(1)}" font-size="9" fill="#3f7a9e" stroke="#fff" stroke-width="2" paint-order="stroke">${name}</text>`}}}}
+  s_+=hits;
+  for(const rn of (g.routes||[])){const r=ROUTES[rn];const rp=r.pts.map(p=>PX(p[0],p[1]).map(v=>v.toFixed(1)).join(',')).join(' ');s_+=`<polyline points="${rp}" fill="none" stroke="var(--${r.c})" stroke-width="1.6" stroke-dasharray="4,2.5" stroke-linejoin="round" style="pointer-events:none"/><polyline class="tap route${sel===rn?' sel':''}" data-key="${esc(rn)}" points="${rp}" fill="none" stroke="transparent" stroke-width="10"/>`;const m=r.lab||r.pts[Math.floor(r.pts.length/2)];if(inV(m[0],m[1])&&(lvl>=1||!/旅行路/.test(rn))){const [x,y]=PX(m[0],m[1]);lab+=`<text class="tapt" data-key="${esc(rn)}" x="${x.toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" font-size="${lvl?10.5:9}" font-weight="700" fill="var(--${r.c})" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(rn)}</text>`}}
+  for(const dd of (g.dashed||[])){if(!inV(dd[0],dd[1]))continue;const [x,y]=PX(dd[0],dd[1]);lab+=`<text class="tapt" data-key="${dd[5]||''}" x="${x.toFixed(1)}" y="${(y-dd[3]*s*K-3).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">${esc(dd[4])}</text>`}
+  // 都市
+  const fsA=11,fsC=10;const boxes=[];
+  for(const ck of (g.cities||[])){const c=CITIES[ck];if(!inV(c[0],c[1]))continue;const [x,y]=PX(c[0],c[1]);const cky=INFO['c_'+ck]?'c_'+ck:ck;s_+=`<circle class="tap city${sel===cky?' sel':''}" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${lvl?2.8:2}" fill="#222" stroke="#fff" stroke-width="0.9"/><circle class="tap" data-key="${cky}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="transparent"/>`;
+    if(lvl>=1){lab+=`<text class="tapt" data-key="${cky}" x="${(x+4).toFixed(1)}" y="${(y+3.5).toFixed(1)}" font-size="${fsC}" fill="#222" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(c[2])}</text>`;boxes.push([x,y-5,x+4+c[2].length*fsC,y+6])}}
+  // 勢力名
+  const areaLbl=[];
+  for(const a of (g.areas||[])){const poly=TERR[a[0]];let cx=0,cy=0,n=0;for(const p of poly){cx+=p[0];cy+=p[1];n++}if(!n)continue;if(a[3]){cx+=a[3][0]*n;cy+=a[3][1]*n}if(!inV(cx/n,cy/n))continue;const [x,y]=PX(cx/n,cy/n);const lbl=(lvl===0&&a[5]!==undefined)?a[5]:a[2];if(!lbl)continue;areaLbl.push([x,y,lbl]);const w=lbl.length*fsA;boxes.push([x-w/2,y-fsA+3,x+w/2,y+4])}
+  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);const w=(m[5]||'').length*fsA;boxes.push([x-w/2,y-fsA+3,x+w/2,y+4])}
+  const hit=(b)=>boxes.some(o=>b[0]<o[2]&&b[2]>o[0]&&b[1]<o[3]&&b[3]>o[1]);
+  const OFF=[[0,0],[0,-14],[0,14],[-14,0],[14,0],[-12,-12],[12,-12],[-12,12],[12,12],[0,-27],[0,27],[-26,0],[26,0],[-22,-20],[22,-20],[-22,20],[22,20],[0,-40],[0,40]];
+  (g.notes||[]).forEach((n,ni)=>{if(!inV(n[0],n[1]))return;let [x,y]=PX(n[0],n[1]);const k=n[3]||'';
+    if(lvl===0){for(const [dx,dy] of OFF){const bx=[x+dx-8,y+dy-12,x+dx+8,y+dy+3];if(bx[0]<2||bx[2]>W-2||bx[1]<20)continue;if(!hit(bx)){x+=dx;y+=dy;boxes.push(bx);break}}lab+=`<text class="tapt nn" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)" stroke="#fff" stroke-width="3" paint-order="stroke">${NUM[ni]||'●'}</text>`}
+    else{const t=n[2];const fs=10.5;const bx=[x-t.length*fs/2,y-fs,x+t.length*fs/2,y+3];let dy=0;for(const d of [0,-13,13,-26,26]){const b2=[bx[0],bx[1]+d,bx[2],bx[3]+d];if(!hit(b2)){dy=d;boxes.push(b2);break}}y+=dy;lab+=`<text class="tapt" data-key="${k}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle" font-size="${fs}" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke" text-decoration="underline">${NUM[ni]||'●'}${esc(t)}</text>`}});
+  for(const a of g.arrows){if(!inV(a[0],a[1])&&!inV(a[2],a[3]))continue;const [x1,y1]=PX(a[0],a[1]),[x2,y2]=PX(a[2],a[3]);const mx=(x1+x2)/2,my=(y1+y2)/2-10*Math.sqrt(z);const k=a[5]||'';
+    s_+=`<path d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#gah)" style="pointer-events:none"/><path class="tap arrow${sel===k?' sel':''}" data-key="${k}" d="M${x1.toFixed(1)},${y1.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}" fill="none" stroke="transparent" stroke-width="8"/>`;
+    if(a[4])lab+=`<text class="tapt" data-key="${k}" x="${mx.toFixed(1)}" y="${(my-2).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="700" stroke="#fff" stroke-width="2.2" paint-order="stroke">${esc(a[4])}</text>`}
+  for(const [x,y,lbl] of areaLbl){lab+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(lbl)}</text>`}
+  for(const m of g.marks){if(!inV(m[0],m[1]))continue;const [x,y]=PX(m[0],m[1]);lab+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="${fsA}" font-weight="700" fill="var(--ink)" stroke="#fff" stroke-width="2.5" paint-order="stroke">${esc(m[5])}</text>`}
+  s_+=lab;
+  s_+=`<text x="6" y="15" font-size="12" font-weight="700" fill="var(--ink)" stroke="#dfe8ee" stroke-width="3" paint-order="stroke">${esc(g.title)}</text><text x="6" y="${H-5}" font-size="7.5" fill="var(--sub)" stroke="#fff" stroke-width="2" paint-order="stroke">項目は${esc(g.src||'')}の地図に準拠／地形：Natural Earth</text>`;
+  return s_+`</svg>`;
+}
+function gRender(mb){const stg=mb.querySelector('.gstage');if(!stg)return;const g=GEO[+mb.dataset.gi];if(!g)return;let st=mb._st;const W=stg.clientWidth,H=stg.clientHeight;if(!W||!H)return;
+  if(!st){st=mb._st={W,H};gFit(st)}else if(st.W!==W||st.H!==H){st.base=H/((GM.lat[1]-GM.lat[0])*GM.K);st.W=W;st.H=H}
+  gClamp(st);stg.innerHTML=gSVG(g,st);const svg=stg.firstElementChild;svg.style.transformOrigin='0 0';}
+function gApplyGesture(mb,tx,ty,k){const st=mb._st;if(!st)return;const s=st.base*st.z;
+  // CSS変換 translate(tx,ty) scale(k) 後の画面中心が、元画像のどこに当たるか
+  const ox=(st.W/2-tx)/k,oy=(st.H/2-ty)/k;
+  st.cx=st.cx+(ox-st.W/2)/s;st.cy=st.cy-(oy-st.H/2)/(s*GM.K);st.z*=k;gClamp(st);gRender(mb)}
+function bindG(mb){if(mb._g)return;mb._g=1;const stg=mb.querySelector('.gstage');
+  const pts=new Map();let last=null,moved=false,tx=0,ty=0,k=1,ax=0,ay=0;
+  const svg=()=>stg.firstElementChild;
+  const ap=()=>{const sv=svg();if(sv)sv.style.transform=`translate(${tx}px,${ty}px) scale(${k})`;};
+  const rel=e=>{const r=stg.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
+  stg.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;pts.set(e.pointerId,rel(e));last=null;if(pts.size===1){moved=false;tx=0;ty=0;k=1;ax=0;ay=0;mb._downEl=e.target.closest&&e.target.closest('[data-key]')}try{stg.setPointerCapture(e.pointerId)}catch(_){}});
+  stg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,rel(e));const P=[...pts.values()];
+    if(P.length===1){if(last){const dx=P[0][0]-last[0],dy=P[0][1]-last[1];if(Math.abs(dx)+Math.abs(dy)>3)moved=true;if(moved){tx+=dx;ty+=dy;ap()}}last=P[0].slice()}
+    else{const d=Math.hypot(P[0][0]-P[1][0],P[0][1]-P[1][1]);const mx=(P[0][0]+P[1][0])/2,my=(P[0][1]+P[1][1])/2;moved=true;
+      if(last&&last.d){const kk=d/last.d;// 現在の変換 T(tx,ty,k) に、画面点(mx,my)基準の kk倍 を合成
+        tx=mx-(mx-tx)*kk;ty=my-(my-ty)*kk;k*=kk;tx+=mx-last.mx;ty+=my-last.my;ap()}last={d,mx,my}}});
+  const end=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);last=null;if(pts.size===0&&moved){const sv=svg();if(sv)sv.style.transform='';gApplyGesture(mb,tx,ty,k);mb._skip=true;setTimeout(()=>mb._skip=false,50)}};
+  stg.addEventListener('pointerup',end);stg.addEventListener('pointercancel',end);
+  stg.addEventListener('wheel',e=>{e.preventDefault();const [px,py]=rel(e);const kk=e.deltaY<0?1.25:1/1.25;gApplyGesture(mb,px-px*kk,py-py*kk,kk)},{passive:false});
+  mb.querySelectorAll('[data-gz]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const st=mb._st;if(!st)return;if(b.dataset.gz==='0'){gFit(st);gRender(mb);return}const kk=b.dataset.gz==='+'?1.5:1/1.5;st.z*=kk;gClamp(st);gRender(mb)});
+  stg.addEventListener('click',e=>{if(mb._skip)return;const el=(e.target.closest&&e.target.closest('[data-key]'))||mb._downEl;mb._downEl=null;if(!el)return;const key=el.dataset.key;if(!key||!INFO[key])return;e.stopPropagation();const w=mb._w;if(w)showInfo(w,key)});
+  if(window.ResizeObserver){new ResizeObserver(()=>gRender(mb)).observe(stg)}
+  gRender(mb)}
+function gSwitch(w,ti){const gis=(w.dataset.gis||'').split(',').map(Number);const gi=gis[ti];if(gi===undefined)return;w.dataset.gi=gi;const hold=$('#pinhold');const mb=w.classList.contains('pinned')?hold.querySelector('.mapbox'):w.querySelector('.mapbox');mb.dataset.gi=gi;mb._st=null;
+  mb.querySelectorAll('.gtabs button').forEach(b=>b.classList.toggle('on',+b.dataset.ti===ti));gRender(mb);
+  const lg=w.querySelector('.notelegend');if(lg){lg.innerHTML=legendHTML(GEO[gi]);lg.querySelectorAll('.nl').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})}
+  const md=w.querySelector('.modern');if(md){md.innerHTML=modernSVG(GEO[gi],'all')+'<button class="zoomb" type="button">⤢</button>';md.querySelector('.zoomb').onclick=ev=>{ev.stopPropagation();openZoom(w,md.querySelector('svg'))}}
+  const info=w.querySelector('.mapinfo');if(info){info.hidden=true;info.innerHTML=''}
+  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'))}
+function gBox(w){const hold=$('#pinhold');return w.classList.contains('pinned')&&hold?hold.querySelector('.mapbox'):w.querySelector('.mapbox')}
 function infoTerm(k){const f=INFO[k];if(!f)return '';return f.n.replace(/^日本：/,'').split(/[（(／]/)[0].replace(/の帝国$|の活動$|の圧迫.*$/,'')}
 function infoQs(k){const f=INFO[k];const t=infoTerm(k);const kws=f.kw||(t.length>=2?[t]:[]);if(!kws.length)return [];return ALL_CURATED.map((c,i)=>[c,i]).filter(([c])=>!c.hidden&&kws.some(w=>((c.q||'')+(c.ctx||'')+(c.opts||[]).join('')+(c.exp||'')).includes(w)))}
 let PIC_WORDS=null;
@@ -2620,7 +2714,7 @@ function yokoTable(Y){const ims=[];const seen=new Set();
   return {html:h+`</div>`,ims}}
 function showInfo(w,k){
   const f=INFO[k];const box=w.querySelector('.mapinfo');if(!f||!box)return;box.hidden=false;
-  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'));const hold=$('#pinhold');[w,...(hold&&w.classList.contains('pinned')?[hold]:[])].forEach(r=>r.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel')));
+  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'));const hold=$('#pinhold');[w,...(hold&&w.classList.contains('pinned')?[hold]:[])].forEach(r=>r.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel')));document.querySelectorAll('.mapbox').forEach(m=>{if(m._st)m._st.sel=''});const gb=w.classList.contains('gm')?gBox(w):null;if(gb&&gb._st)gb._st.sel=k;
   const qs=infoQs(k);
   let bodyH=esc(f.b);const headBtns=[];
   (f.img||[]).forEach((im,i)=>{const btn=`<button class="pic" data-pi="${i}" title="写真を見る">📷</button>`;const w=im.w?esc(im.w):'';const at=w?bodyH.indexOf(w):-1;if(at>=0){bodyH=bodyH.slice(0,at+w.length)+btn+bodyH.slice(at+w.length)}else headBtns.push(btn)});
@@ -2673,11 +2767,11 @@ function bindDrag(sc){if(sc._drag)return;sc._drag=1;let sx=0,sl=0,on=false,moved
   const end=e=>{if(!on)return;on=false;sc.style.cursor='grab';if(moved){sc._skip=true;setTimeout(()=>sc._skip=false,0)}};
   window.addEventListener('pointerup',end);window.addEventListener('pointercancel',end);
   sc.addEventListener('click',e=>{if(sc._skip){e.stopPropagation();e.preventDefault()}},true)}
-function bindMaps(root){root.querySelectorAll('.mapscroll').forEach(bindDrag);root.querySelectorAll('.mapwrap').forEach(w=>{w.querySelectorAll('.pinb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const on=!w.classList.contains('pinned');pinMap(w,on);if(on)requestAnimationFrame(()=>scrollUnderPin(w))});w.querySelectorAll('.modtog').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const m=b.nextElementSibling;m.hidden=!m.hidden;b.textContent=m.hidden?'🗺 現在の地図と見比べる ▾':'🗺 現在の地図を閉じる ▴'});w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
-function viewChips(){const eu=GEO.some(g=>g.p===curP&&g.eu);if(curView==='europe'&&!eu)curView='all';return `<div class="chips" style="margin:4px 0 8px">${Object.entries(VIEWS).filter(([k,v])=>!v.opt||eu).map(([k,v])=>`<button class="chip ${k===curView?'on':''}" data-view="${k}">${v.n}</button>`).join('')}</div>`}
+function bindMaps(root){root.querySelectorAll('.mapscroll').forEach(bindDrag);root.querySelectorAll('.mapwrap').forEach(w=>{if(w.classList.contains('gm')){const mb=w.querySelector('.mapbox');if(mb){mb._w=w;const lg=w.querySelector('.notelegend');if(lg&&!lg.innerHTML)lg.innerHTML=legendHTML(GEO[+w.dataset.gi]);mb.querySelectorAll('.gtabs button').forEach(b=>b.onclick=ev=>{ev.stopPropagation();gSwitch(w,+b.dataset.ti)});bindG(mb)}}w.querySelectorAll('.pinb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const on=!w.classList.contains('pinned');pinMap(w,on);if(on)requestAnimationFrame(()=>scrollUnderPin(w))});w.querySelectorAll('.modtog').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const m=b.nextElementSibling;m.hidden=!m.hidden;b.textContent=m.hidden?'🗺 現在の地図と見比べる ▾':'🗺 現在の地図を閉じる ▴'});w.querySelectorAll('.zoomb').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openZoom(w,b.parentElement.querySelector('svg'))});w.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})})}
+function viewChips(){curView='all';return ''}
 function openMaps(p){
   const ms=MAPS.filter(m=>m.p===p);
-  const render=()=>{$('#sheet').innerHTML=`<button class="close" id="shClose">×</button><h2>同時代マップ：${PERIODS[p].n}</h2>${viewChips()}${GEO.filter(g=>g.p===p).map(g=>geoSVG(g,curView)).join('')}<div class="muted" style="margin:6px 0">地域を縦に並べた模式図。下段は地域間の影響・接触。</div>${ms.map(mapSVG).join('')}`;
+  const render=()=>{$('#sheet').innerHTML=`<button class="close" id="shClose">×</button><h2>同時代マップ：${PERIODS[p].n}</h2>${viewChips()}${(gs=>gs.length?gmapHTML(gs,0):'')(GEO.filter(g=>g.p===p))}<div class="muted" style="margin:6px 0">地域を縦に並べた模式図。下段は地域間の影響・接触。</div>${ms.map(mapSVG).join('')}`;
     $('#shClose').onclick=closeSheet;bindMaps($('#sheet'));$('#sheet').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{curView=b.dataset.view;render()});};
   render();$('#sheet').classList.add('open');$('#sheetBg').classList.add('open');
 }
@@ -2701,7 +2795,7 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
-  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図のタップ・番号・固定）</summary>地図の<b>勢力名・都市・川・交易路・矢印・注記</b>をタップ → 説明と「同時代のヨコ」。<b>①②③…</b>はこの時代の主な出来事で、内容は地図の下のリスト（番号・リストどちらをタップしてもOK）。全体地図は左右にスクロール（ドラッグ）できます。「⤢」でピンチ拡大、「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';GEO.filter(g=>g.p===curP).forEach(g=>h+=geoSVG(g,curView));
+  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>勢力名・都市・川・交易路・矢印・番号</b>をタップ → 下に説明と「同時代のヨコ」。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
   const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は上の「赤シート」ボタン）</div>`:'')+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
