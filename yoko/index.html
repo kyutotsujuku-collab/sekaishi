@@ -144,7 +144,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .mzctl{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line)}.mzctl button{flex:1;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px}
 .mzinfo{flex:1;overflow:auto;padding:6px 10px 20px}
 .kt{color:var(--kt);font-weight:700}
-body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4px;box-shadow:0 0 0 1px var(--kt);cursor:pointer;-webkit-tap-highlight-color:transparent}body.redsheet #tab-tl .kt.show{background:transparent;color:var(--kt);box-shadow:none}
+.rshint{display:none}body.redsheet .rshint{display:block}body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4px;box-shadow:0 0 0 1px var(--kt);cursor:pointer;-webkit-tap-highlight-color:transparent}body.redsheet #tab-tl .kt.show{background:transparent;color:var(--kt);box-shadow:none}
 .sheetbar{display:flex;align-items:center;gap:8px;margin:10px 0 6px;position:sticky;top:var(--hdr,88px);z-index:4;background:var(--bg);padding:6px 0}.sheetbtn{border:1px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;cursor:pointer}body.redsheet .sheetbtn{background:var(--kt);color:#fff}.sheetbar .muted{font-size:12px}
 .modtog{display:block;margin:4px 0 0 auto;padding:2px 6px;border:0;background:none;color:var(--sub);font-size:12px;cursor:pointer;text-decoration:underline dotted}
 .maphelp{font-size:12.5px;line-height:1.5;margin:0 0 8px;color:var(--sub)}.maphelp summary{cursor:pointer;color:var(--accent);font-weight:600;list-style:none}.maphelp summary::-webkit-details-marker{display:none}.maphelp[open] summary{margin-bottom:4px}.maphelp b{color:var(--ink)}
@@ -158,7 +158,7 @@ body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v58</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v59</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -2658,7 +2658,7 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 function applyZoom(z){document.body.style.zoom=z;document.querySelectorAll('#fsz button').forEach(b=>b.classList.toggle('on',+b.dataset.z===z))}
 document.body.classList.toggle('redsheet',!!store.get('yoko_sheet',false));
-$('#rsbtn').onclick=()=>{const on=!document.body.classList.contains('redsheet');document.body.classList.toggle('redsheet',on);store.set('yoko_sheet',on);document.querySelectorAll('#tab-tl .kt.show').forEach(k=>k.classList.remove('show'));if(typeof renderTL==='function')renderTL()};
+$('#rsbtn').onclick=()=>{const on=!document.body.classList.contains('redsheet');document.body.classList.toggle('redsheet',on);store.set('yoko_sheet',on);document.querySelectorAll('#tab-tl .kt.show').forEach(k=>k.classList.remove('show'))};
 const setHdr=()=>document.documentElement.style.setProperty('--hdr',document.querySelector('header').offsetHeight+'px');setHdr();window.addEventListener('resize',setHdr);
 document.addEventListener('click',ev=>{if(!document.body.classList.contains('redsheet'))return;const k=ev.target.closest('#tab-tl .kt');if(!k)return;k.classList.toggle('show');ev.stopPropagation();ev.preventDefault()},true);
 (function(){const z=store.get('yoko_zoom',1.15);applyZoom(z);document.querySelectorAll('#fsz button').forEach(b=>b.onclick=()=>{const z=+b.dataset.z;store.set('yoko_zoom',z);applyZoom(z)})})();
@@ -2945,7 +2945,7 @@ function renderTL(){
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
   if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>点線の下線がある文字</b>（勢力名・都市・川・交易路・矢印・番号）はタップで下に説明と「同時代のヨコ」が出ます。灰色の文字は説明なし。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
-  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=(document.body.classList.contains('redsheet')?`<div class="muted" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は右下の「赤シート」ボタン）</div>`:'')+yp.html;
+  const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=`<div class="muted rshint" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は右下の「赤シート」ボタン）</div>`+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
   $('#tlbody').querySelectorAll('.ev').forEach(d=>d.onclick=()=>openSame(+d.dataset.i));bindMaps($('#tlbody'));$('#tlbody').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{curView=b.dataset.view;renderTL()});
