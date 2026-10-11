@@ -7,18 +7,18 @@
 <style>
 :root{
   --bg:#f6f4ef; --card:#ffffff; --ink:#1f2328; --sub:#6b7078; --line:#e3e0d8;
-  --accent:#b5461f; --accent-ink:#fff; --ok:#1f7a4d; --ng:#b3261e; --chip:#ece9e1; --chip-on:#1f2328;
+  --accent:#c9570c; --accent-ink:#fff; --ok:#1f7a4d; --ng:#b3261e; --chip:#ece9e1; --chip-on:#1f2328;
   --kt:#c0392b; --W:#3b6fb6; --E:#7b4fb2; --I:#2e8b7a; --S:#c48a1a; --C:#c0392b; --J:#d2617a; --A:#5a8f2b;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#15171a; --card:#1f2226; --ink:#eceef0; --sub:#9aa0a8; --line:#33373d;
-    --accent:#e2764f; --accent-ink:#1a0d08; --kt:#ff8577; --ok:#5fc48e; --ng:#ef7a73; --chip:#2a2e34; --chip-on:#eceef0;
+    --accent:#f08a3c; --accent-ink:#1f1004; --kt:#ff8577; --ok:#5fc48e; --ng:#ef7a73; --chip:#2a2e34; --chip-on:#eceef0;
   }
 }
 :root[data-theme="dark"]{
   --bg:#15171a; --card:#1f2226; --ink:#eceef0; --sub:#9aa0a8; --line:#33373d;
-  --accent:#e2764f; --accent-ink:#1a0d08; --ok:#5fc48e; --ng:#ef7a73; --chip:#2a2e34; --chip-on:#eceef0;
+  --accent:#f08a3c; --accent-ink:#1f1004; --ok:#5fc48e; --ng:#ef7a73; --chip:#2a2e34; --chip-on:#eceef0;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
@@ -128,7 +128,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .yyoko{border-top:1px solid var(--line);background:color-mix(in srgb,var(--accent) 9%,transparent);padding:8px 10px;font-size:13px;line-height:1.55;color:var(--accent);font-weight:600}
 .ytbl .pic{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:6px;font-size:11px;padding:0 5px;margin:0 3px;line-height:1.5;vertical-align:middle;cursor:pointer}
 
-.mapwrap svg,#pinhold svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
+.mapwrap svg,#pinhold svg{--ink:#1f2328;--sub:#6b7078;--accent:#c9570c}
 .mapbox{position:relative}.mapscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:10px}.mapwrap[data-vw="all"] .mapscroll svg,#pinhold .mapscroll svg{width:165%;height:auto;display:block}.mapscroll svg{display:block;width:100%;height:auto}
 #pinhold{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}#pinhold:empty{display:none;box-shadow:none}#pinhold .mapscroll{max-height:38vh}
 .gstage{position:relative;width:100%;height:clamp(220px,min(52vh,78vw),440px);overflow:hidden;background:#dfe8ee;border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.gstage:active{cursor:grabbing}.gstage svg{display:block;width:100%;height:100%;border:0;border-radius:0}#pinhold .gstage{height:clamp(170px,min(34vh,60vw),300px)}
@@ -140,7 +140,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 #mz{position:fixed;inset:0;background:var(--bg);z-index:25;display:none;flex-direction:column}
 .mzbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px}.mzbar .muted{flex:1;font-size:11px}.mzbar .btn{width:auto;margin:0;padding:6px 12px;font-size:13px}
 .mzstage{position:relative;height:52vh;overflow:hidden;background:#dfe8ee;touch-action:none;user-select:none;-webkit-user-select:none}
-.mzstage svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f;background:#dfe8ee}
+.mzstage svg{--ink:#1f2328;--sub:#6b7078;--accent:#c9570c;background:#dfe8ee}
 .mzctl{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line)}.mzctl button{flex:1;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:14px}
 .mzinfo{flex:1;overflow:auto;padding:6px 10px 20px}
 .kt{color:var(--kt);font-weight:700}
