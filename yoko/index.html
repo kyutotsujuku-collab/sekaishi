@@ -147,6 +147,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .rshint{display:none}body.redsheet .rshint{display:block}body.redsheet #tab-tl .kt{background:var(--kt);color:transparent;border-radius:4px;box-shadow:0 0 0 1px var(--kt);cursor:pointer;-webkit-tap-highlight-color:transparent}body.redsheet #tab-tl .kt.show{background:transparent;color:var(--kt);box-shadow:none}
 .sheetbar{display:flex;align-items:center;gap:8px;margin:10px 0 6px;position:sticky;top:var(--hdr,88px);z-index:4;background:var(--bg);padding:6px 0}.sheetbtn{border:1px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;cursor:pointer}body.redsheet .sheetbtn{background:var(--kt);color:#fff}.sheetbar .muted{font-size:12px}
 .modtog{display:block;margin:4px 0 0 auto;padding:2px 6px;border:0;background:none;color:var(--sub);font-size:12px;cursor:pointer;text-decoration:underline dotted}
+.ptitle{font-size:15px;font-weight:700;color:var(--accent);margin:0 0 8px;line-height:1.4}.ptitle span{display:block;font-size:12.5px;font-weight:400;color:var(--sub)}
 .maphelp{font-size:12.5px;line-height:1.5;margin:0 0 8px;color:var(--sub)}.maphelp summary{cursor:pointer;color:var(--accent);font-weight:600;list-style:none}.maphelp summary::-webkit-details-marker{display:none}.maphelp[open] summary{margin-bottom:4px}.maphelp b{color:var(--ink)}
 .notelegend{display:flex;flex-wrap:wrap;gap:0 14px;margin:4px 2px 0}.notelegend .nlhead{display:none}.notelegend .nl{border:0;background:none;color:var(--ink);padding:3px 2px;font-size:12.5px;text-align:left;cursor:pointer;line-height:1.35;border-radius:6px}.notelegend .nl:active{background:var(--chip)}
 .rsbtn{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:8;border:1.5px solid var(--kt);background:var(--card);color:var(--kt);border-radius:999px;padding:9px 13px;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,.25)}body.redsheet .rsbtn{background:var(--kt);color:#fff}
@@ -158,7 +159,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v61</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v62</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -881,30 +882,30 @@ const CENTURY_NOTES = {
 
 // 時代区分（『世界史と日本史は同時に学べ！』の24区分に準拠） [from,to] は西暦（負=紀元前）
 const PERIODS = [
- {n:'紀元前',    s:'',              f:-9999,t:0},
- {n:'1・2世紀',  s:'',              f:1,    t:200},
- {n:'3・4世紀',  s:'',              f:201,  t:400},
- {n:'5・6世紀',  s:'',              f:401,  t:600},
- {n:'7世紀',     s:'',              f:601,  t:700},
- {n:'8世紀',     s:'',              f:701,  t:800},
- {n:'9世紀',     s:'',              f:801,  t:900},
- {n:'10世紀',    s:'',              f:901,  t:1000},
- {n:'11世紀',    s:'',              f:1001, t:1100},
- {n:'12世紀',    s:'',              f:1101, t:1200},
- {n:'13世紀',    s:'',              f:1201, t:1300},
- {n:'14世紀',    s:'',              f:1301, t:1400},
- {n:'15世紀',    s:'',              f:1401, t:1500},
- {n:'16世紀',    s:'',              f:1501, t:1600},
- {n:'17世紀',    s:'',              f:1601, t:1700},
- {n:'18世紀',    s:'〜1759',        f:1701, t:1759},
- {n:'革命の時代',s:'1760頃〜1815',  f:1760, t:1815},
- {n:'19世紀前半',s:'1815〜1848',    f:1816, t:1848},
- {n:'19世紀後半',s:'1848〜1880',    f:1849, t:1880},
- {n:'帝国主義と第一次世界大戦',s:'1880〜1915',f:1881,t:1915},
- {n:'ロシア革命と戦間期の世界',s:'1915〜1928',f:1916,t:1928},
- {n:'世界恐慌と第二次世界大戦',s:'1929〜1945',f:1929,t:1945},
- {n:'冷戦の時代',s:'1945〜1980',    f:1946, t:1980},
- {n:'グローバル化が進む世界',s:'1980〜',f:1981,t:9999},
+ {n:'紀元前',    s:'人類の誕生と紀元前の世界 〜縄文時代から弥生時代へ〜',f:-9999,t:0},
+ {n:'1・2世紀',  s:'つながる東西の大帝国 〜後漢王朝にアクセスする日本〜',f:1,    t:200},
+ {n:'3・4世紀',  s:'「3世紀の危機」の混乱時代 〜倭国大乱と女王卑弥呼〜',f:201,  t:400},
+ {n:'5・6世紀',  s:'外来の民族による国家建設 〜大型前方後円墳が造られた日本〜',f:401,  t:600},
+ {n:'7世紀',     s:'社会に秩序をもたらしたルール 〜律令国家へ向かう日本〜',f:601,  t:700},
+ {n:'8世紀',     s:'繁栄する東西帝国の都 〜仏教を重視した奈良の天皇〜',f:701,  t:800},
+ {n:'9世紀',     s:'再び分裂・衰退の時代に 〜藤原北家の権力伸長〜',f:801,  t:900},
+ {n:'10世紀',    s:'武人勢力の伸長 〜律令制の崩壊と文化の国風化〜',f:901,  t:1000},
+ {n:'11世紀',    s:'複雑化する権力構造 〜摂関政治と院政の時代〜',f:1001, t:1100},
+ {n:'12世紀',    s:'武人たちが競演した時代 〜平氏政権と鎌倉幕府の成立〜',f:1101, t:1200},
+ {n:'13世紀',    s:'ユーラシアをまたにかけたモンゴル帝国 〜執権政治の展開〜',f:1201, t:1300},
+ {n:'14世紀',    s:'「14世紀の危機」と長期戦乱 〜南北朝の争乱の時代〜',f:1301, t:1400},
+ {n:'15世紀',    s:'つながる海のネットワーク 〜室町幕府と日明貿易〜',f:1401, t:1500},
+ {n:'16世紀',    s:'国家を率いる「国王たちの世紀」 〜戦国を勝ち上がった信長と秀吉〜',f:1501, t:1600},
+ {n:'17世紀',    s:'「17世紀の危機」とアジアの安定 〜江戸時代の始まり〜',f:1601, t:1700},
+ {n:'18世紀',    s:'産業革命の始まりと新興国の成長 〜改革を試み続けた江戸幕府〜（〜1759）',f:1701, t:1759},
+ {n:'革命の時代',s:'アメリカとフランスで芽生えた民主主義 〜寛政の改革の時代〜（1760頃〜1815）',f:1760, t:1815},
+ {n:'19世紀前半',s:'革命の嵐が吹き荒れたヨーロッパ 〜「嵐の前の静けさ」の日本〜（1815〜1848）',f:1816, t:1848},
+ {n:'19世紀後半',s:'大英帝国栄光の時代 〜ペリーの来航と明治維新〜（1848〜1880）',f:1849, t:1880},
+ {n:'帝国主義と第一次世界大戦',s:'列強による「世界分割」の時代 〜日本の近代化と日清・日露戦争〜（1880〜1915）',f:1881,t:1915},
+ {n:'ロシア革命と戦間期の世界',s:'世界が平和に向かう第一次大戦後の世界 〜大正デモクラシーと関東大震災〜（1915〜1928）',f:1916,t:1928},
+ {n:'世界恐慌と第二次世界大戦',s:'経済危機がもたらした世界の分断 〜戦争の道へと歩んだ日本〜（1929〜1945）',f:1929,t:1945},
+ {n:'冷戦の時代',s:'核兵器を持ってにらみ合った米ソ 〜敗戦国から経済大国への道を歩んだ日本〜（1945〜1980）',f:1946, t:1980},
+ {n:'グローバル化が進む世界',s:'テクノロジーの発達が促した世界の一体化 〜相互に関連し合う世界と日本〜（1980〜）',f:1981,t:9999},
 ];
 
 // 区分ごとのヨコのつながり解説（PERIODSと同じ順）
@@ -2825,7 +2826,7 @@ const yfmt=y=>y<0?`前${-y}`:`${y}`;
 const cent=y=>y<0?-Math.ceil(-y/100):Math.ceil(y/100);
 const cfmt=c=>c<0?`前${-c}世紀`:`${c}世紀`;
 const pidx=y=>PERIODS.findIndex(p=>y>=p.f&&y<=p.t);
-const pname=y=>{const p=PERIODS[pidx(y)];return p?p.n+(p.s?`（${p.s}）`:''):''};
+const pname=y=>{const p=PERIODS[pidx(y)];return p?p.n:''};
 const REG=Object.fromEntries(REGIONS.map(r=>[r.id,r]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -3117,7 +3118,7 @@ function renderTL(){
   const P=PERIODS[curP];
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
-  let h=`<h2 style="font-size:20px;margin:6px 0">${P.n}${P.s?` <span class="muted" style="font-size:13px;font-weight:400">${P.s}</span>`:''}</h2>`;
+  let h=`<h2 style="font-size:20px;margin:6px 0 2px">${P.n}</h2>${P.s?`<div class="ptitle">${esc(P.s.split('〜')[0].trim())}<span>〜${esc(P.s.split('〜').slice(1).join('〜'))}</span></div>`:''}`;
   if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>点線の下線がある文字</b>（勢力名・都市・川・交易路・矢印・番号）はタップで下に説明と「同時代のヨコ」が出ます。灰色の文字は説明なし。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
   const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=`<div class="muted rshint" style="font-size:12px;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は右下の「赤シート」ボタン）</div>`+yp.html;
   $('#tlbody').innerHTML=h;
