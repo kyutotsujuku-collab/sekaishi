@@ -129,14 +129,14 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .yyoko{border-top:1px solid var(--line);background:color-mix(in srgb,var(--accent) 9%,transparent);padding:8px 10px;font-size:0.8125rem;line-height:1.55;color:var(--accent);font-weight:600}
 .ytbl .pic{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:6px;font-size:0.6875rem;padding:0 5px;margin:0 3px;line-height:1.5;vertical-align:middle;cursor:pointer}
 
-.mapwrap svg,#pinhold svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
-.mapbox{position:relative}.mapscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:10px}.mapwrap[data-vw="all"] .mapscroll svg,#pinhold .mapscroll svg{width:165%;height:auto;display:block}.mapscroll svg{display:block;width:100%;height:auto}
-#pinhold{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}#pinhold:empty{display:none;box-shadow:none}#pinhold .mapscroll{max-height:38vh}
-.gstage{position:relative;width:100%;height:clamp(220px,min(52vh,78vw),440px);overflow:hidden;background:#dfe8ee;border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.gstage:active{cursor:grabbing}.gstage svg{display:block;width:100%;height:100%;border:0;border-radius:0}#pinhold .gstage{height:clamp(170px,min(34vh,60vw),300px)}
+.mapwrap svg,.pinhold svg{--ink:#1f2328;--sub:#6b7078;--accent:#b5461f}
+.mapbox{position:relative}.mapscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:thin;border-radius:10px}.mapwrap[data-vw="all"] .mapscroll svg,.pinhold .mapscroll svg{width:165%;height:auto;display:block}.mapscroll svg{display:block;width:100%;height:auto}
+.pinhold{position:sticky;top:var(--hdr,88px);z-index:3;background:var(--bg);padding-bottom:4px;box-shadow:0 8px 10px -8px rgba(0,0,0,.35)}.pinhold:empty{display:none;box-shadow:none}.pinhold .mapscroll{max-height:38vh}
+.gstage{position:relative;width:100%;height:clamp(220px,min(52vh,78vw),440px);overflow:hidden;background:#dfe8ee;border:1px solid var(--line);border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.gstage:active{cursor:grabbing}.gstage svg{display:block;width:100%;height:100%;border:0;border-radius:0}.pinhold .gstage{height:clamp(170px,min(34vh,60vw),300px)}
 .gz{position:absolute;right:8px;bottom:22px;display:flex;flex-direction:column;gap:4px}.gz button{width:32px;height:32px;border-radius:8px;border:1px solid #b9b2a4;background:rgba(255,255,255,.95);color:#1f2328;font-size:1.0625rem;font-weight:700;cursor:pointer;padding:0;line-height:1}
 .gtabs{position:absolute;left:6px;top:32px;max-width:calc(100% - 12px);overflow-x:auto;scrollbar-width:none;display:flex;gap:0;border:1px solid var(--accent);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.95);white-space:nowrap}.gtabs button{border:0;background:none;color:var(--accent);font-size:0.6875rem;font-weight:700;padding:3px 7px;cursor:pointer;white-space:nowrap}.gtabs button.on{background:var(--accent);color:#fff}
-.gm .mapbox .pinb{right:8px}#tab-quiz .pinb,#tab-cur .pinb,#tab-wrong .pinb{display:none}.gm .modern .pinb{display:none}
-.pinb{position:absolute;right:48px;top:8px;font-size:0.6875rem;padding:2px 7px;border-radius:14px;border:1px solid var(--accent);background:rgba(255,255,255,.92);color:var(--accent);font-weight:700;cursor:pointer}#pinhold .pinb{background:var(--accent);color:#fff}.mapwrap:not(.pinned) .mapbox:not(:first-child) .pinb,#sheet .pinb{display:none}
+.gm .mapbox .pinb{right:8px}.gm .modern .pinb{display:none}
+.pinb{position:absolute;right:48px;top:8px;font-size:0.6875rem;padding:2px 7px;border-radius:14px;border:1px solid var(--accent);background:rgba(255,255,255,.92);color:var(--accent);font-weight:700;cursor:pointer}.pinhold .pinb{background:var(--accent);color:#fff}.mapwrap:not(.pinned) .mapbox:not(:first-child) .pinb,#sheet .pinb{display:none}
 .zoomb{position:absolute;right:8px;top:8px;font-size:0.8125rem;padding:2px 8px;border-radius:14px;border:1px solid #b9b2a4;background:rgba(255,255,255,.92);color:#1f2328;cursor:pointer}
 #mz{position:fixed;inset:0;background:var(--bg);z-index:25;display:none;flex-direction:column}
 .mzbar{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);font-size:0.875rem}.mzbar .muted{flex:1;font-size:0.6875rem}.mzbar .btn{width:auto;margin:0;padding:6px 12px;font-size:0.8125rem}
@@ -160,7 +160,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v65</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v66</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -3160,13 +3160,14 @@ function bindG(mb){if(mb._g)return;mb._g=1;const stg=mb.querySelector('.gstage')
   stg.addEventListener('click',e=>{if(mb._skip)return;const el=(e.target.closest&&e.target.closest('[data-key]'))||mb._downEl;mb._downEl=null;if(!el)return;const key=el.dataset.key;if(!key||!INFO[key])return;e.stopPropagation();const w=mb._w;if(w)showInfo(w,key)});
   if(window.ResizeObserver){new ResizeObserver(()=>gRender(mb)).observe(stg)}
   gRender(mb)}
-function gSwitch(w,ti){const gis=(w.dataset.gis||'').split(',').map(Number);const gi=gis[ti];if(gi===undefined)return;w.dataset.gi=gi;const hold=$('#pinhold');const mb=w.classList.contains('pinned')?hold.querySelector('.mapbox'):w.querySelector('.mapbox');mb.dataset.gi=gi;mb._st=null;
+function gSwitch(w,ti){const gis=(w.dataset.gis||'').split(',').map(Number);const gi=gis[ti];if(gi===undefined)return;w.dataset.gi=gi;const hold=holdFor(w);const mb=w.classList.contains('pinned')?hold.querySelector('.mapbox'):w.querySelector('.mapbox');mb.dataset.gi=gi;mb._st=null;
   mb.querySelectorAll('.gtabs button').forEach(b=>b.classList.toggle('on',+b.dataset.ti===ti));gRender(mb);
   const lg=w.querySelector('.notelegend');if(lg){lg.innerHTML=legendHTML(GEO[gi]);lg.querySelectorAll('.nl').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k]){el.style.cursor='default';return}el.onclick=ev=>{ev.stopPropagation();showInfo(w,k)}})}
   const md=w.querySelector('.modern');if(md){md.innerHTML=modernSVG(GEO[gi],'all')+'<button class="zoomb" type="button">⤢</button>';md.querySelector('.zoomb').onclick=ev=>{ev.stopPropagation();openZoom(w,md.querySelector('svg'))}}
   const info=w.querySelector('.mapinfo');if(info){info.hidden=true;info.innerHTML=''}
-  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'))}
-function gBox(w){const hold=$('#pinhold');return w.classList.contains('pinned')&&hold?hold.querySelector('.mapbox'):w.querySelector('.mapbox')}
+  document.querySelectorAll('.mapwrap .sel,.pinhold .sel').forEach(e=>e.classList.remove('sel'))}
+function holdFor(w,create){const tab=w.closest('#tab-tl,#tab-quiz,#tab-cur,#tab-wrong');if(!tab||w.closest('#sheet'))return null;let h=tab.querySelector('.pinhold');if(!h&&create){h=document.createElement('div');h.className='pinhold';tab.insertBefore(h,tab.firstChild)}return h}
+function gBox(w){const hold=holdFor(w);return w.classList.contains('pinned')&&hold?hold.querySelector('.mapbox'):w.querySelector('.mapbox')}
 function infoTerm(k){const f=INFO[k];if(!f)return '';return f.n.replace(/^日本：/,'').split(/[（(／]/)[0].replace(/の帝国$|の活動$|の圧迫.*$/,'')}
 function infoQs(k){const f=INFO[k];const t=infoTerm(k);const kws=f.kw||(t.length>=2?[t]:[]);if(!kws.length)return [];return ALL_CURATED.map((c,i)=>[c,i]).filter(([c])=>!c.hidden&&kws.some(w=>((c.q||'')+(c.ctx||'')+(c.opts||[]).join('')+(c.exp||'')).includes(w)))}
 let PIC_WORDS=null;
@@ -3191,7 +3192,7 @@ function yokoTable(Y){const ims=[];const seen=new Set();
   return {html:h+`</div>`,ims}}
 function showInfo(w,k){
   const f=INFO[k];const box=w.querySelector('.mapinfo');if(!f||!box)return;box.hidden=false;
-  document.querySelectorAll('.mapwrap .sel,#pinhold .sel').forEach(e=>e.classList.remove('sel'));const hold=$('#pinhold');[w,...(hold&&w.classList.contains('pinned')?[hold]:[])].forEach(r=>r.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel')));document.querySelectorAll('.mapbox').forEach(m=>{if(m._st)m._st.sel=''});const gb=w.classList.contains('gm')?gBox(w):null;if(gb&&gb._st)gb._st.sel=k;
+  document.querySelectorAll('.mapwrap .sel,.pinhold .sel').forEach(e=>e.classList.remove('sel'));const hold=holdFor(w);[w,...(hold&&w.classList.contains('pinned')?[hold]:[])].forEach(r=>r.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel')));document.querySelectorAll('.mapbox').forEach(m=>{if(m._st)m._st.sel=''});const gb=w.classList.contains('gm')?gBox(w):null;if(gb&&gb._st)gb._st.sel=k;
   const qs=infoQs(k);
   let bodyH=esc(f.b);const headBtns=[];
   (f.img||[]).forEach((im,i)=>{const btn=`<button class="pic" data-pi="${i}" title="写真を見る">📷</button>`;const w=im.w?esc(im.w):'';const at=w?bodyH.indexOf(w):-1;if(at>=0){bodyH=bodyH.slice(0,at+w.length)+btn+bodyH.slice(at+w.length)}else headBtns.push(btn)});
@@ -3202,7 +3203,7 @@ function showInfo(w,k){
   box.querySelectorAll('[data-rel]').forEach(b=>b.onclick=()=>showInfo(w,b.dataset.rel));
   box.querySelectorAll('.pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(f.img[+b.dataset.pi])});
   const qb=box.querySelector('[data-qs]');if(qb)qb.onclick=()=>{const l=box.querySelector('.qlist');if(!l.hidden){l.hidden=true;return}l.hidden=false;l.innerHTML=qs.map(([c])=>`<div class="qitem">${c.type?`<span class="muted">【${esc(c.type)}】</span>`:''}${esc(c.q.replace(/\n[\s\S]*/,'').slice(0,70))}${c.q.length>70?'…':''}\n<b>正解：${esc(c.opts[c.a])}</b>${c.src?`\n<span class="muted">出典：${esc(c.src)}</span>`:''}</div>`).join('')};
-  if(w.closest('#tlbody')){pinMap(w,true);requestAnimationFrame(()=>requestAnimationFrame(()=>scrollUnderPin(box)))}
+  if(holdFor(w,true)){pinMap(w,true);requestAnimationFrame(()=>requestAnimationFrame(()=>scrollUnderPin(box)))}
   else box.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 const SMALL_ORIG=['Confucius_Tang_Dynasty.jpg','Good_Shepherd_Catacomb_of_Priscilla.jpg','%E6%BC%A2%E6%AD%A6%E5%B8%9D.jpg'];
@@ -3233,11 +3234,11 @@ function openZoom(w,svg){let mz=document.getElementById('mz');if(!mz){mz=documen
   mz.querySelector('.mzclose').onclick=()=>{mz.style.display='none';mz.innerHTML='';document.body.style.overflow=''};
   const iw=mz.querySelector('.mzinfo');c.querySelectorAll('.tap,.tapt').forEach(el=>{const k=el.dataset.key;if(!k||!INFO[k])return;el.onclick=ev=>{ev.stopPropagation();if(moved)return;showInfo(iw,k);c.querySelectorAll('.sel').forEach(e=>e.classList.remove('sel'));c.querySelectorAll(`.tap[data-key="${CSS.escape(k)}"]`).forEach(e=>e.classList.add('sel'))}});
 }
-function pinMap(w,on){const hold=$('#pinhold');if(!hold)return;const cur=hold.querySelector('.mapbox');if(cur&&cur._home!==w){cur._home.classList.remove('pinned');cur._home.insertBefore(cur,cur._home.firstChild);const pb=cur.querySelector('.pinb');if(pb)pb.textContent='📌 固定'}
+function pinMap(w,on){const hold=holdFor(w,true);if(!hold)return;const cur=hold.querySelector('.mapbox');if(cur&&cur._home!==w){cur._home.classList.remove('pinned');cur._home.insertBefore(cur,cur._home.firstChild);const pb=cur.querySelector('.pinb');if(pb)pb.textContent='📌 固定'}
   const mb=w.classList.contains('pinned')?hold.querySelector('.mapbox'):w.querySelector('.mapbox');if(!mb)return;const pb=mb.querySelector('.pinb');
   if(on){if(!w.classList.contains('pinned')){mb._home=w;hold.appendChild(mb);w.classList.add('pinned')}if(pb)pb.textContent='📌 固定中'}
   else{w.classList.remove('pinned');w.insertBefore(mb,w.firstChild);if(pb)pb.textContent='📌 固定'}}
-function scrollUnderPin(el){const hold=$('#pinhold');const hdr=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))||88;const z=document.body.style.zoom?parseFloat(document.body.style.zoom):1;const hh=hold?hold.getBoundingClientRect().height:0;window.scrollTo({top:(el.getBoundingClientRect().top+window.scrollY/z)*z-(hdr+hh)*z-16,behavior:'smooth'})}
+function scrollUnderPin(el){const hold=holdFor(el)||$('#pinhold');const hdr=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))||88;const z=document.body.style.zoom?parseFloat(document.body.style.zoom):1;const hh=hold?hold.getBoundingClientRect().height:0;window.scrollTo({top:(el.getBoundingClientRect().top+window.scrollY/z)*z-(hdr+hh)*z-16,behavior:'smooth'})}
 function bindDrag(sc){if(sc._drag)return;sc._drag=1;let sx=0,sl=0,on=false,moved=false;sc.style.cursor='grab';
   sc.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0)return;on=true;moved=false;sx=e.clientX;sl=sc.scrollLeft;sc.style.cursor='grabbing'});
   window.addEventListener('pointermove',e=>{if(!on)return;const dx=e.clientX-sx;if(Math.abs(dx)>4&&!moved){moved=true;try{sc.setPointerCapture(e.pointerId)}catch(_){}}sc.scrollLeft=sl-dx});
@@ -3272,7 +3273,7 @@ function renderTL(){
   const evs=EV.filter(e=>e.y>=P.f&&e.y<=P.t);
   const note=PERIOD_NOTES[curP];
   let h=`<h2 style="font-size:1.25rem;margin:6px 0 2px">${P.n}</h2>${P.s?`<div class="ptitle">${esc(P.s.split('〜')[0].trim())}<span>〜${esc(P.s.split('〜').slice(1).join('〜'))}</span></div>`:''}`;
-  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>点線の下線がある文字</b>（勢力名・都市・川・交易路・矢印・番号）はタップで下に説明と「同時代のヨコ」が出ます。灰色の文字は説明なし。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
+  if(GEO.some(g=>g.p===curP))h+=viewChips()+`<details class="maphelp"><summary>❓ 使い方（地図の操作・番号・固定）</summary>地図は<b>ドラッグで移動、ピンチ（PCはホイール）か＋－で拡大縮小</b>。拡大すると<b>①②③…</b>の番号が文章に変わり、都市名・川名も現れます。<b>点線の下線がある文字</b>（勢力名・都市・川・交易路・矢印・番号）はタップで下に説明と「同時代のヨコ」が出ます。灰色の文字は説明なし。番号の内容は地図の下のリストにもあります。「📌」で地図を上部に固定したまま下を読めます。</details>`;h+='<div id="pinhold" class="pinhold"></div>';{const gs=GEO.filter(g=>g.p===curP);if(gs.length)h+=gmapHTML(gs,0)}
   const Y=(typeof PERIOD_YOKO!=='undefined'&&PERIOD_YOKO[curP]);const yp=Y?yokoTable(Y):(note?{html:`<div class="note"><b>ヨコのつながり</b><br>${esc(note)}</div>`,ims:[]}:null);if(yp)h+=`<div class="muted rshint" style="font-size:0.75rem;margin:8px 0 4px">🟥 赤シートON：隠れた語は1つずつタップで表示（解除は右下の「赤シート」ボタン）</div>`+yp.html;
   $('#tlbody').innerHTML=h;
   if(yp)$('#tlbody').querySelectorAll('.ytbl .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(yp.ims[+b.dataset.ei])});
