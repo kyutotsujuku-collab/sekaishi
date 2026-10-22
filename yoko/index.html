@@ -49,6 +49,16 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 .ev.hl{background:color-mix(in srgb,var(--accent) 12%,transparent);border-radius:6px;padding-left:6px;margin-left:-6px}
 .empty{color:var(--sub);font-size:0.8125rem}
 /* sheet */
+.schem{padding:4px 0}
+.schem .sttl{font-size:0.95rem;font-weight:700;margin:2px 0 2px}
+.schem .ssub{font-size:0.75rem;color:var(--sub);margin-bottom:8px;line-height:1.5}
+.schem .zrow{display:flex;align-items:stretch;border:1.5px solid var(--c);border-radius:10px;margin:6px 0;overflow:hidden;background:color-mix(in srgb,var(--c) 12%,var(--card))}
+.schem .zlab{flex:0 0 4.6em;display:flex;align-items:center;justify-content:center;text-align:center;background:var(--c);color:#fff;font-weight:700;font-size:0.8rem;padding:6px 4px;line-height:1.25}
+.schem .ztxt{flex:1;font-size:0.8rem;line-height:1.5;padding:6px 8px;overflow-wrap:anywhere}
+.schem .zlink{display:flex;align-items:flex-start;gap:5px;background:color-mix(in srgb,var(--accent) 10%,var(--card));border-radius:12px;padding:5px 10px;margin:5px 0;font-size:0.78rem;line-height:1.45}
+.schem .zdot{flex:0 0 10px;width:10px;height:10px;border-radius:50%;margin-top:0.35em}
+.schem .zarr{flex:0 0 auto;color:var(--sub)}
+.schem .zltx{flex:1;overflow-wrap:anywhere}
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:9}
 .sheet{position:fixed;left:0;right:0;bottom:0;max-height:80vh;overflow-y:auto;background:var(--card);border-radius:16px 16px 0 0;padding:12px 16px 24px;z-index:10;display:none;max-width:720px;margin:0 auto;box-shadow:0 -6px 24px rgba(0,0,0,.2)}
 .sheet.open,.sheet-bg.open{display:block}
@@ -160,7 +170,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v68</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v69</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -3332,30 +3342,12 @@ const rtag=r=>`<span class="rtag" style="background:var(--${r})">${REG[r].short}
 // ---------- 同時代マップ ----------
 const ZONES=[['W','西欧・地中海'],['I','西アジア'],['S','インド'],['C','中国'],['J','日本']];
 function mapSVG(m){
-  const W=360,x0=8,y0=46,rowH=58,lab=72;
-  const zoneY=i=>y0+i*(rowH+6);
-  const nL=m.links.length;
-  const H=y0+ZONES.length*(rowH+6)+14+nL*26+4;
-  let s=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="-apple-system,Hiragino Sans,Noto Sans JP,sans-serif">`;
-  s+=`<text x="${x0}" y="20" font-size="14" font-weight="700" fill="var(--ink)">${esc(m.title)}</text>`;
-  s+=`<text x="${x0}" y="37" font-size="10.5" fill="var(--sub)">${esc(m.sub)}</text>`;
-  ZONES.forEach(([id,name],i)=>{
-    const y=zoneY(i);
-    s+=`<rect x="${x0}" y="${y}" width="${W-x0*2}" height="${rowH}" rx="8" fill="var(--${id})" fill-opacity="0.12" stroke="var(--${id})" stroke-width="1.5"/>`;
-    s+=`<rect x="${x0}" y="${y}" width="${lab}" height="${rowH}" rx="8" fill="var(--${id})"/>`;
-    s+=`<text x="${x0+lab/2}" y="${y+rowH/2+4}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fff">${name}</text>`;
-    const lines=(m.zones[id]||'').split('\n');const top=y+rowH/2-(lines.length-1)*7.5+4;
-    lines.forEach((ln,k)=>{s+=`<text x="${x0+lab+10}" y="${top+k*15}" font-size="11.5" fill="var(--ink)">${esc(ln)}</text>`});
-  });
   const zn=id=>ZONES.find(z=>z[0]===id)[1];
-  m.links.forEach((l,k)=>{
-    const y=zoneY(ZONES.length)+8+k*26;
-    s+=`<rect x="${x0}" y="${y}" width="${W-x0*2}" height="22" rx="11" fill="var(--accent)" fill-opacity="0.1"/>`;
-    s+=`<circle cx="${x0+12}" cy="${y+11}" r="5" fill="var(--${l[0]})"/><text x="${x0+22}" y="${y+15}" font-size="11" fill="var(--ink)">→</text><circle cx="${x0+40}" cy="${y+11}" r="5" fill="var(--${l[1]})"/>`;
-    s+=`<text x="${x0+52}" y="${y+15}" font-size="11" fill="var(--ink)">${esc(zn(l[0])+'→'+zn(l[1])+'：'+l[2])}</text>`;
-  });
-  s+=`</svg>`;
-  return `<div class="mapwrap">${s}</div>`;
+  let h=`<div class="schem"><div class="sttl">${esc(m.title)}</div><div class="ssub">${esc(m.sub)}</div>`;
+  ZONES.forEach(([id,name])=>{const lines=(m.zones[id]||'').split('\n').map(esc).join('<br>');h+=`<div class="zrow" style="--c:var(--${id})"><div class="zlab">${name}</div><div class="ztxt">${lines}</div></div>`});
+  m.links.forEach(l=>{h+=`<div class="zlink"><span class="zdot" style="background:var(--${l[0]})"></span><span class="zarr">→</span><span class="zdot" style="background:var(--${l[1]})"></span><span class="zltx">${esc(zn(l[0])+'→'+zn(l[1])+'：'+l[2])}</span></div>`});
+  h+=`</div>`;
+  return `<div class="mapwrap">${h}</div>`;
 }
 const VIEWS={all:{n:'全体',lon:[-12,150],lat:[3,66]},europe:{n:'ヨーロッパ',lon:[-12,46],lat:[34,64],opt:true},west:{n:'地中海・オリエント',lon:[-10,60],lat:[22,48]},east:{n:'東アジア',lon:[92,146],lat:[18,50]},south:{n:'インド',lon:[60,100],lat:[5,38]}};
 let curView='all';
