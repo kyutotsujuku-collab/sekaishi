@@ -89,6 +89,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 #lb{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px}#lb img{max-width:100%;max-height:70vh;border-radius:8px}#lb .cap{color:#fff;font-size:0.8125rem;margin-top:10px;text-align:center}#lb .close{color:#bbb;font-size:0.75rem;margin-top:8px}#lb .ld{color:#ddd;font-size:0.875rem;padding:40px 0}#lb .hq{background:#333;color:#fff;border:1px solid #666;border-radius:6px;font-size:0.75rem;padding:3px 8px}
 .mapinfo figure{margin:6px 0}.mapinfo figure img{width:100%;border-radius:8px;display:block}.mapinfo figcaption{font-size:0.7188rem;color:var(--sub);margin-top:2px}
 .mapinfo .src{color:var(--sub);font-size:0.7188rem;margin-top:4px}
+.qrel{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;align-items:center}.qrel .muted{width:100%;font-size:0.72rem}.qrel button{border:1px solid var(--accent);background:var(--card);color:var(--accent);border-radius:999px;padding:4px 10px;font-size:0.78rem;font-weight:700;text-align:left}
 .mapinfo .rel{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
 .mapinfo .rel button{border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:3px 9px;font-size:0.75rem}
 .mapinfo .rel button.q{border-color:var(--accent);color:var(--accent)}
@@ -170,7 +171,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v71</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v72</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -3763,13 +3764,18 @@ function showQ(){
   <div id="qexp"></div>`;
   el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
 }
+function qRelated(q){const g=q.geo!==undefined?GEO[q.geo]:null;const txt=(q.q||'')+(q.ctx||'')+(q.opts||[]).join('')+(q.exp||'');const out=[];const seen=new Set();
+  const notes=g?(g.notes||[]):[];notes.forEach((n,i)=>{const k=n[3];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,NUM[i]||'●',f])}});
+  if(g){(g.dashed||[]).forEach(d=>{const k=d[5];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}});(g.areas||[]).forEach(a=>{const k=a[4];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=3);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}})}
+  return out.slice(0,8)}
 function answer(k){
   const q=run.set[run.k];const el=$(run.host);const ok=k===q.a;
   if(ok){run.ok++;delWrong(q.key)}else{run.wrongs.push(q);addWrong(q.key,q.label)}
   el.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('ok');else if(i===k)b.classList.add('ng')});
-  const ep=picExp(esc(q.exp));el.querySelector('#qexp').innerHTML=`<div class="exp"><div class="v ${ok?'ok':'ng'}">${ok?'正解':'不正解'}　正解は ${NUM[q.a]}</div>${ktMark(ep.html,[q.opts[q.a]])}</div>${q.geo!==undefined&&GEO[q.geo]?gmapHTML([GEO[q.geo]],0):''}${q.mapP!==undefined&&MAPS.some(m=>m.p===q.mapP)?`<button class="btn sec mapbtn" id="qMap">この時代の地図をすべて見る</button>`:''}<button class="btn" id="qNext">${run.k+1<run.set.length?'次へ':'結果を見る'}</button>`;
+  const ep=picExp(esc(q.exp));el.querySelector('#qexp').innerHTML=`<div class="exp"><div class="v ${ok?'ok':'ng'}">${ok?'正解':'不正解'}　正解は ${NUM[q.a]}</div>${ktMark(ep.html,[q.opts[q.a]])}${(rel=>rel.length?`<div class="qrel"><span class="muted">関連する解説（タップで地図の説明へ）</span>${rel.map(([k,num,f])=>`<button data-rk="${esc(k)}">${num}${num?' ':''}${esc(f.n.replace(/^[①-⑳㉑-㉟]+/,'').split(/[（(／—]/)[0])}</button>`).join('')}</div>`:'')(qRelated(q))}</div>${q.geo!==undefined&&GEO[q.geo]?gmapHTML([GEO[q.geo]],0):''}${q.mapP!==undefined&&MAPS.some(m=>m.p===q.mapP)?`<button class="btn sec mapbtn" id="qMap">この時代の地図をすべて見る</button>`:''}<button class="btn" id="qNext">${run.k+1<run.set.length?'次へ':'結果を見る'}</button>`;
   el.querySelectorAll('.exp .pic').forEach(b=>b.onclick=ev=>{ev.stopPropagation();openPic(ep.ims[+b.dataset.ei])});
   bindMaps(el);const mb=el.querySelector('#qMap');if(mb)mb.onclick=()=>openMaps(q.mapP);
+  el.querySelectorAll('.qrel [data-rk]').forEach(b=>b.onclick=()=>{const w=el.querySelector('.mapwrap.gm');if(w)showInfo(w,b.dataset.rk)});
   el.querySelector('#qNext').onclick=()=>{run.k++;run.k<run.set.length?showQ():showResult()};
   {const ex=el.querySelector('#qexp');const hdr=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hdr'))||88;const r=ex.getBoundingClientRect().top;const top=r+window.scrollY-Math.max(hdr+8,window.innerHeight*0.4);if(r>window.innerHeight*0.6||r<hdr)window.scrollTo({top,behavior:'smooth'})}
 }
