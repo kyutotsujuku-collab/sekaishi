@@ -171,7 +171,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v78</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v79</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -4105,7 +4105,7 @@ function gmapHTML(gs,idx){
 function gFit(st){const W=st.W,H=st.H;st.base=H/((GM.lat[1]-GM.lat[0])*GM.K);st.z=1;st.cx=GM.lon[0]+W/(2*st.base);st.cy=(GM.lat[0]+GM.lat[1])/2}
 function gClamp(st){st.z=Math.max(GM.ZMIN,Math.min(GM.ZMAX,st.z));const s=st.base*st.z;const hw=st.W/2/s,hh=st.H/2/(s*GM.K);
   const PX_=12,PY_=8;const L0=(st.ext&&st.ext.lon0!==undefined)?st.ext.lon0:GM.lon[0];const S0=(st.ext&&st.ext.lat0!==undefined)?st.ext.lat0:GM.south;const lo=L0-PX_+hw,hi=GM.lon[1]+PX_-hw;st.cx=lo>hi?(GM.lon[0]+GM.lon[1])/2:Math.max(lo,Math.min(hi,st.cx));
-  const PYN_=16;const lo2=S0-PY_+hh,hi2=GM.lat[1]+PYN_-hh;st.cy=lo2>hi2?(GM.lat[0]+GM.lat[1])/2:Math.max(lo2,Math.min(hi2,st.cy))}
+  const PYN_=10;const lo2=S0-PY_+hh,hi2=GM.lat[1]+PYN_-hh;st.cy=lo2>hi2?(GM.lat[0]+GM.lat[1])/2:Math.max(lo2,Math.min(hi2,st.cy))}
 function legendHTML(g){return (g.notes||[]).length?`<div class="nlhead">🔢 地図上の番号＝この時代の主な出来事（タップで説明）</div>${g.notes.map((n,ni)=>`<button class="tapt nl" data-key="${n[3]||''}">${NUM[ni]||'●'} ${esc(n[2])}</button>`).join('')}`:''}
 function gSVG(g,st){
   const W=st.W,H=st.H,z=st.z,s=st.base*z,K=GM.K;
