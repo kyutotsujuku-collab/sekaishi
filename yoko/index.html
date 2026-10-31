@@ -171,7 +171,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v79</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v80</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -4104,7 +4104,7 @@ function gmapHTML(gs,idx){
 }
 function gFit(st){const W=st.W,H=st.H;st.base=H/((GM.lat[1]-GM.lat[0])*GM.K);st.z=1;st.cx=GM.lon[0]+W/(2*st.base);st.cy=(GM.lat[0]+GM.lat[1])/2}
 function gClamp(st){st.z=Math.max(GM.ZMIN,Math.min(GM.ZMAX,st.z));const s=st.base*st.z;const hw=st.W/2/s,hh=st.H/2/(s*GM.K);
-  const PX_=12,PY_=8;const L0=(st.ext&&st.ext.lon0!==undefined)?st.ext.lon0:GM.lon[0];const S0=(st.ext&&st.ext.lat0!==undefined)?st.ext.lat0:GM.south;const lo=L0-PX_+hw,hi=GM.lon[1]+PX_-hw;st.cx=lo>hi?(GM.lon[0]+GM.lon[1])/2:Math.max(lo,Math.min(hi,st.cx));
+  const PX_=8,PY_=8;const L0=(st.ext&&st.ext.lon0!==undefined)?st.ext.lon0:GM.lon[0];const S0=(st.ext&&st.ext.lat0!==undefined)?st.ext.lat0:GM.south;const lo=L0-PX_+hw,hi=GM.lon[1]+PX_-hw;st.cx=lo>hi?(GM.lon[0]+GM.lon[1])/2:Math.max(lo,Math.min(hi,st.cx));
   const PYN_=10;const lo2=S0-PY_+hh,hi2=GM.lat[1]+PYN_-hh;st.cy=lo2>hi2?(GM.lat[0]+GM.lat[1])/2:Math.max(lo2,Math.min(hi2,st.cy))}
 function legendHTML(g){return (g.notes||[]).length?`<div class="nlhead">🔢 地図上の番号＝この時代の主な出来事（タップで説明）</div>${g.notes.map((n,ni)=>`<button class="tapt nl" data-key="${n[3]||''}">${NUM[ni]||'●'} ${esc(n[2])}</button>`).join('')}`:''}
 function gSVG(g,st){
@@ -4161,16 +4161,19 @@ function gApplyGesture(mb,tx,ty,k){const st=mb._st;if(!st)return;const s=st.base
 function bindG(mb){if(mb._g)return;mb._g=1;const stg=mb.querySelector('.gstage');
   const pts=new Map();let last=null,moved=false,tx=0,ty=0,k=1,ax=0,ay=0;
   const svg=()=>stg.firstElementChild;
-  const ap=()=>{const sv=svg();if(sv)sv.style.transform=`translate(${tx}px,${ty}px) scale(${k})`;};
+  const ap=()=>{const sv=svg();if(!sv)return;const st=mb._st;if(st){const s=st.base*st.z;const c={base:st.base,z:st.z*k,W:st.W,H:st.H,ext:st.ext};const ox=(st.W/2-tx)/k,oy=(st.H/2-ty)/k;c.cx=st.cx+(ox-st.W/2)/s;c.cy=st.cy-(oy-st.H/2)/(s*GM.K);const z0=c.z;gClamp(c);if(c.z!==z0){k=c.z/st.z}
+      // クランプ後の中心から tx,ty を逆算
+      const ox2=st.W/2+(c.cx-st.cx)*s,oy2=st.H/2-(c.cy-st.cy)*s*GM.K;tx=st.W/2-ox2*k;ty=st.H/2-oy2*k}
+    sv.style.transform=`translate(${tx}px,${ty}px) scale(${k})`;};
   const rel=e=>{const r=stg.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
   stg.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;pts.set(e.pointerId,rel(e));last=null;if(pts.size===1){moved=false;tx=0;ty=0;k=1;ax=0;ay=0;mb._downEl=e.target.closest&&e.target.closest('[data-key]')}try{stg.setPointerCapture(e.pointerId)}catch(_){}});
-  stg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;pts.set(e.pointerId,rel(e));const P=[...pts.values()];
+  stg.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;if(e.pointerType==='mouse'&&e.buttons===0){end(e);return}pts.set(e.pointerId,rel(e));const P=[...pts.values()];
     if(P.length===1){if(last){const dx=P[0][0]-last[0],dy=P[0][1]-last[1];if(Math.abs(dx)+Math.abs(dy)>3)moved=true;if(moved){tx+=dx;ty+=dy;ap()}}last=P[0].slice()}
     else{const d=Math.hypot(P[0][0]-P[1][0],P[0][1]-P[1][1]);const mx=(P[0][0]+P[1][0])/2,my=(P[0][1]+P[1][1])/2;moved=true;
       if(last&&last.d){const kk=d/last.d;// 現在の変換 T(tx,ty,k) に、画面点(mx,my)基準の kk倍 を合成
         tx=mx-(mx-tx)*kk;ty=my-(my-ty)*kk;k*=kk;tx+=mx-last.mx;ty+=my-last.my;ap()}last={d,mx,my}}});
   const end=e=>{if(!pts.has(e.pointerId))return;pts.delete(e.pointerId);last=null;if(pts.size===0&&moved){const sv=svg();if(sv)sv.style.transform='';gApplyGesture(mb,tx,ty,k);mb._skip=true;setTimeout(()=>mb._skip=false,50)}};
-  stg.addEventListener('pointerup',end);stg.addEventListener('pointercancel',end);
+  stg.addEventListener('pointerup',end);stg.addEventListener('pointercancel',end);stg.addEventListener('lostpointercapture',end);stg.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')end(e)});
   stg.addEventListener('wheel',e=>{e.preventDefault();const [px,py]=rel(e);const kk=e.deltaY<0?1.25:1/1.25;gApplyGesture(mb,px-px*kk,py-py*kk,kk)},{passive:false});
   mb.querySelectorAll('[data-gz]').forEach(b=>b.onclick=ev=>{ev.stopPropagation();const st=mb._st;if(!st)return;if(b.dataset.gz==='0'){gFit(st);gRender(mb);return}const kk=b.dataset.gz==='+'?1.5:1/1.5;st.z*=kk;gClamp(st);gRender(mb)});
   stg.addEventListener('click',e=>{if(mb._skip)return;const el=(e.target.closest&&e.target.closest('[data-key]'))||mb._downEl;mb._downEl=null;if(!el)return;const key=el.dataset.key;if(!key||!INFO[key])return;e.stopPropagation();const w=mb._w;if(w)showInfo(w,key)});
