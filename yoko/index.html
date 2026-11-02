@@ -171,7 +171,7 @@ main{padding:12px 16px 90px;max-width:720px;margin:0 auto}
 </head>
 <body>
 <header>
-  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v84</span></div>
+  <div class="hrow"><h1>世界史ヨコ</h1><span class="fsz" id="fsz"><button type="button" data-z="1" title="文字を小さく">A</button><button type="button" data-z="1.15" title="文字を中">A</button><button type="button" data-z="1.3" title="文字を大きく">A</button></span><span class="ver">v85</span></div>
   <nav>
     <button data-tab="tl" class="on">タイムライン</button>
     <button data-tab="quiz">ヨコ問題</button>
@@ -4680,7 +4680,7 @@ function genCent(t,corFixed){
   for(const e of shuffle(EV.filter(e=>gap(e)>300&&gap(e)<=900))){if(ds.length>=3)break;if(ok(e))ds.push(e)}
   if(ds.length<3)return null;
   const opts=shuffle([cor,...ds]);
-  return {key:`cent:${t.i}:${cor.i}`,label:`「${t.t}」と同じ時期`,
+  return {key:`cent:${t.i}:${cor.i}`,label:`「${t.t}」と同じ時期`,mapP:pi,geo:geoForYear(t.y),
     q:`「${qt(t.t)}」とほぼ同じ時期（前後${NEAR}年以内）に起きた出来事はどれか。`,
     opts:opts.map(e=>qt(e.t)),a:opts.indexOf(cor),
     exp:`「${t.t}」は${yfmt(t.y)}年（${P.n}）。\n`+opts.map((e,k)=>`${'①②③④'[k]} ${yfmt(e.y)}年 ${REG[e.r].short}（${PERIODS[pidx(e.y)].n}）`).join('\n')+(PERIOD_NOTES[pi]?`\n\n【${P.n}のヨコ】${PERIOD_NOTES[pi]}`:'')};
@@ -4695,7 +4695,7 @@ function genDyn(t,R){
   const ds=shuffle(neigh.length>=3?neigh:list.filter((d,k)=>k!==idx)).slice(0,3);
   if(ds.length<3)return null;
   const opts=shuffle([cor,...ds]);
-  return {key:`dyn:${t.i}:${R}`,label:`「${t.t}」の頃の${R}`,
+  return {key:`dyn:${t.i}:${R}`,label:`「${t.t}」の頃の${R}`,mapP:pidx(t.y),geo:geoForYear(t.y),
     q:`「${qt(t.t)}」の頃の${R}の王朝・時代はどれか。`,
     opts:opts.map(d=>d[2]),a:opts.indexOf(cor),
     exp:`「${t.t}」は${yfmt(t.y)}年。${R}は${cor[2]}（${yfmt(cor[0])}〜${cor[1]>=2100?'':yfmt(cor[1])}）。\n`+opts.map((d,k)=>`${'①②③④'[k]} ${d[2]}：${yfmt(d[0])}〜${d[1]>=2100?'':yfmt(d[1])}`).join('\n')};
@@ -4723,7 +4723,7 @@ function genOrder(range,fixed){
   const corStr=sorted.map(lab).join('→');
   const perms=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]].map(p=>p.map(k=>'ⅠⅡⅢ'[k]).join('→'));
   const opts=shuffle([corStr,...shuffle(perms.filter(p=>p!==corStr)).slice(0,3)]);
-  return {key:`order:${tri.map(e=>e.i).sort((a,b)=>a-b).join(',')}`,label:`整序：${tri.map(e=>e.t.slice(0,10)).join('／')}`,
+  return {key:`order:${tri.map(e=>e.i).sort((a,b)=>a-b).join(',')}`,label:`整序：${tri.map(e=>e.t.slice(0,10)).join('／')}`,mapP:pidx(sorted[1].y),geo:geoForYear(sorted[1].y),
     q:`次のⅠ〜Ⅲを古い順に並べたものとして正しいものはどれか。\n\nⅠ ${qt(show[0].t)}\nⅡ ${qt(show[1].t)}\nⅢ ${qt(show[2].t)}`,
     opts,a:opts.indexOf(corStr),
     exp:sorted.map(e=>`${lab(e)} ${yfmt(e.y)}年 ${REG[e.r].short}（${pname(e.y)}）`).join('\n')};
@@ -4746,6 +4746,7 @@ function guessGeo(c){
   const k=y<-600?0:y<-400?1:y<-200?2:3;
   return gs[Math.min(k,gs.length-1)];
 }
+function geoForYear(y){const pi=pidx(y);if(pi<0)return undefined;const gs=GEO.map((g,i)=>i).filter(i=>GEO[i].p===pi);if(!gs.length)return undefined;if(gs.length===1)return gs[0];const P=PERIODS[pi];const f=Math.max(P.f,pi===0?-1000:P.f),t=P.t;const k=Math.min(gs.length-1,Math.max(0,Math.floor((y-f)/((t-f+1)/gs.length))));return gs[k]}
 function curQ(k){const c=ALL_CURATED[k];const fixed=!!c.type;const order=fixed?c.opts.map((o,i)=>i):shuffle(c.opts.map((o,i)=>i));return {key:`cur:${k}`,label:(c.type?`【${c.type}】`:'')+c.q.replace(/\n[\s\S]*/,'').slice(0,26)+'…',q:c.q,ctx:c.ctx||'',type:c.type||'',yoko:!!c.yoko,mapP:c.p!==undefined?c.p:(c.set==='古代（紀元前）'?0:undefined),geo:guessGeo(c),opts:order.map(o=>c.opts[o]),a:order.indexOf(c.a),exp:c.exp+(c.src?`\n\n出典：${c.src}`:'')}}
 
 // ---------- quiz UI ----------
@@ -4800,10 +4801,11 @@ function showQ(){
   <div id="qexp"></div>`;
   el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
 }
-function qRelated(q){const g=q.geo!==undefined?GEO[q.geo]:null;const txt=(q.q||'')+(q.ctx||'')+(q.opts||[]).join('')+(q.exp||'');const out=[];const seen=new Set();
-  const notes=g?(g.notes||[]):[];notes.forEach((n,i)=>{const k=n[3];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,NUM[i]||'●',f])}});
-  if(g){(g.dashed||[]).forEach(d=>{const k=d[5];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}});(g.areas||[]).forEach(a=>{const k=a[4];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=3);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}})}
-  return out.slice(0,8)}
+function qRelated(q){const g=q.geo!==undefined?GEO[q.geo]:null;const txt1=(q.q||'')+(q.ctx||'')+(q.opts||[]).join('');const txt=txt1+(q.exp||'');const out=[];const seen=new Set();
+  const scan=(g,withNum)=>{(g.notes||[]).forEach((n,i)=>{const k=n[3];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,withNum?(NUM[i]||'●'):'',f])}});
+    (g.dashed||[]).forEach(d=>{const k=d[5];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=2);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}});(g.areas||[]).forEach(a=>{const k=a[4];const f=INFO[k];if(!f||seen.has(k))return;const kws=(f.kw||[]).filter(w=>w.length>=3);if(kws.some(w=>txt.includes(w))){seen.add(k);out.push([k,'',f])}})};
+  if(g){scan(g,true);if(!out.length&&!(q.key||'').startsWith('cur:')){GEO.filter(x=>x!==g&&Math.abs(x.p-g.p)===1).forEach(x=>scan(x,false))}}
+  out.sort((a,b)=>{const ha=(a[2].kw||[]).some(w=>w.length>=2&&txt1.includes(w))?0:1,hb=(b[2].kw||[]).some(w=>w.length>=2&&txt1.includes(w))?0:1;return ha-hb});return out.slice(0,8)}
 function answer(k){
   const q=run.set[run.k];const el=$(run.host);const ok=k===q.a;
   if(ok){run.ok++;delWrong(q.key)}else{run.wrongs.push(q);addWrong(q.key,q.label)}
